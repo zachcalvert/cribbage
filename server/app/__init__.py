@@ -25,9 +25,9 @@ def leave(message):
     emit('player_leave', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
-@socketio.on('message')
+@socketio.on('chat_message')
 def send_message(msg):
-    emit('message', {'name': msg['name'], 'message': msg['message']})
+    emit('chat_message', {'name': msg['name'], 'message': msg['message']}, broadcast=True)
 
 
 if __name__ == '__main__':
