@@ -12,10 +12,11 @@ thread = None
 thread_lock = Lock()
 
 
-@socketio.on('join', namespace='/game')
-def join(message):
-    join_room(message['game'])
-    emit('player_join', {'nickname': message['nickname'], 'points': 0, 'gameName': message['game']}, room=message['game'])
+@socketio.on('join')
+def join(msg):
+    print('received a join request')
+    join_room(msg['game'])
+    emit('player_join', {'name': msg['name']}, room=msg['game'])
 
 
 @socketio.on('leave', namespace='/game')
@@ -24,9 +25,9 @@ def leave(message):
     emit('player_leave', {'nickname': message['nickname'], 'gameName': message['game']}, room=message['game'])
 
 
-@socketio.on('send_message', namespace='/game')
-def send_message(message):
-    emit('new_message', {'type': 'chat', 'data': message['data'], 'nickname': message['nickname']}, room=message['game'])
+@socketio.on('message')
+def send_message(msg):
+    emit('message', {'name': msg['name'], 'message': msg['message']})
 
 
 if __name__ == '__main__':
