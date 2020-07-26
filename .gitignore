@@ -25,3 +25,5 @@ yarn-error.log*
 __pycache__
 .coverage
 .DS_Store
+.idea
+.idea/
