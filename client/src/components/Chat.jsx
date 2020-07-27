@@ -5,9 +5,10 @@ import io from "socket.io-client";
 const socket = io.connect('http://localhost:5000');
 
 export const Chat = () => {
-  const [state, setState] = useState({ game: 'default', message: '', name: '' });
+  const game = sessionStorage.getItem('game');
+  const name = sessionStorage.getItem('name');
+  const [message, setMessage] = useState('' );
   const [chat, setChat] = useState([]);
-
 
   useEffect(() => {
     socket.on('chat_message', ({ game, name, message }) => {
@@ -16,14 +17,13 @@ export const Chat = () => {
   });
 
   const onTextChange = e => {
-    setState({ ...state, [e.target.name]: e.target.value });
+    setMessage(e.target.value);
   };
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
-    const { game, name, message } = state;
     socket.emit('chat_message', { game, name, message });
-    setState({game, message: '', name })
+    setMessage('');
   };
 
   const renderChat = () => {
@@ -37,14 +37,9 @@ export const Chat = () => {
   };
 
   return (
-    <div className="App">
+    <div className="chat">
       <form onSubmit={onMessageSubmit}>
-        <h1>Messenger</h1>
-        <div className="name-field">
-          <TextField
-              name="name"
-              onChange={e => onTextChange(e)} value={state.name} label='Name' />
-        </div>
+        <h3>Send Message</h3>
         <div>
           <TextField
             id='outlined-multiline-static'
@@ -52,13 +47,13 @@ export const Chat = () => {
             label='Message'
             variant='outlined'
             onChange={e => onTextChange(e)}
-            value={state.message}
+            value={message}
           />
         </div>
         <button type='submit'>Send Message</button>
       </form>
       <div className="render-chat">
-        <h1>Chat Log</h1>
+        <h3>Chat Log</h3>
         {renderChat()}
       </div>
     </div>
