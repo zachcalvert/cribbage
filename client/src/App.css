@@ -28,6 +28,13 @@
   color: #61dafb;
 }
 
+.leave-game {
+  position: absolute!important;
+  top: 10px;
+  right: 10px;
+  color: red!important;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

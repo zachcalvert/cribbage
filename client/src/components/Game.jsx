@@ -19,7 +19,8 @@ export const Game = () => {
 
   return (
     <Fragment>
-      <IconButton onClick={leaveGame} aria-label="leave">
+      <h4>{ game }</h4>
+      <IconButton className="leave-game" onClick={leaveGame} aria-label="leave">
         <CloseIcon fontSize="inherit" />
       </IconButton>
 
