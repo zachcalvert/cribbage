@@ -1,10 +1,22 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { useSpring, animated } from 'react-spring'
-import { Button, IconButton, TextField, Paper, Container } from "@material-ui/core";
+import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Player } from "./Player";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    height: '100%'
+  },
+  paper: {
+    padding: theme.spacing(2),
+    color: theme.palette.text.secondary,
+  },
+}));
+
 
 export const Game = ()  => {
   const [id, setId] = useState('');
@@ -13,6 +25,7 @@ export const Game = ()  => {
   const [input, setInput] = useState('');
   const [chats, setChat] = useState([]);
   const fadeIn = useSpring({opacity: 1, from: {opacity: 0}});
+  const classes = useStyles();
 
   const { socket } = useSocket("chat_message", newChat =>
     setChat([...chats, newChat])
@@ -54,27 +67,36 @@ export const Game = ()  => {
   };
 
   return id ? (
-    <Container className="game" height="100%" maxWidth="md">
-      <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
-        <CloseIcon fontSize="inherit" />
-      </IconButton>
+      <Container maxWidth="lg">
+        <animated.div style={fadeIn} className={classes.root}>
+          <Grid container spacing={2}>
+            <Grid item xs={4}>
+              <Paper className={`game-log ${classes.paper}`}>
+                <span className="room-name">Game: { room }</span>
+                  {renderChat()}
 
-      <Paper className='left-panel'>
-        <span className="room-name">Game: { room }</span>
-        {renderChat()}
+                  <div className="send-form">
+                    <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
+                      <TextField id="m" onChange={e=>setInput(e.target.value.trim())} />
+                      <Button type="submit">Send</Button>
+                    </form>
+                  </div>
 
-        <div className="send-form">
-          <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-            <TextField id="m" onChange={e=>setInput(e.target.value.trim())} />
-            <Button type="submit">Send</Button>
-          </form>
-        </div>
-      </Paper>
+                </Paper>
+            </Grid>
 
-      <Paper className='player'>
-        <Player name={name}/>
-      </Paper>
-    </Container>
+            <Grid item xs={8}>
+              <Paper className={classes.paper}>
+                <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
+                  <CloseIcon fontSize="inherit" />
+                </IconButton>
+
+                <Player name={name}/>
+              </Paper>
+            </Grid>
+          </Grid>
+        </animated.div>
+      </Container>
   ) : (
     <animated.div style={fadeIn}>
     <div style={{ textAlign: 'center', margin: '30vh auto', width: '70%' }}>

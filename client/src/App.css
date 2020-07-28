@@ -1,9 +1,8 @@
-html, body, #root, .game {
+html, body, #root, .MuiContainer-root, .MuiGrid-container {
   height: 100%;
 }
-
-.game {
-  padding: 20px;
+.MuiGrid-container {
+  padding: 15px 0;
 }
 
 .leave-game {
@@ -13,16 +12,13 @@ html, body, #root, .game {
   color: red!important;
 }
 
-.left-panel {
-  width: 30%;
-  height: -webkit-fill-available;
-  padding: 10px;
+.game-log {
   position: relative;
-  display: inline-block;
+  height: 98%;
 }
 
 .chat-log {
-  height: auto;
+  height: -webkit-fill-available;
   max-height: 90%;
   overflow-y: scroll;
 }
@@ -31,7 +27,6 @@ html, body, #root, .game {
   position: absolute;
   bottom: 5px;
 }
-
 
 .player {
   display: inline-block;
