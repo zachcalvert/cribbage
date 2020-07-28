@@ -39,11 +39,11 @@ export const Game = ()  => {
 
   const renderChat = () => {
     return chats.length ? (
-      <Paper id="messages" className='chat-log'>
+      <div id="messages" className='chat-log'>
         {chats.map(({ name, message }, index) => (
           <p key={index}>{name}: {message}</p>
         ))}
-      </Paper>
+      </div>
     ) : (
       <p>Actually waiting for the websocket server...</p>
     );
@@ -51,10 +51,9 @@ export const Game = ()  => {
 
   return id ? (
     <Container className="game" height="100%" maxWidth="md">
-     <Box height="100%" bgcolor="grey.300" mx={0.5} width="30%" display="inline-block">
-        <Paper className='room-name'>
-          <span>{ room }</span>
-        </Paper>
+      <Paper className='left-panel'>
+        <span className="room-name">Game: { room }</span>
+
         <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
           <CloseIcon fontSize="inherit" />
         </IconButton>
@@ -67,7 +66,7 @@ export const Game = ()  => {
             <Button type="submit">Send</Button>
           </form>
         </div>
-      </Box>
+        </Paper>
     </Container>
   ) : (
     <div style={{ textAlign: 'center', margin: '30vh auto', width: '70%' }}>
