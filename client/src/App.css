@@ -10,10 +10,18 @@ html, body, #root, .game {
   width: 30%;
   height: -webkit-fill-available;
   padding: 10px;
+  position: relative;
 }
 
 .chat-log {
-  height: 80%;
+  height: auto;
+  max-height: 90%;
+  overflow-y: scroll;
+}
+
+.send-form {
+  position: absolute;
+  bottom: 5px;
 }
 
 .leave-game {

@@ -51,16 +51,15 @@ export const Game = ()  => {
 
   return id ? (
     <Container className="game" height="100%" maxWidth="md">
+      <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
+        <CloseIcon fontSize="inherit" />
+      </IconButton>
+
       <Paper className='left-panel'>
         <span className="room-name">Game: { room }</span>
-
-        <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
-          <CloseIcon fontSize="inherit" />
-        </IconButton>
-
         {renderChat()}
 
-        <div id="sendform">
+        <div className="send-form">
           <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
             <TextField id="m" onChange={e=>setInput(e.target.value.trim())} />
             <Button type="submit">Send</Button>
