@@ -6,11 +6,19 @@ html, body, #root, .game {
   padding: 20px;
 }
 
+.leave-game {
+  position: absolute!important;
+  top: 10px;
+  right: 10px;
+  color: red!important;
+}
+
 .left-panel {
   width: 30%;
   height: -webkit-fill-available;
   padding: 10px;
   position: relative;
+  display: inline-block;
 }
 
 .chat-log {
@@ -24,9 +32,9 @@ html, body, #root, .game {
   bottom: 5px;
 }
 
-.leave-game {
-  position: absolute!important;
-  top: 10px;
-  right: 10px;
-  color: red!important;
+
+.player {
+  display: inline-block;
+  width: 65%;
+  min-height: 200px;
 }

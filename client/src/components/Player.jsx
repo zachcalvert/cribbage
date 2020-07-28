@@ -4,7 +4,7 @@ export const Player = (name) => {
 
   return (
       <div className="player">
-        <span>{JSON.stringify( name )}</span>
+        <span>{ name.name }</span>
       </div>
   );
 }

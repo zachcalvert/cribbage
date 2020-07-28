@@ -4,6 +4,8 @@ import { useSpring, animated } from 'react-spring'
 import { Button, IconButton, TextField, Paper, Container } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
+import { Player } from "./Player";
+
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
@@ -67,6 +69,10 @@ export const Game = ()  => {
             <Button type="submit">Send</Button>
           </form>
         </div>
+      </Paper>
+
+      <Paper className='player'>
+        <Player name={name}/>
       </Paper>
     </Container>
   ) : (
