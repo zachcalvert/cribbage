@@ -1,6 +1,5 @@
-html, body, #root {
+html, body, #root, .game {
   height: 100%;
-
 }
 
 .chat-log {

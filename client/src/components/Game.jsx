@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import { Button, IconButton, TextField, Paper, Box } from "@material-ui/core";
+import {Button, IconButton, TextField, Paper, Box, Container} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 export const Game = ()  => {
@@ -50,7 +50,7 @@ export const Game = ()  => {
   };
 
   return id ? (
-    <Box height="100%" width="100%">
+    <Container className="game" height="100%" maxWidth="md">
      <Box height="100%" bgcolor="grey.300" mx={0.5} width="30%" display="inline-block">
         <Paper className='room-name'>
           <span>{ room }</span>
@@ -68,7 +68,7 @@ export const Game = ()  => {
           </form>
         </div>
       </Box>
-    </Box>
+    </Container>
   ) : (
     <div style={{ textAlign: 'center', margin: '30vh auto', width: '70%' }}>
       <form onSubmit={event => handleJoin(event)}>
