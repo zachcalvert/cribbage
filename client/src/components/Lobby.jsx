@@ -18,7 +18,7 @@ export const Lobby = () => {
   const onMessageSubmit = (e) => {
     e.preventDefault();
     const { game, name } = state;
-    socket.emit('join', { game, name });
+    socket.emit('join_game', { game, name });
     sessionStorage.setItem('game', game);
     sessionStorage.setItem('name', name);
   };

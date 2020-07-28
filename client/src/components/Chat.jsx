@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import TextField from "@material-ui/core/TextField";
 import io from "socket.io-client";
+import { Button } from "@material-ui/core";
 
 const socket = io.connect('http://localhost:5000');
 
@@ -13,7 +14,7 @@ export const Chat = () => {
   useEffect(() => {
     socket.on('chat_message', ({ game, name, message }) => {
       setChat([...chat, { game, name, message }]);
-    }, []);
+    });
   });
 
   const onTextChange = e => {
@@ -22,16 +23,17 @@ export const Chat = () => {
 
   const onMessageSubmit = (e) => {
     e.preventDefault();
+    console.log(`sending message to room ${game} on behalf of ${name}`);
     socket.emit('chat_message', { game, name, message });
     setMessage('');
   };
 
   const renderChat = () => {
     return chat.map(({ name, message }, index) => (
-      <div key={index}>
-        <h3>
-          {name}: <span>{message}</span>
-        </h3>
+      <div className="chat-message" key={index}>
+        <span>
+          {name}: {message}
+        </span>
       </div>
     ))
   };
@@ -50,7 +52,7 @@ export const Chat = () => {
             value={message}
           />
         </div>
-        <button type='submit'>Send Message</button>
+        <Button color='primary' type='submit'>play</Button>
       </form>
       <div className="render-chat">
         <h3>Chat Log</h3>

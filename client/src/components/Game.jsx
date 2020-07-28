@@ -12,7 +12,7 @@ export const Game = () => {
   const name = sessionStorage.getItem('name');
 
   const leaveGame = () => {
-    socket.emit('leave', { game, name });
+    socket.emit('leave_game', { game, name });
     sessionStorage.removeItem('game');
     sessionStorage.removeItem('name');
   };

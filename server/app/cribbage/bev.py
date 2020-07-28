@@ -16,9 +16,9 @@ import time
 from itertools import chain, combinations
 import more_itertools as mit
 
-from app.cards import CARDS
-from app.hand import Hand
-from app.utils import rotate_turn,rotate_reverse, play_or_pass, card_object_from_text
+# from .cards import CARDS
+from .hand import Hand
+from .utils import rotate_turn,rotate_reverse, play_or_pass, card_object_from_text
 
 redis_host = os.environ.get('REDISHOST', 'localhost')
 cache = redis.StrictRedis(host=redis_host, port=6379)
