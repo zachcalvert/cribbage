@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import useSocket from 'use-socket.io-client';
+import { SocketIOProvider, useSocket } from "use-socketio";
 import { TextField, Button, IconButton } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 
 import './App.css';
 
-export default () => {
+const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [input, setInput] = useState('');
-  const [chats, setChats] = useState([]);
+  const [chats, setChat] = useState([]);
 
-  const [socket] = useSocket('http://localhost:5000');
-  socket.connect();
-
-  useEffect(() => {
-    socket.on('chat_message', newChat => {
-      console.log('chats is ' + chats);
-      console.log('newChat is ' + newChat);
-
-      setChats([newChat, ...chats])
-    });
-  },[]);
+  const { socket, subscribe, unsubscribe } = useSocket("chat_message", newChat =>
+    setChat([...chats, newChat])
+  );
 
   const handleJoin = e => {
     e.preventDefault();
@@ -50,8 +42,8 @@ export default () => {
   const renderChat = () => {
     return chats.length ? (
       <ul>
-        {chats.map(chat => (
-          <li key={chat.id}>{chat.name}: {chat.message}</li>
+        {chats.map(({ name, message }, index) => (
+          <li key={index}>{name}: {message}</li>
         ))}
       </ul>
     ) : (
@@ -87,3 +79,9 @@ export default () => {
     </div>
   );
 };
+
+export const App = () => (
+  <SocketIOProvider url="http://localhost:5000">
+    <Game />
+  </SocketIOProvider>
+);
