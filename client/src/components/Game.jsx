@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import {Button, IconButton, TextField, Paper, Box, Container} from "@material-ui/core";
+import { useSpring, animated } from 'react-spring'
+import { Button, IconButton, TextField, Paper, Container } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 export const Game = ()  => {
@@ -9,6 +10,7 @@ export const Game = ()  => {
   const [room, setRoom] = useState('');
   const [input, setInput] = useState('');
   const [chats, setChat] = useState([]);
+  const fadeIn = useSpring({opacity: 1, from: {opacity: 0}});
 
   const { socket } = useSocket("chat_message", newChat =>
     setChat([...chats, newChat])
@@ -39,7 +41,7 @@ export const Game = ()  => {
 
   const renderChat = () => {
     return chats.length ? (
-      <div id="messages" className='chat-log'>
+      <div className='chat-log'>
         {chats.map(({ name, message }, index) => (
           <p key={index}>{name}: {message}</p>
         ))}
@@ -65,9 +67,10 @@ export const Game = ()  => {
             <Button type="submit">Send</Button>
           </form>
         </div>
-        </Paper>
+      </Paper>
     </Container>
   ) : (
+    <animated.div style={fadeIn}>
     <div style={{ textAlign: 'center', margin: '30vh auto', width: '70%' }}>
       <form onSubmit={event => handleJoin(event)}>
         <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
@@ -75,5 +78,6 @@ export const Game = ()  => {
         <Button color="primary" type="submit">Submit</Button>
       </form>
     </div>
+    </animated.div>
   );
 };
