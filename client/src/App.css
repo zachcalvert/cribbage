@@ -17,11 +17,28 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   height: 98%;
 }
 
+.game-name, .player-name {
+  color: #303030;
+  margin: 0 0 15px 0;
+}
+
 .chat-log {
   height: -webkit-fill-available;
   max-height: 90%;
   overflow-y: scroll;
 }
+
+::-webkit-scrollbar {
+  background: white;
+  z-index: -1;
+}
+::-webkit-scrollbar-track {
+  background: white;
+}
+::-webkit-scrollbar-corner {
+  background: white;
+}
+
 
 .send-form {
   position: absolute;
@@ -30,6 +47,6 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
 
 .player {
   display: inline-block;
-  width: 65%;
+  width: 100%;
   min-height: 200px;
 }

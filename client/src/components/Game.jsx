@@ -5,6 +5,8 @@ import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid } fro
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Player } from "./Player";
+import Divider from "@material-ui/core/Divider";
+import { GameBoard } from "./GameBoard";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,7 +74,8 @@ export const Game = ()  => {
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <Paper className={`game-log ${classes.paper}`}>
-                <span className="room-name">Game: { room }</span>
+                <div className="game-name">Game: { room }</div>
+                <Divider variant="middle" />
                   {renderChat()}
 
                   <div className="send-form">
@@ -86,13 +89,23 @@ export const Game = ()  => {
             </Grid>
 
             <Grid item xs={8}>
-              <Paper className={classes.paper}>
-                <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
 
-                <Player name={name}/>
-              </Paper>
+                  <GameBoard game={room}/>
+                  <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+
+                    <Player name={name}/>
+
+                  </Paper>
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </animated.div>
