@@ -1,63 +1,51 @@
-import React, {useEffect, useState} from "react";
-import TextField from "@material-ui/core/TextField";
-import io from "socket.io-client";
-import { Button } from "@material-ui/core";
+import React, { useState } from "react";
+import { useSocket } from "use-socketio";
+import {Button, Paper, TextField, Divider, IconButton} from "@material-ui/core";
+import SendIcon from '@material-ui/icons/Send';
+import CloseIcon from "@material-ui/icons/Close";
 
-const socket = io.connect('http://localhost:5000');
+export const Chat = (props)  => {
+  const [input, setInput] = useState('');
+  const [chats, setChat] = useState([]);
+  const name = props.name;
 
-export const Chat = () => {
-  const game = sessionStorage.getItem('game');
-  const name = sessionStorage.getItem('name');
-  const [message, setMessage] = useState('' );
-  const [chat, setChat] = useState([]);
+  const {socket} = useSocket("chat_message", newChat =>
+      setChat([...chats, newChat])
+  );
 
-  useEffect(() => {
-    socket.on('chat_message', ({ game, name, message }) => {
-      setChat([...chat, { game, name, message }]);
-    });
-  });
-
-  const onTextChange = e => {
-    setMessage(e.target.value);
-  };
-
-  const onMessageSubmit = (e) => {
+  const handleSend = e => {
     e.preventDefault();
-    console.log(`sending message to room ${game} on behalf of ${name}`);
-    socket.emit('chat_message', { game, name, message });
-    setMessage('');
+    if (input !== '') {
+      socket.emit('chat_message', {name: name, message: input, game: props.game});
+      setInput('');
+    }
   };
 
   const renderChat = () => {
-    return chat.map(({ name, message }, index) => (
-      <div className="chat-message" key={index}>
-        <span>
-          {name}: {message}
-        </span>
-      </div>
-    ))
+    return chats.length ? (
+        <div className='chat-log'>
+          {chats.map(({name, message}, index) => (
+              <p key={index}>{name}: {message}</p>
+          ))}
+        </div>
+    ) : (
+        <p>Actually waiting for the websocket server...</p>
+    );
   };
 
   return (
-    <div className="chat">
-      <form onSubmit={onMessageSubmit}>
-        <h3>Send Message</h3>
-        <div>
-          <TextField
-            id='outlined-multiline-static'
-            name='message'
-            label='Message'
-            variant='outlined'
-            onChange={e => onTextChange(e)}
-            value={message}
-          />
-        </div>
-        <Button color='primary' type='submit'>play</Button>
-      </form>
-      <div className="render-chat">
-        <h3>Chat Log</h3>
-        {renderChat()}
+    <>
+      <div className="game-name">Game: { props.game }</div>
+      <Divider variant="middle"/>
+      {renderChat()}
+      <div className="send-form">
+        <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
+          <TextField id="m" variant="outlined" style ={{width: '100%'}} inputStyle ={{width: '100%'}} onChange={e => setInput(e.target.value.trim())}/>
+          <IconButton className="send-message" onClick={handleSend} aria-label="leave">
+            <SendIcon fontSize="inherit" />
+          </IconButton>
+        </form>
       </div>
-    </div>
+    </>
   );
-}
+};

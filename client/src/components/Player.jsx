@@ -16,7 +16,6 @@ export const Player = (name) => {
               <img src={TwoHearts} alt="" width="300" height="200" />
            </SvgIcon>
         </div>
-
       </div>
   );
 }

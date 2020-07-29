@@ -5,8 +5,8 @@ import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid } fro
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Player } from "./Player";
-import Divider from "@material-ui/core/Divider";
 import { GameBoard } from "./GameBoard";
+import {Chat} from "./Chat";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,7 +24,6 @@ export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [input, setInput] = useState('');
   const [chats, setChat] = useState([]);
   const fadeIn = useSpring({opacity: 1, from: {opacity: 0}});
   const classes = useStyles();
@@ -48,65 +47,37 @@ export const Game = ()  => {
     setId('');
   };
 
-  const handleSend = e => {
-    e.preventDefault();
-    if(input !== ''){
-      socket.emit('chat_message', {name: id, message: input, game: room});
-      setInput('');
-    }
-  };
-
-  const renderChat = () => {
-    return chats.length ? (
-      <div className='chat-log'>
-        {chats.map(({ name, message }, index) => (
-          <p key={index}>{name}: {message}</p>
-        ))}
-      </div>
-    ) : (
-      <p>Actually waiting for the websocket server...</p>
-    );
-  };
 
   return id ? (
       <Container maxWidth="lg">
         <animated.div style={fadeIn} className={classes.root}>
           <Grid container spacing={2}>
+
             <Grid item xs={4}>
               <Paper className={`game-log ${classes.paper}`}>
-                <div className="game-name">Game: { room }</div>
-                <Divider variant="middle" />
-                  {renderChat()}
-
-                  <div className="send-form">
-                    <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-                      <TextField id="m" onChange={e=>setInput(e.target.value.trim())} />
-                      <Button type="submit">Send</Button>
-                    </form>
-                  </div>
-
-                </Paper>
+                <Chat />
+              </Paper>
             </Grid>
 
             <Grid item xs={8}>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
 
+                <Grid item xs={12}>
                   <GameBoard game={room}/>
                   <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
-
                 </Grid>
+
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-
                     <Player name={name}/>
-
                   </Paper>
                 </Grid>
+
               </Grid>
             </Grid>
+
           </Grid>
         </animated.div>
       </Container>

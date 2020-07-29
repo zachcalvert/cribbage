@@ -42,7 +42,8 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
 
 .send-form {
   position: absolute;
-  bottom: 5px;
+  bottom: 15px;
+  width: 95%;
 }
 
 .player {
