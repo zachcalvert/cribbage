@@ -22,10 +22,19 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   margin: 0 0 15px 0;
 }
 
+.player-name {
+  padding: 0 20px;
+}
+
 .chat-log {
   height: -webkit-fill-available;
   max-height: 90%;
   overflow-y: scroll;
+}
+
+.chat-message {
+  padding: 10px;
+  width: fit-content;
 }
 
 ::-webkit-scrollbar {

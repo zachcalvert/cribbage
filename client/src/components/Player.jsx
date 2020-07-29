@@ -1,9 +1,12 @@
 import React, {useEffect, useState} from "react";
+import { ReactSVG } from 'react-svg'
+import { makeStyles, Divider } from "@material-ui/core";
 
-import TwoHearts  from '../svg/cards/2H.svg';
-import SvgIcon from "@material-ui/core/SvgIcon";
-import Divider from "@material-ui/core/Divider";
-
+const styles = makeStyles((theme) => ({
+  ' svg': {
+    height: 120,
+  }
+}));
 
 export const Player = (name) => {
 
@@ -12,9 +15,7 @@ export const Player = (name) => {
         <div className="player-name">{ name.name }</div>
         <Divider variant="middle" />
         <div className="cards">
-           <SvgIcon>
-              <img src={TwoHearts} alt="" width="300" height="200" />
-           </SvgIcon>
+          <ReactSVG src="cards/2H.svg" {...styles} />
         </div>
       </div>
   );
