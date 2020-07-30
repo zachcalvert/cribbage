@@ -15,12 +15,14 @@ const useStyles = makeStyles((theme) => ({
   chatMessageContent: {
     padding: '10px',
     borderRadius: '10px',
+    borderBottomLeftRadius: 0,
     background: theme.palette.background.default
 
   },
   playerChatMessageContent: {
     padding: '10px',
     borderRadius: '10px',
+    borderBottomRightRadius: 0,
     color: 'white',
     background: '#1982FC'
   }
