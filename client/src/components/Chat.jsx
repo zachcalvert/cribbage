@@ -7,6 +7,9 @@ const useStyles = makeStyles((theme) => ({
   chatMessage: {
     width: 'fit-content',
   },
+  chatMessageName: {
+    paddingLeft: '5px',
+  },
   playerChatMessage: {
     width: 'fit-content',
     marginLeft: 'auto',
@@ -56,10 +59,11 @@ export const Chat = ()  => {
             <Typography className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
               { message }
             </Typography>
-            <Typography className='chat-message-name' color="textSecondary" gutterBottom variant="body2" component="p">
-              { name }
-            </Typography>
-
+            {nickname !== name ?
+              <Typography className={classes.chatMessageName} color="textSecondary" gutterBottom variant="body2" component="p">
+                {name}
+              </Typography> : <span />
+            }
           </div>
         ))}
       </div>
