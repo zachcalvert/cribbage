@@ -1,13 +1,37 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import { Divider, IconButton, TextField, Typography } from "@material-ui/core";
+import {Divider, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
 import SendIcon from '@material-ui/icons/Send';
+
+const useStyles = makeStyles((theme) => ({
+  chatMessage: {
+    width: 'fit-content',
+  },
+  playerChatMessage: {
+    width: 'fit-content',
+    marginLeft: 'auto',
+    textAlign: 'right',
+  },
+  chatMessageContent: {
+    padding: '10px',
+    borderRadius: '10px',
+    background: theme.palette.background.default
+
+  },
+  playerChatMessageContent: {
+    padding: '10px',
+    borderRadius: '10px',
+    color: 'white',
+    background: '#1982FC'
+  }
+}));
 
 export const Chat = (props)  => {
   const [input, setInput] = useState('');
   const [chats, setChat] = useState([]);
-  const name = sessionStorage.getItem('name');
+  const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
+  const classes = useStyles();
 
   const {socket} = useSocket("chat_message", newChat =>
       setChat([...chats, newChat])
@@ -16,7 +40,7 @@ export const Chat = (props)  => {
   const handleSend = e => {
     e.preventDefault();
     if (input !== '') {
-      socket.emit('chat_message', {name: name, message: input, game: game});
+      socket.emit('chat_message', {name: nickname, message: input, game: game});
       setInput('');
     }
   };
@@ -25,18 +49,18 @@ export const Chat = (props)  => {
     return chats.length ? (
       <div className='chat-log'>
         {chats.map(({name, message}, index) => (
-          <div className='chat-message' key={index}>
-            <Typography className='chat-message-content' gutterBottom>
+          <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
+            <Typography className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
               { message }
             </Typography>
-            <Typography className='chat-message-name' color="textSecondary" variant="body2" component="p">
+            <Typography className='chat-message-name' color="textSecondary" gutterBottom variant="body2" component="p">
               { name }
             </Typography>
           </div>
         ))}
       </div>
     ) : (
-        <p>Actually waiting for the websocket server...</p>
+      <p/>
     );
   };
 

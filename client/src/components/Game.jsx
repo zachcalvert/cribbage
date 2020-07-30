@@ -23,9 +23,17 @@ export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
+  const [players, setPlayers] = useState([])
   const fadeIn = useSpring({opacity: 1, from: {opacity: 0}});
   const classes = useStyles();
-  const { socket } = useSocket();
+
+  const {socket} = useSocket("attendance_change", change =>
+    (change.type === 'join') ? (
+      setPlayers([...players, change.name])
+    ) : (
+      setPlayers(players.filter(player => player !== change.name))
+    )
+  );
 
   const handleJoin = e => {
     e.preventDefault();
@@ -58,13 +66,13 @@ export const Game = ()  => {
           </Grid>
 
           <Grid item xs={8}>
-            <Box height="70%">
+            <Box height="65%">
               <GameBoard game={room}/>
               <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
                 <CloseIcon fontSize="inherit" />
               </IconButton>
             </Box>
-            <Box height="30%">
+            <Box height="35%">
               <Player name={name}/>
             </Box>
           </Grid>
