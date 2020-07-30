@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
-import { Divider } from "@material-ui/core";
+import { Button, Divider } from "@material-ui/core";
 import './Cards.css'
-import Button from "@material-ui/core/Button";
 
 
 export const Player = (name) => {
@@ -11,7 +10,7 @@ export const Player = (name) => {
   const [cards, setCards] = useState([]);
 
   const { socket } = useSocket("deal", newCards =>
-    setCards([newCards])
+    setCards(['4H', '5S', '5C', '5D', '6S', 'JD'])
   );
 
   const getCardImage = (name) => {
@@ -21,8 +20,8 @@ export const Player = (name) => {
   const renderCards = () => {
     return cards.length ? (
       <span>
-        {cards.map(({ name }, index) => (
-          <ReactSVG key={index} wrapper='span' src='cards/5H.svg' />
+        {cards.map((card , index) => (
+          <ReactSVG key={index} wrapper='span' src={`/cards/${card}.svg`} />
         ))}
       </span>
     ) : (
@@ -31,7 +30,7 @@ export const Player = (name) => {
   };
 
   const handleDeal = (e) => {
-    console.log('discard event');
+    console.log('deal event');
     socket.emit('deal', {game: game});
   }
 
