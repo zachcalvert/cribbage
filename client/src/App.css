@@ -56,16 +56,3 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   min-height: 200px;
   text-align: center;
 }
-
-svg {
-  height: auto;
-  width: 13%;
-  padding: 0;
-  border-radius: 5px;
-  border: 1px solid #E0E0E0;
-  margin: 15px 5px;
-}
-
-rect {
-  width: auto;
-}
