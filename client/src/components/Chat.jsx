@@ -28,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export const Chat = (props)  => {
+export const Chat = ()  => {
   const [input, setInput] = useState('');
   const [chats, setChat] = useState([]);
   const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
   const classes = useStyles();
 
-  const {socket} = useSocket("chat_message", newChat =>
+  const { socket } = useSocket("chat_message", newChat =>
       setChat([...chats, newChat])
   );
 
@@ -52,12 +52,14 @@ export const Chat = (props)  => {
       <div className='chat-log'>
         {chats.map(({name, message}, index) => (
           <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
+
             <Typography className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
               { message }
             </Typography>
             <Typography className='chat-message-name' color="textSecondary" gutterBottom variant="body2" component="p">
               { name }
             </Typography>
+
           </div>
         ))}
       </div>

@@ -40,5 +40,11 @@ def send_message(msg):
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=msg['game'])
 
 
+@socketio.on('deal')
+def deal(msg):
+    hand = bev.deal_hands(msg['game'])
+    emit('deal', {'cards': hand}, room=msg['game'])
+
+
 if __name__ == '__main__':
     socketio.run(app, debug=True)

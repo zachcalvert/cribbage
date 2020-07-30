@@ -1,4 +1,4 @@
-{
+CARDS = {
   "110e6e5b19": {
     "name": "jack",
     "rank": 11,
