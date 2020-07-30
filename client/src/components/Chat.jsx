@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Chat = ()  => {
-  const [input, setInput] = useState('');
+  const [message, setMessage] = useState('');
   const [chats, setChat] = useState([]);
   const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
@@ -44,10 +44,10 @@ export const Chat = ()  => {
 
   const handleSend = e => {
     e.preventDefault();
-    if (input !== '') {
-      socket.emit('chat_message', {name: nickname, message: input, game: game});
-      setInput('');
+    if (message !== '') {
+      socket.emit('chat_message', {name: nickname, message: message, game: game});
     }
+    setMessage('');
   };
 
   const renderChat = () => {
@@ -79,7 +79,7 @@ export const Chat = ()  => {
       {renderChat()}
       <div className="send-form">
         <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-          <TextField id="m" variant="outlined" style ={{width: '100%'}} inputstyle ={{width: '100%'}} onChange={e => setInput(e.target.value.trim())}/>
+          <TextField id="m" variant="outlined" style ={{width: '100%'}} inputstyle ={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}/>
           <IconButton className="send-message" onClick={handleSend} aria-label="leave">
             <SendIcon fontSize="inherit" />
           </IconButton>

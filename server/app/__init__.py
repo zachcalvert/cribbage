@@ -26,6 +26,7 @@ def player_join(msg):
     bev.add_player(msg['game'], msg['name'])
 
     emit('attendance_change', {'player': msg['name'], 'type': 'join'}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'cribby', 'message': 'Hi {}! Welcome :)'.format(msg['name'])})
 
 
 @socketio.on('player_leave')

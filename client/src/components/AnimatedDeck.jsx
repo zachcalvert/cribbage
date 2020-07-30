@@ -1,30 +1,28 @@
 import React, { useState } from 'react'
 import { useSprings, animated, interpolate } from 'react-spring'
 import { useGesture } from 'react-use-gesture'
-// import './styles.css'
 
 const cards = [
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
-  '/cards/thin_blue_stripes.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
+  '/cards/dark_blue.svg',
   '/cards/AH.svg',
 ]
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
-const to = i => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20, delay: i * 100 })
+const to = i => ({ x: 0, y: i * -4, scale: 1, rot: -10 + Math.random() * 20, delay: i * 50 })
 const from = i => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) => `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 
-export const LobbyDeck = () => {
+export const AnimatedDeck = () => {
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
   const [props, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
@@ -46,7 +44,7 @@ export const LobbyDeck = () => {
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div className="animated-cards-container" key={i} style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
-      <animated.div className="animated-card" {...bind(i)} style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }} />
+      <animated.div className="animated-card" {...bind(i)} style={{ transform: interpolate([rot, scale], trans), backgroundSize: '160px auto', backgroundImage: `url(${cards[i]})` }} />
     </animated.div>
   ))
 }

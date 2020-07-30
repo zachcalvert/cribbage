@@ -34,8 +34,7 @@ export const Player = (name) => {
 
   return (
     <div className="player">
-      <Button onClick={handleDeal}>Deal</Button>
-      <div className="player-name">{ name.name }</div>
+      <Button className="action-button" variant="contained" color="secondary" onClick={handleDeal}>Deal</Button>
       <Divider variant="middle" />
       {renderCards()}
     </div>

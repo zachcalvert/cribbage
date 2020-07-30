@@ -4,10 +4,11 @@ import { useSpring, animated } from 'react-spring'
 import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid, Box } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
+import { AnimatedDeck } from "./AnimatedDeck";
 import { Chat } from "./Chat";
-import { Player } from "./Player";
 import { GameBoard } from "./GameBoard";
-import {LobbyDeck} from "./LobbyDeck";
+import { Player } from "./Player";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,11 +88,11 @@ export const Game = ()  => {
       </animated.div>
     </Container>
   ) : (
-    <div style={{ textAlign: 'center', height: '100%', display: 'inline-block' }}>
+    <div style={{ textAlign: 'center', height: '100%', width: '100%', display: 'inline-block' }}>
       <div className={classes.lobbyDeck}>
-      <LobbyDeck/>
+      <AnimatedDeck/>
       </div>
-      <form style={{ marginTop: '150px', marginLeft: '75px' }} onSubmit={event => handleJoin(event)}>
+      <form style={{ marginTop: '150px' }} onSubmit={event => handleJoin(event)}>
         <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
         <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />
         <Button color="primary" type="submit">Submit</Button>
