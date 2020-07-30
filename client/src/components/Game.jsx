@@ -7,6 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { Chat } from "./Chat";
 import { Player } from "./Player";
 import { GameBoard } from "./GameBoard";
+import {LobbyDeck} from "./LobbyDeck";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -17,6 +18,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     color: theme.palette.text.secondary,
   },
+  lobbyDeck: {
+    position: 'absolute',
+    top: 0,
+    left: 0
+  }
 }));
 
 export const Game = ()  => {
@@ -81,14 +87,15 @@ export const Game = ()  => {
       </animated.div>
     </Container>
   ) : (
-    <animated.div style={fadeIn}>
-      <div style={{ textAlign: 'center', margin: '30vh auto', width: '70%' }}>
-        <form onSubmit={event => handleJoin(event)}>
-          <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
-          <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />
-          <Button color="primary" type="submit">Submit</Button>
-        </form>
+    <div style={{ textAlign: 'center', height: '100%', display: 'inline-block' }}>
+      <div className={classes.lobbyDeck}>
+      <LobbyDeck/>
       </div>
-    </animated.div>
+      <form style={{ marginTop: '150px', marginLeft: '75px' }} onSubmit={event => handleJoin(event)}>
+        <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
+        <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />
+        <Button color="primary" type="submit">Submit</Button>
+      </form>
+    </div>
   );
 };

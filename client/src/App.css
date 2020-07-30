@@ -56,3 +56,26 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   min-height: 200px;
   text-align: center;
 }
+
+.animated-cards-container {
+  position: absolute;
+  width: 100vw;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.animated-card {
+  background-color: white;
+  background-size: auto 85%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 46vh;
+  max-width: 322px;
+  height: 75vh;
+  max-height: 581px;
+  will-change: transform;
+  border-radius: 10px;
+  /*box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4), 0 10px 10px -10px rgba(50, 50, 73, 0.3);*/
+}

@@ -13,6 +13,7 @@
     "react-scripts": "3.4.1",
     "react-spring": "^8.0.27",
     "react-svg": "^11.0.32",
+    "react-use-gesture": "^7.0.15",
     "use-socketio": "^2.0.3"
   },
   "scripts": {
