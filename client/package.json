@@ -14,7 +14,8 @@
     "react-spring": "^8.0.27",
     "react-svg": "^11.0.32",
     "react-use-gesture": "^7.0.15",
-    "use-socketio": "^2.0.3"
+    "use-socketio": "^2.0.3",
+    "use-sound": "^1.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

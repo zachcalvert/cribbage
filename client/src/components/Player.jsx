@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
+import useSound from 'use-sound';
 import { animated, useTrail } from 'react-spring';
 import { ReactSVG } from 'react-svg'
 import { Button, Divider } from "@material-ui/core";
@@ -16,7 +17,7 @@ export const Player = (name) => {
     opacity: cards.length ? 1 : 0,
     x: cards.length ? 0 : 20,
     height: cards.length ? 80 : 0,
-    from: { opacity: 0, x: 0, height: 0 },
+    from: { opacity: 1, x: 0, height: 0 },
   });
 
   const AnimatedSVG = animated(ReactSVG);
@@ -44,8 +45,11 @@ export const Player = (name) => {
     );
   };
 
+  const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
+
   const handleDeal = (e) => {
     console.log('deal event');
+    { boop() }
     socket.emit('deal', {game: game});
   }
 

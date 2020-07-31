@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import {Divider, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
 import SendIcon from '@material-ui/icons/Send';
+import useSound from "use-sound";
 
 const useStyles = makeStyles((theme) => ({
   chatMessage: {
@@ -38,9 +39,12 @@ export const Chat = ()  => {
   const game = sessionStorage.getItem('game');
   const classes = useStyles();
 
-  const { socket } = useSocket("chat_message", newChat =>
-      setChat([...chats, newChat])
-  );
+  const { socket } = useSocket("chat_message", newChat => {
+    setChat([...chats, newChat])
+    boop()
+  });
+
+  const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
   const handleSend = e => {
     e.preventDefault();
