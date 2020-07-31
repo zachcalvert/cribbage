@@ -13,7 +13,7 @@ const cards = [
   '/cards/dark_blue.svg',
   '/cards/dark_blue.svg',
   '/cards/dark_blue.svg',
-  '/cards/AH.svg',
+  '/cards/b1fb3bec6f.svg',
 ]
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css

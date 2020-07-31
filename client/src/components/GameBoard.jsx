@@ -5,7 +5,6 @@ export const GameBoard = (game) => {
 
   return (
     <div className="game-board">
-      <ReactSVG src="2H.svg" />
     </div>
   );
 }

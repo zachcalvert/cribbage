@@ -90,7 +90,7 @@ export const Game = ()  => {
   ) : (
     <div style={{ textAlign: 'center', height: '100%', width: '100%', display: 'inline-block' }}>
       <div className={classes.lobbyDeck}>
-      <AnimatedDeck/>
+      <AnimatedDeck />
       </div>
       <form style={{ marginTop: '150px' }} onSubmit={event => handleJoin(event)}>
         <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
