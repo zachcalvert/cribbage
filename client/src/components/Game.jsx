@@ -44,7 +44,7 @@ export const Game = ()  => {
 
   const handleJoin = e => {
     e.preventDefault();
-    if (!name) {
+    if ((!name) || (!room)) {
       return alert("Name can't be empty");
     }
     setId(name);
@@ -66,13 +66,13 @@ export const Game = ()  => {
       <animated.div style={fadeIn} className={classes.root}>
         <Grid container spacing={2}>
 
-          <Grid item xs={4}>
+          <Grid item xs={3}>
             <Paper className={`game-log ${classes.paper}`}>
               <Chat />
             </Paper>
           </Grid>
 
-          <Grid item xs={8}>
+          <Grid item xs={9}>
             <Box height="65%">
               <GameBoard game={room}/>
               <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
