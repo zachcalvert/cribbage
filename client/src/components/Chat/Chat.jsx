@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import {Divider, IconButton, makeStyles, TextField, Typography} from "@material-ui/core";
+import { Divider, IconButton, makeStyles, TextField, Typography } from "@material-ui/core";
 import SendIcon from '@material-ui/icons/Send';
 import useSound from "use-sound";
+import './Chat.css'
+
 
 const useStyles = makeStyles((theme) => ({
   chatMessage: {

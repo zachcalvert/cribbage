@@ -12,73 +12,7 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   color: red!important;
 }
 
-.game-log {
-  position: relative;
-  height: 98%;
-}
-
 .game-name, .player-name {
   color: #303030;
   margin: 0 0 15px 0;
-}
-
-.player-name {
-  padding: 0 20px;
-}
-
-.chat-log {
-  height: -webkit-fill-available;
-  max-height: 90%;
-  overflow-y: scroll;
-  padding: 10px 0;
-}
-
-::-webkit-scrollbar {
-  background: white;
-  z-index: -1;
-}
-::-webkit-scrollbar-track {
-  background: white;
-}
-::-webkit-scrollbar-corner {
-  background: white;
-}
-
-.send-form {
-  position: absolute;
-  bottom: 15px;
-  width: 95%;
-}
-
-.player {
-  display: inline-block;
-  width: 100%;
-  min-height: 200px;
-  text-align: center;
-}
-
-.animated-cards-container {
-  position: absolute;
-  width: 70vh;
-  top: 30px;
-  will-change: transform;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.animated-card {
-  background-size: auto 85%;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 46vh;
-  max-width: 322px;
-  height: 75vh;
-  max-height: 581px;
-  will-change: transform;
-  border-radius: 10px;
-}
-
-.action-button {
-  margin-bottom: 10px!important;
 }

@@ -4,10 +4,9 @@ import { useSpring, animated } from 'react-spring'
 import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid, Box } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-import { AnimatedDeck } from "./AnimatedDeck";
-import { Chat } from "./Chat";
-import { GameBoard } from "./GameBoard";
-import { Player } from "./Player";
+import { AnimatedDeck } from "./AnimatedDeck/AnimatedDeck";
+import { Chat } from "./Chat/Chat";
+import { Player } from "./Player/Player";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -74,7 +73,6 @@ export const Game = ()  => {
 
           <Grid item xs={9}>
             <Box height="65%">
-              <GameBoard game={room}/>
               <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
                 <CloseIcon fontSize="inherit" />
               </IconButton>

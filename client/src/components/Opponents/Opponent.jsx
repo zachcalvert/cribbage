@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
-import { Button, Divider } from "@material-ui/core";
-import './Cards.css'
+import { Divider } from "@material-ui/core";
+import '../Player/Player.css'
 
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);

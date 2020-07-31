@@ -4,7 +4,7 @@ import useSound from 'use-sound';
 import { animated, useTrail } from 'react-spring';
 import { ReactSVG } from 'react-svg'
 import { Button, Divider } from "@material-ui/core";
-import './Cards.css'
+import './Player.css'
 
 
 export const Player = (name) => {
@@ -48,7 +48,6 @@ export const Player = (name) => {
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
   const handleDeal = (e) => {
-    console.log('deal event');
     { boop() }
     socket.emit('deal', {game: game});
   }

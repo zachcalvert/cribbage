@@ -1,0 +1,21 @@
+.animated-cards-container {
+  position: absolute;
+  width: 70vh;
+  top: 30px;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.animated-card {
+  background-size: auto 85%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 46vh;
+  max-width: 322px;
+  height: 75vh;
+  max-height: 581px;
+  will-change: transform;
+  border-radius: 10px;
+}
