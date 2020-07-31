@@ -43,8 +43,8 @@ def send_message(msg):
 
 @socketio.on('deal')
 def deal(msg):
-    hand = bev.deal_hands(msg['game'])
-    emit('deal', {'cards': hand}, room=msg['game'])
+    hands = bev.deal_hands(msg['game'])
+    emit('deal', {'hands': hands}, room=msg['game'])
 
 
 if __name__ == '__main__':

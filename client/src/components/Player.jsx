@@ -21,9 +21,10 @@ export const Player = (name) => {
 
   const AnimatedSVG = animated(ReactSVG);
 
-  const { socket } = useSocket("deal", response =>
-    setCards((response.cards+'').split(','))
-  );
+  const { socket } = useSocket("deal", response => {
+    let dealt = response.hands[name.name];
+    setCards(dealt);
+  });
 
   const renderCards = () => {
     return cards.length ? (
