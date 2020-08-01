@@ -18,11 +18,9 @@ thread_lock = Lock()
 
 @socketio.on('player_join')
 def player_join(msg):
-    print('join request from {} for room {}'.format(msg['name'], msg['game']))
     join_room(msg['game'])
 
-    if controller.get_game(msg['game']) is None:
-        controller.create_game(msg['game'])
+    controller.get_or_create_game(msg['game'])
     controller.add_player(msg['game'], msg['name'])
 
     emit('attendance_change', {'player': msg['name'], 'type': 'join'}, room=msg['game'])
@@ -31,7 +29,6 @@ def player_join(msg):
 
 @socketio.on('player_leave')
 def player_leave(msg):
-    print('join request from {} for room {}'.format(msg['name'], msg['game']))
     leave_room(msg['game'])
     emit('attendance_change', {'player': msg['name'], 'type': 'leave'}, room=msg['game'])
 

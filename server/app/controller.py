@@ -56,15 +56,18 @@ def get_card_value(game, card_id, value):
     return card[value]
 
 
-def create_game(name):
-    g = {
-        "name": name,
-        "players": {},
-        "state": "INIT",
-        "type": 'cribbage',
-        'cards': CARDS
-    }
-    cache.set(name, json.dumps(g))
+def get_or_create_game(name):
+    try:
+        g = json.loads(cache.get(name))
+    except TypeError:
+        g = {
+            "name": name,
+            "players": {},
+            "state": "INIT",
+            "type": 'cribbage',
+            'cards': CARDS
+        }
+        cache.set(name, json.dumps(g))
     return g
 
 
