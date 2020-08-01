@@ -1,7 +1,7 @@
 import random
 
 
-def deal_hands(deck, players):
+def deal_hands(players, deck):
     random.shuffle(deck)
 
     hands = {}

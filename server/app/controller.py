@@ -15,6 +15,28 @@ cache = redis.StrictRedis(host=redis_host, port=6379)
 logger = logging.getLogger(__name__)
 
 
+def game_data_and_module(func):
+    def wrapper(name):
+        game = json.loads(cache.get(name))
+        module = importlib.import_module('app.games.{}'.format(game['type']))
+        value = func(game, module)
+        return value
+
+    return wrapper
+
+
+def redis_wrapped(func):
+    def wrapper(name):
+        game = json.loads(cache.get(name))
+        module = importlib.import_module('app.games.{}'.format(game['type']))
+        print('module is {}'.format(module))
+        new_data = func(game, module)
+        print('new_data is {}'.format(new_data))
+        cache.set(name, json.dumps(new_data))
+        return new_data
+    return wrapper
+
+
 
 def get_game(name):
     try:
@@ -34,12 +56,12 @@ def get_card_value(game, card_id, value):
     return card[value]
 
 
-def setup_game(name):
+def create_game(name):
     g = {
         "name": name,
         "players": {},
         "state": "INIT",
-        "type": 'pinochle',
+        "type": 'cribbage',
         'cards': CARDS
     }
     cache.set(name, json.dumps(g))
@@ -73,17 +95,16 @@ def remove_player(game, player):
         cache.set(game, json.dumps(g))
 
 
-def deal_hands(game):
-    g = json.loads(cache.get(game))
-    deck = list(g['cards'].keys())
+@game_data_and_module
+def deal_hands(game, module):
+    players = list(game['players'].keys())
+    deck = list(game['cards'].keys())
+    hands, updated_deck = module.deal_hands(players, deck)
 
-    module = importlib.import_module('app.games.{}'.format(g['type']))
-    hands, new_deck = module.deal_hands(deck, g['players'].keys())
-
-    g['deck'] = new_deck
-    g['hands'] = hands
-    cache.set(game, json.dumps(g))
-    return g['hands']
+    game['deck'] = updated_deck
+    game['hands'] = hands
+    cache.set(game['name'], json.dumps(game))
+    return hands
 
 
 def discard(game, player, card):

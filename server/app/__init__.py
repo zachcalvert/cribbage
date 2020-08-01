@@ -22,7 +22,7 @@ def player_join(msg):
     join_room(msg['game'])
 
     if controller.get_game(msg['game']) is None:
-        controller.setup_game(msg['game'])
+        controller.create_game(msg['game'])
     controller.add_player(msg['game'], msg['name'])
 
     emit('attendance_change', {'player': msg['name'], 'type': 'join'}, room=msg['game'])

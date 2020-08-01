@@ -1,8 +1,4 @@
-import json
-import logging
 import random
-
-logger = logging.getLogger(__name__)
 
 
 # def _sort_cards(g, cards):
@@ -12,7 +8,7 @@ logger = logging.getLogger(__name__)
 #     return ascending_card_ids
 
 
-def deal_hands(deck, players):
+def deal_hands(players, deck):
     random.shuffle(deck)
 
     hands = {}
