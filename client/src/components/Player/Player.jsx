@@ -9,6 +9,7 @@ import './Player.css'
 
 export const Player = (name) => {
   const game = sessionStorage.getItem('game');
+  const [action, setAction] = useState('start')
   const [cards, setCards] = useState([]);
   const config = { mass: 10, tension: 2000, friction: 200 };
 
@@ -22,7 +23,11 @@ export const Player = (name) => {
 
   const AnimatedSVG = animated(ReactSVG);
 
-  const { socket } = useSocket("deal", response => {
+  const { socket } = useSocket("send_turn", response => {
+    setAction(response.action);
+  });
+
+  useSocket("deal", response => {
     let dealt = response.hands[name.name];
     setCards(dealt);
   });
@@ -38,7 +43,6 @@ export const Player = (name) => {
             style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}
           />
         ))}
-
       </span>
     ) : (
       <span />
@@ -47,14 +51,19 @@ export const Player = (name) => {
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
-  const handleDeal = (e) => {
-    { boop() }
-    socket.emit('deal', {game: game});
+  const handleAction = (e) => {
+    boop()
+    if (action === 'start') {
+      socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
+    }
+    else {
+      socket.emit('deal', {game: game});
+    }
   }
 
   return (
     <div className="player">
-      <Button className="action-button" variant="contained" color="secondary" onClick={handleDeal}>Deal</Button>
+      <Button className="action-button" variant="contained" color="secondary" onClick={handleAction}>{ action }</Button>
       <Divider variant="middle" />
       {renderCards()}
     </div>

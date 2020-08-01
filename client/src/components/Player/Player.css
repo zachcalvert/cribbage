@@ -18,6 +18,10 @@
   margin: 15px 5px;
 }
 
+.player svg:hover {
+  margin-bottom: 15px;
+}
+
 .player rect {
   width: auto;
 }

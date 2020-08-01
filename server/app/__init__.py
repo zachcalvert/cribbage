@@ -40,13 +40,20 @@ def send_message(msg):
 
 @socketio.on('start_game')
 def start_game(msg):
-    controller.start_game(msg['name'], msg['type'], msg['players'], msg['winning_score'])
+    game = controller.start_game(msg)
+    emit('send_turn', {'player': game['dealer'], 'action': game['state']}, room=msg['game'])
 
 
 @socketio.on('deal')
 def deal(msg):
-    hands = controller.deal_hands(msg['game'])
-    emit('deal', {'hands': hands}, room=msg['game'])
+    g = controller.deal_hands(msg)
+    emit('deal', {'hands': g['hands']}, room=msg['game'])
+
+
+@socketio.on('discard')
+def discard(msg):
+    controller.discard(msg)
+    emit('discard', {'player': msg['player'], 'card': msg['card']}, room=msg['game'])
 
 
 if __name__ == '__main__':
