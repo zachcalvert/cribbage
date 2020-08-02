@@ -35,21 +35,22 @@ def rotate_reverse(current, players):
     return next_player
 
 
-def start_game(game, params):
-    winning_score = params['winning_score']
-    if params['jokers']:
+def start_game(game_data, **kwargs):
+    winning_score = kwargs['winning_score']
+    if kwargs['jokers']:
         cards = jokers.deck
     else:
         cards = standard.deck
 
-    players = list(game['players'].keys())
+    players = list(game_data['players'].keys())
     dealer = random.choice(players)
     cutter = rotate_reverse(dealer, players)
     first_to_score = rotate_turn(dealer, players)
 
-    game.update({
+    game_data.update({
         'cards': cards,
         'crib': [],
+        'current_turn': dealer,
         'cutter': cutter,
         'dealer': dealer,
         'deck': list(cards.keys()),
@@ -67,25 +68,43 @@ def start_game(game, params):
         'played_cards': {},
         'scored_hands': [],
         'scoring_stats': {},
-        'state': 'DEAL',
+        'state': 'deal',
         'turn': dealer,
         'winning_score': int(winning_score)
     })
     for player in players:
-        game['played_cards'][player] = []
-        game['scoring_stats'][player] = {
+        game_data['played_cards'][player] = []
+        game_data['scoring_stats'][player] = {
             'a_play': 0,
             'b_hand': 0,
             'c_crib': 0
         }
-    return game
+    return game_data
 
 
-def deal_hands(players, deck):
-    random.shuffle(deck)
+def deal_hands(game_data, **kwargs):
+    random.shuffle(game_data['deck'])
 
     hands = {}
-    for player in players:
-        hands[player] = [deck.pop() for card in range(6)]
+    for player in game_data['players'].keys():
+        hands[player] = [game_data['deck'].pop() for card in range(6)]
+    game_data['current_turn'] = 'all'
+    game_data['hands'] = hands
+    game_data['state'] = 'discard'
+    return game_data
 
-    return hands, deck
+
+def discard(game_data, **kwargs):
+    player = kwargs['player']
+    card = kwargs['card']
+    game_data['hands'][player].remove(card)
+    game_data['crib'].append(card)
+    return game_data
+
+    # player_done = len(g['hands'][player]) <= 4
+    # if player_done:
+    #     game_data['discarded'].append(player)
+    #
+    #     if set(game_data['discarded']) == set(game_data['players']):
+    #         all_have_discarded
+    # done_discarding = True

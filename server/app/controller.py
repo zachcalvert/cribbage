@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 def game_interaction(func):
     def wrapper(msg):
-        game = json.loads(cache.get(msg['game']))
-        new_data = func(game, msg)
+        game_data = json.loads(cache.get(msg['game']))
+        new_data = func(game_data, **msg)
         cache.set(msg['game'], json.dumps(new_data))
         print('returning {}'.format(new_data))
         return new_data
@@ -64,28 +64,21 @@ def remove_player(game, player):
 
 
 @game_interaction
-def start_game(game, params):
-    module = importlib.import_module('app.games.{}'.format(game['type']))
-    result = module.start_game(game, params)
+def start_game(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    result = module.start_game(game_data, **kwargs)
     return result
 
 
 @game_interaction
-def deal_hands(game, params):
-    players = list(game['players'].keys())
-    deck = list(game['cards'].keys())
-
-    module = importlib.import_module('app.games.{}'.format(game['type']))
-    hands, updated_deck = module.deal_hands(players, deck)
-
-    game['deck'] = updated_deck
-    game['hands'] = hands
+def deal_hands(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.deal_hands(game_data, **kwargs)
     return game
 
 
 @game_interaction
-def discard(game, params):
-    player = params['player']
-    card = params['card']
-    game['hands'][player]['cards'].remove(card)
+def discard(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.discard(game_data, **kwargs)
     return game
