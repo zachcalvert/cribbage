@@ -1,8 +1,28 @@
-html, body, #root, .MuiContainer-root, .MuiGrid-container {
+html, body {
   height: 100%;
 }
-.MuiGrid-container {
-  padding: 15px 0;
+
+#root {
+  flex-grow: 1;
+  height: 100%;
+}
+
+.container-fluid {
+  height: 100%;
+}
+
+.game {
+  height: 95%;
+  margin: 0 15px;
+}
+
+.chat {
+  border: 1px solid #E0E0E0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  border-top: none;
+  align-items: center;
+  justify-content: center;
 }
 
 .leave-game {
@@ -12,7 +32,30 @@ html, body, #root, .MuiContainer-root, .MuiGrid-container {
   color: red!important;
 }
 
+.top-row, .middle-row {
+  min-height: 150px;
+  width: 100%;
+  margin: auto;
+}
+
+.bottom-row {
+  min-height: 210px;
+  width: 100%;
+  text-align: center;
+  margin-top: auto;
+}
+
 .game-name, .player-name {
   color: #303030;
-  margin: 0 0 15px 0;
+  padding: 20px;
+}
+
+@media only screen and (max-width: 992px) {
+  .game {
+    height: 100%;
+    margin: 0;
+  }
+  .card {
+    padding: 10px 5px;
+  }
 }

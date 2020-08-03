@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import { useSpring, animated } from 'react-spring'
-import { Button, IconButton, TextField, Paper, Container, makeStyles, Grid, Box } from "@material-ui/core";
+import { Button, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { AnimatedDeck } from "./AnimatedDeck/AnimatedDeck";
@@ -9,29 +8,11 @@ import { Chat } from "./Chat/Chat";
 import { Player } from "./Player/Player";
 
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    height: '100%'
-  },
-  paper: {
-    padding: theme.spacing(2),
-    color: theme.palette.text.secondary,
-  },
-  lobbyDeck: {
-    position: 'absolute',
-    top: 0,
-    left: 0
-  }
-}));
-
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [players, setPlayers] = useState([])
-  const fadeIn = useSpring({opacity: 1, from: {opacity: 0}});
-  const classes = useStyles();
 
   const {socket} = useSocket("attendance_change", change =>
     (change.type === 'join') ? (
@@ -44,7 +25,7 @@ export const Game = ()  => {
   const handleJoin = e => {
     e.preventDefault();
     if ((!name) || (!room)) {
-      return alert("Name can't be empty");
+      return alert("Please provide both your nickname and a game name.");
     }
     setId(name);
     sessionStorage.setItem('name', name);
@@ -61,35 +42,35 @@ export const Game = ()  => {
   };
 
   return id ? (
-    <Container maxWidth="lg">
-      <animated.div style={fadeIn} className={classes.root}>
-        <Grid container spacing={2}>
+      <div className="container-fluid">
+        <div className="game row">
+          <div className="chat col-lg-4">
+            <Chat />
+          </div>
+          <div className="game-table col-lg-8 row">
+            <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
 
-          <Grid item xs={3}>
-            <Paper className={`game-log ${classes.paper}`}>
-              <Chat />
-            </Paper>
-          </Grid>
+            <div className="top-row row"></div>
 
-          <Grid item xs={9}>
-            <Box height="65%">
-              <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            </Box>
-            <Box height="35%">
+            <div className="middle-row row">
+              <div className="scoreboard col-8">
+              </div>
+              <div className="deck col-4">
+                <AnimatedDeck />
+              </div>
+            </div>
+
+            <footer className="bottom-row">
               <Player name={name}/>
-            </Box>
-          </Grid>
+            </footer>
 
-        </Grid>
-      </animated.div>
-    </Container>
+          </div>
+        </div>
+      </div>
   ) : (
     <div style={{ textAlign: 'center', height: '100%', width: '100%', display: 'inline-block' }}>
-      <div className={classes.lobbyDeck}>
-      <AnimatedDeck />
-      </div>
       <form style={{ marginTop: '150px' }} onSubmit={event => handleJoin(event)}>
         <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
         <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />

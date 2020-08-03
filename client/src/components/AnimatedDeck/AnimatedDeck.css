@@ -1,7 +1,12 @@
+.lobbyDeck {
+    width: 250px;
+    height: 250px;
+    position: relative;
+    margin: auto;
+}
+
 .animated-cards-container {
   position: absolute;
-  width: 70vh;
-  top: 30px;
   will-change: transform;
   display: flex;
   align-items: center;
@@ -9,13 +14,30 @@
 }
 
 .animated-card {
-  background-size: auto 85%;
   background-repeat: no-repeat;
   background-position: center center;
-  width: 46vh;
+  width: 25vh;
   max-width: 322px;
-  height: 75vh;
+  height: 25vh;
   max-height: 581px;
   will-change: transform;
   border-radius: 10px;
+  background-size: 100px auto;
+}
+
+.card {
+  position: relative;
+  height: auto;
+  width: 15%;
+  display: -ms-flexbox;
+  display: inline-flex;
+  -ms-flex-direction: column;
+  flex-direction: row;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: none;
+  border-radius: 0;
+  padding: 10px;
 }
