@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from 'prop-types';
 
-import {IconButton, Modal} from "@material-ui/core";
+import {Button, IconButton, Modal} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useSpring, animated } from 'react-spring';
@@ -14,6 +14,8 @@ import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -23,9 +25,12 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    border: '2px solid #000',
+    width: '300px',
+    height: '400px',
+    border: 'none',
+    borderRadius: '10px',
     boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    padding: theme.spacing(2, 4, 3)
   },
 }));
 
@@ -61,11 +66,12 @@ Fade.propTypes = {
 };
 
 const StartMenu = () => {
+  const gameName = sessionStorage.getItem('game');
   const classes = useStyles();
   const [game, setGame] = useState('');
   const [winningScore, setWinningScore] = useState(121);
   const [jokers, setJokers] = useState(false);
-  let { modalContent, handleModal, modal } = React.useContext(StartMenuContext);
+  let { socket, handleModal, modal } = React.useContext(StartMenuContext);
 
   const showGameSelect = () => {
     const handleChange = (event) => {
@@ -92,18 +98,21 @@ const StartMenu = () => {
     )
   };
 
-  const showGameSettings = () => {
+  const GameSettings = () => {
+    const handleWinningScoreSettingChange = (event) => {setWinningScore(event.target.value);};
+    const handleJokerSettingChange = (event) => {setJokers(event.target.value);};
+    const [state, setState] = useState({
+      winningScore: 121,
+      jokers: false,
+    });
 
-    const handleWinningScoreSettingChange = (event) => {
-      setWinningScore(event.target.value);
-    };
-
-    const handleJokerSettingChange = (event) => {
-      setJokers(event.target.value);
+    const handleJokerChange = (event) => {
+      setState({ ...state, [event.target.name]: event.target.checked });
     };
 
     return game ? (
       <div className='start-menu'>
+        <form onSubmit={event => handleStart(event)}>
         <p>{ game }</p>
         <FormControl className='stepper-form-control'>
           <Select
@@ -114,39 +123,55 @@ const StartMenu = () => {
             onChange={handleWinningScoreSettingChange}>
             <TextField id="standard-basic" label="Winning score" />
           </Select>
-          <Select
-            labelId="demo-simple-select-label"
-            id="demo-simple-select"
-            value={jokers}
-            onChange={handleJokerSettingChange}>
-            <MenuItem value={false}>No jokers</MenuItem>
-            <MenuItem value={true}>Play with jokers</MenuItem>
-          </Select>
+
+         <FormControlLabel
+            control={
+              <Switch
+                checked={state.jokers}
+                onChange={handleJokerChange}
+                name="jokers"
+                color="primary"
+              />
+            }
+            label="Play with Jokers"
+          />
         </FormControl>
+        <Button color="primary" type="submit">Submit</Button>
+        </form>
       </div>
     ) : (
       <span />
     );
   };
 
+  const handleStart = e => {
+    e.preventDefault();
+    socket.emit('start_game', {game: gameName, winning_score: winningScore, jokers: jokers});
+  };
+
   if (modal) {
     return ReactDOM.createPortal(
-      <Modal open={true}
-             className={classes.modal}
-             closeAfterTransition
-             BackdropComponent={Backdrop}
-             BackdropProps={{
-               timeout: 500,
-             }}
+      <Modal
+        open={true}
+        className={classes.modal}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
       >
         <Fade in={true}>
           <div className={classes.paper}>
-            <IconButton className="close-start-menu" onClick={() => handleModal()} aria-label="close-start-menu">
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-            <h2 id="spring-modal-title">Start a game</h2>
+            <div className="row">
+              <span class="col-10">
+                <h4 id="spring-modal-title">Start a game</h4>
+              </span>
+              <IconButton className="col-2 close-start-game" onClick={() => handleModal()} aria-label="close-start-menu">
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            </div>
             { showGameSelect() }
-            { showGameSettings() }
+            <GameSettings />
           </div>
         </Fade>
       </Modal>,
