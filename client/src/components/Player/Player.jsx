@@ -4,13 +4,16 @@ import useSound from 'use-sound';
 import { ReactSVG } from 'react-svg'
 import { Button, Divider } from "@material-ui/core";
 import './Player.css'
-
+import { StartMenuContext } from "../StartMenu/StartMenuContext";
 
 export const Player = (name) => {
   const [action, setAction] = useState('start');
   const [activeCard, setActiveCard] = useState('');
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   const [cards, setCards] = useState([]);
+  const { handleModal } = React.useContext(StartMenuContext);
+
+
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", response => {
@@ -26,7 +29,7 @@ export const Player = (name) => {
     boop();
     console.log(action);
     if (action === 'start') {
-      socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
+      handleModal("This is component modal content")      // socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
     }
     else if (action === 'deal') {
       socket.emit('deal', {game: game});

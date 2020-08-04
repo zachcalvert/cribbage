@@ -6,13 +6,14 @@ import CloseIcon from "@material-ui/icons/Close";
 import { AnimatedDeck } from "./AnimatedDeck/AnimatedDeck";
 import { Chat } from "./Chat/Chat";
 import { Player } from "./Player/Player";
+import {StartMenuProvider} from "./StartMenu/StartMenuContext";
 
 
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [players, setPlayers] = useState([])
+  const [players, setPlayers] = useState([]);
 
   const {socket} = useSocket("attendance_change", change =>
     (change.type === 'join') ? (
@@ -63,7 +64,9 @@ export const Game = ()  => {
             </div>
 
             <footer className="bottom-row">
-              <Player name={name}/>
+              <StartMenuProvider>
+                <Player name={name}/>
+              </StartMenuProvider>
             </footer>
 
           </div>
