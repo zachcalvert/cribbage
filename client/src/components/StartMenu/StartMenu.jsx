@@ -10,6 +10,7 @@ import { useSpring, animated } from 'react-spring';
 import { StartMenuContext } from "./StartMenuContext";
 import './StartMenu.css'
 import Backdrop from "@material-ui/core/Backdrop";
+import StartMenuStepper from "./StartMenuStepper";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -74,8 +75,8 @@ const StartMenu = () => {
             <IconButton className="close-start-menu" onClick={() => handleModal()} aria-label="close-start-menu">
               <CloseIcon fontSize="inherit" />
             </IconButton>
-            <h2 id="spring-modal-title">Spring modal</h2>
-            <p id="spring-modal-description">react-spring animates me.</p>
+            <h2 id="spring-modal-title">Start a game</h2>
+            <StartMenuStepper />
           </div>
         </Fade>
       </Modal>,
