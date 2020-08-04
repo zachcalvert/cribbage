@@ -6,7 +6,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { AnimatedDeck } from "./AnimatedDeck/AnimatedDeck";
 import { Chat } from "./Chat/Chat";
 import { Player } from "./Player/Player";
-import {StartMenuProvider} from "./StartMenu/StartMenuContext";
+import { StartMenuProvider } from "./StartMenu/StartMenuContext";
 
 
 export const Game = ()  => {
