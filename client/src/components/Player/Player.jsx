@@ -29,7 +29,8 @@ export const Player = (name) => {
     boop();
     console.log(action);
     if (action === 'start') {
-      handleModal("This is component modal content")      // socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
+      // handleModal("This is component modal content")
+      socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
     }
     else if (action === 'deal') {
       socket.emit('deal', {game: game});
