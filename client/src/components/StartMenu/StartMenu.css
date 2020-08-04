@@ -6,3 +6,12 @@
   left: 50%;
   margin-left: -30%;
 }
+
+.start-menu {
+  text-align: center;
+}
+
+.stepper-form-control {
+  min-width: 120px!important;
+  padding: 10px!important;
+}
