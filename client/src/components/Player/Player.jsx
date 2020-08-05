@@ -11,8 +11,6 @@ export const Player = (name) => {
   const [activeCard, setActiveCard] = useState('');
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   const [cards, setCards] = useState([]);
-  const { handleModal } = React.useContext(StartMenuContext);
-
 
   const game = sessionStorage.getItem('game');
 
@@ -36,14 +34,13 @@ export const Player = (name) => {
       socket.emit('deal', {game: game});
     }
     else if (action === 'discard') {
-      // socket.emit('discard', {game: game, player: name, card: activeCard})
+      socket.emit('discard', {game: game, player: name, card: activeCard})
     }
   };
 
   const handleCardClick = (e) => {
     let card = e.target.parentNode.parentNode.parentNode.id;
     setActiveCard(card);
-    console.log(card);
   };
 
   const renderCards = () => {
