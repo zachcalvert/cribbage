@@ -16,6 +16,11 @@
   border-radius: 5px;
   border: 1px solid #E0E0E0;
   margin: 15px 5px;
+  pointer-events: none;
+}
+
+.player rect {
+  pointer-events: none;
 }
 
 .player svg:hover {

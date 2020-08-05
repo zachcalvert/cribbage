@@ -42,7 +42,7 @@ export const Chat = ()  => {
   const classes = useStyles();
 
   const { socket } = useSocket("chat_message", newChat => {
-    setChat([...chats, newChat])
+    setChat([...chats, newChat]);
     boop()
   });
 

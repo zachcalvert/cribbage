@@ -48,7 +48,7 @@ export const Game = ()  => {
           <div className="chat col-lg-4">
             <Chat />
           </div>
-          <div className="game-table col-lg-8 row">
+          <div className="game-table col-lg-8">
             <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>

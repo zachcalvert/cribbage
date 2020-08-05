@@ -40,16 +40,23 @@ export const Player = (name) => {
     }
   };
 
+  const handleCardClick = (e) => {
+    let card = e.target.parentNode.parentNode.parentNode.id;
+    setActiveCard(card);
+    console.log(card);
+  };
+
   const renderCards = () => {
     return cards.length ? (
       <>
         {cards.map((card, index) => (
-          <ReactSVG
-            id={card}
-            key={index}
-            wrapper='span'
-            src={`/cards/${card}.svg`}
-          />
+            <ReactSVG
+              id={card}
+              key={index}
+              onClick={handleCardClick}
+              wrapper='span'
+              src={`/cards/${card}.svg`}
+            />
         ))}
       </>
     ) : (

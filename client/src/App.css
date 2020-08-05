@@ -23,6 +23,7 @@ html, body {
   border-top: none;
   align-items: center;
   justify-content: center;
+  min-height: 230px;
 }
 
 .leave-game {
@@ -58,4 +59,23 @@ html, body {
   .card {
     padding: 10px 5px;
   }
+}
+
+
+@media only screen and (max-width: 500px) {
+  .animated-card {
+    width: 15vh;
+    height: 15vh;
+    border-radius: 10px;
+    background-size: 75px auto;
+  }
+
+  .card {
+    margin: 0 -7.5%;
+    width: 30%;
+  }
+
+  .game-name {
+    padding: 10px;
+}
 }
