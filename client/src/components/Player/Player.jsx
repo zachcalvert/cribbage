@@ -7,53 +7,57 @@ import './Player.css'
 
 export const Player = (props) => {
   const [action, setAction] = useState('start');
+  const [turn, setTurn] = useState(true);
+  const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState('');
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
-  const [cards, setCards] = useState([]);
 
   const game = sessionStorage.getItem('game');
 
-  const { socket } = useSocket("send_turn", turn => {
-    setAction(turn.action);
+  const { socket } = useSocket("send_turn", msg => {
+    if (msg.players.includes(props.name)) {
+      setAction(msg.action);
+      setTurn(true);
+    }
   });
 
-  useSocket("cards", response => {
-    let dealt = response.hands[props.name];
-    setCards(dealt);
+  useSocket("cards", msg => {
+    if (props.name in msg.cards) {
+      setCards(msg.cards[props.name]);
+    }
   });
 
   const handleAction = (e) => {
     boop();
-    console.log(action);
     if (action === 'start') {
-      // handleModal("This is component modal content")
       socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
     }
-    else if (action === 'deal') {
-      socket.emit('deal', {game: game});
+    else {
+      socket.emit(action, { game: game, player: props.name, card: activeCard });
     }
-    else if (action === 'discard') {
-      socket.emit('discard', {game: game, player: props.name, card: activeCard});
-      setCards(cards.filter(card => card !== activeCard))
-    }
+    setTurn(false);
   };
 
   const handleCardClick = (e) => {
-    let card = e.target.parentNode.parentNode.parentNode.id;
-    setActiveCard(card);
+    let card = e.target.parentNode.parentNode.parentNode.id;  // :(
+    if (card) {
+      setActiveCard(card);
+      let svg = document.getElementById(card).getElementsByTagName('svg')[0];
+      svg.classList.add('chosen');
+    }
   };
 
   const renderCards = () => {
     return cards.length ? (
       <>
         {cards.map((card, index) => (
-            <ReactSVG
-              id={card}
-              key={index}
-              onClick={handleCardClick}
-              wrapper='span'
-              src={`/cards/${card}.svg`}
-            />
+          <ReactSVG
+            id={card}
+            key={index}
+            onClick={handleCardClick}
+            wrapper='span'
+            src={`/cards/${card}.svg`}
+          />
         ))}
       </>
     ) : (
@@ -63,10 +67,18 @@ export const Player = (props) => {
 
   return (
     <>
-      <Button className="action-button" variant="contained" color="secondary" onClick={handleAction}>{ action }</Button>
+      <Button
+          className="action-button"
+          variant="contained"
+          color="secondary"
+          onClick={handleAction}
+          disabled={!turn}
+      >
+        { action }
+      </Button>
       <Divider variant="middle" />
       <div className="player-cards">
-      {renderCards()}
+      { renderCards() }
       </div>
     </>
   );

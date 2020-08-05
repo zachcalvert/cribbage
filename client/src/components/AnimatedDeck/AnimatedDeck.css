@@ -41,3 +41,7 @@
   border-radius: 0;
   padding: 10px;
 }
+
+.chosen {
+  margin-top: -10px!important;
+}
