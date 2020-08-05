@@ -47,8 +47,8 @@ def start_game(msg):
 @socketio.on('deal')
 def deal(msg):
     game = controller.deal_hands(msg)
-    emit('deal', {'hands': game['hands']}, room=msg['game'])
-    emit('send_turn', {'player': game['current_turn'], 'action': game['state']}, room=msg['game'])
+    emit('cards', {'hands': game['hands']}, room=msg['game'])
+    emit('send_turn', {'player': game['current_turn'], 'action': game['post_deal_action']}, room=msg['game'])
 
 
 @socketio.on('discard')
@@ -56,6 +56,36 @@ def discard(msg):
     controller.discard(msg)
     emit('discard', {'player': msg['player'], 'card': msg['card']}, room=msg['game'])
 
+
+@socketio.on('cut')
+def cut(msg):
+    game = controller.cut_deck(msg)
+    emit(game['state'], {'cut_card': game['cut_card'], 'player': game['current_player']}, room=msg['game'])
+
+
+@socketio.on('play_card')
+def play_card(msg):
+    game = controller.play_card(msg)
+    emit('played_card', {'player': msg['player'], 'card': msg['card']}, room=msg['game'])
+    emit(game['state'], {'cut_card': game['cut_card'], 'player': game['current_player']}, room=msg['game'])
+
+
+@socketio.on('score')
+def score(msg):
+    points = controller.score_hand(msg)
+    emit('scored_hand', {'player': msg['player'], 'points': points}, room=msg['game'])
+
+
+@socketio.on('crib')
+def crib(msg):
+    points = controller.crib(msg)
+    emit('scored_crib', {'player': msg['player'], 'points': points}, room=msg['game'])
+
+
+@socketio.on('next')
+def next_round(msg):
+    game = controller.next_round(msg)
+    emit(game['state'], {'player': game['current_player']}, room=msg['game'])
 
 if __name__ == '__main__':
     socketio.run(app, debug=True)

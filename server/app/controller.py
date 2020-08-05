@@ -17,7 +17,6 @@ def game_interaction(func):
         game_data = json.loads(cache.get(msg['game']))
         new_data = func(game_data, **msg)
         cache.set(msg['game'], json.dumps(new_data))
-        print('returning {}'.format(new_data))
         return new_data
     return wrapper
 
@@ -79,6 +78,7 @@ def deal_hands(game_data, **kwargs):
 
 @game_interaction
 def discard(game_data, **kwargs):
+    print('in controller, kwargs are {}'.format(kwargs))
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.discard(game_data, **kwargs)
     return game

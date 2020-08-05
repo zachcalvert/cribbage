@@ -4,9 +4,8 @@ import useSound from 'use-sound';
 import { ReactSVG } from 'react-svg'
 import { Button, Divider } from "@material-ui/core";
 import './Player.css'
-import { StartMenuContext } from "../StartMenu/StartMenuContext";
 
-export const Player = (name) => {
+export const Player = (props) => {
   const [action, setAction] = useState('start');
   const [activeCard, setActiveCard] = useState('');
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
@@ -14,12 +13,12 @@ export const Player = (name) => {
 
   const game = sessionStorage.getItem('game');
 
-  const { socket } = useSocket("send_turn", response => {
-    setAction(response.action);
+  const { socket } = useSocket("send_turn", turn => {
+    setAction(turn.action);
   });
 
-  useSocket("deal", response => {
-    let dealt = response.hands[name.name];
+  useSocket("cards", response => {
+    let dealt = response.hands[props.name];
     setCards(dealt);
   });
 
@@ -34,7 +33,8 @@ export const Player = (name) => {
       socket.emit('deal', {game: game});
     }
     else if (action === 'discard') {
-      socket.emit('discard', {game: game, player: name, card: activeCard})
+      socket.emit('discard', {game: game, player: props.name, card: activeCard});
+      setCards(cards.filter(card => card !== activeCard))
     }
   };
 

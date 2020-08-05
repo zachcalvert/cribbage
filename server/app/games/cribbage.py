@@ -1,12 +1,7 @@
 import random
-from app.decks import jokers
-from app.decks import standard
+from app.decks import jokers, standard
 
-# def _sort_cards(g, cards):
-#     card_keys_and_values = [{card: g['cards'].get(card)} for card in cards]
-#     ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
-#     ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
-#     return ascending_card_ids
+
 
 
 def rotate_turn(current, players):
@@ -66,6 +61,7 @@ def start_game(game_data, **kwargs):
         },
         'play_again': [],
         'played_cards': {},
+        'post_deal_action': 'discard',
         'scored_hands': [],
         'scoring_stats': {},
         'state': 'deal',
@@ -82,12 +78,20 @@ def start_game(game_data, **kwargs):
     return game_data
 
 
+def _sort_cards(g, cards):
+    card_keys_and_values = [{card: g['cards'].get(card)} for card in cards]
+    ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
+    ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
+    return ascending_card_ids
+
+
 def deal_hands(game_data, **kwargs):
     random.shuffle(game_data['deck'])
 
     hands = {}
     for player in game_data['players'].keys():
-        hands[player] = [game_data['deck'].pop() for card in range(6)]
+        dealt_cards = [game_data['deck'].pop() for card in range(6)]
+        hands[player] = _sort_cards(game_data, dealt_cards)
     game_data['current_turn'] = 'all'
     game_data['hands'] = hands
     game_data['state'] = 'discard'
