@@ -41,20 +41,23 @@ def send_message(msg):
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
-    emit('send_turn', {'player': game['current_turn'], 'action': game['state']}, room=msg['game'])
+    print('letting {} know that it is their turn to {}'.format(game['current_turn'], game['current_action']))
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('deal')
 def deal(msg):
     game = controller.deal_hands(msg)
-    emit('cards', {'hands': game['hands']}, room=msg['game'])
-    emit('send_turn', {'player': game['current_turn'], 'action': game['post_deal_action']}, room=msg['game'])
+    emit('cards', {'cards': game['hands']}, room=msg['game'])
+    print('letting {} know that it is their turn to {}'.format(game['current_turn'], game['current_action']))
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('discard')
 def discard(msg):
-    controller.discard(msg)
-    emit('discard', {'player': msg['player'], 'card': msg['card']}, room=msg['game'])
+    game = controller.discard(msg)
+    emit('cards', {'cards': game['hands']}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('cut')

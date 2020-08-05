@@ -45,7 +45,8 @@ def start_game(game_data, **kwargs):
     game_data.update({
         'cards': cards,
         'crib': [],
-        'current_turn': dealer,
+        'current_action': 'deal',
+        'current_turn': [dealer],
         'cutter': cutter,
         'dealer': dealer,
         'deck': list(cards.keys()),
@@ -64,7 +65,6 @@ def start_game(game_data, **kwargs):
         'post_deal_action': 'discard',
         'scored_hands': [],
         'scoring_stats': {},
-        'state': 'deal',
         'turn': dealer,
         'winning_score': int(winning_score)
     })
@@ -92,9 +92,9 @@ def deal_hands(game_data, **kwargs):
     for player in game_data['players'].keys():
         dealt_cards = [game_data['deck'].pop() for card in range(6)]
         hands[player] = _sort_cards(game_data, dealt_cards)
-    game_data['current_turn'] = 'all'
+    game_data['current_turn'] = list(game_data['players'].keys())
     game_data['hands'] = hands
-    game_data['state'] = 'discard'
+    game_data['current_action'] = 'discard'
     return game_data
 
 
@@ -103,6 +103,16 @@ def discard(game_data, **kwargs):
     card = kwargs['card']
     game_data['hands'][player].remove(card)
     game_data['crib'].append(card)
+
+    player_done = len(game_data['hands'][player]) == 4
+    if player_done:
+        game_data['current_turn'].remove(player)
+
+    all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
+    if all_done:
+        game_data['current_action'] = 'cut'
+        game_data['current_turn'] = game_data['cutter']
+
     return game_data
 
     # player_done = len(g['hands'][player]) <= 4
