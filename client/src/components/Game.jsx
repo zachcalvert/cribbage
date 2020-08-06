@@ -3,7 +3,7 @@ import { useSocket } from "use-socketio";
 import { Button, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-import { AnimatedDeck } from "./AnimatedDeck/AnimatedDeck";
+import { Deck } from "./Deck/Deck";
 import { Chat } from "./Chat/Chat";
 import { Player } from "./Player/Player";
 import { StartMenuProvider } from "./StartMenu/StartMenuContext";
@@ -59,7 +59,7 @@ export const Game = ()  => {
               <div className="scoreboard col-8">
               </div>
               <div className="deck col-4">
-                <AnimatedDeck />
+                <Deck />
               </div>
             </div>
 

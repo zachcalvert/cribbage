@@ -1,9 +1,16 @@
 import React, { useState } from 'react'
 import { useSprings, animated, interpolate } from 'react-spring'
 import { useGesture } from 'react-use-gesture'
-import './AnimatedDeck.css'
+import './Deck.css'
+import { useSocket } from "use-socketio";
 
-const cards = [
+// These two are just helpers, they curate spring data, values that are later being interpolated into css
+const to = i => ({ x: 0, y: i * -1, scale: 1, rot: -10 + Math.random() * 20, delay: i * 50 })
+const from = i => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
+// This is being used down there in the view, it interpolates rotation and scale into a css transform
+const trans = (r, s) => `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
+
+const defaultDeck = [
   '/cards/dark_blue.svg',
   '/cards/dark_blue.svg',
   '/cards/dark_blue.svg',
@@ -25,13 +32,11 @@ const cards = [
   '/cards/dark_blue.svg',
 ]
 
-// These two are just helpers, they curate spring data, values that are later being interpolated into css
-const to = i => ({ x: 0, y: i * -1, scale: 1, rot: -10 + Math.random() * 20, delay: i * 50 })
-const from = i => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
-// This is being used down there in the view, it interpolates rotation and scale into a css transform
-const trans = (r, s) => `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 
-export const AnimatedDeck = () => {
+export const Deck = () => {
+  const [cutCard, setCutCard] = useState('');
+  const [cards, setCards] = useState(defaultDeck);
+
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
   const [props, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
@@ -48,7 +53,14 @@ export const AnimatedDeck = () => {
       return { x, rot, scale, delay: undefined, config: { friction: 50, tension: down ? 800 : isGone ? 200 : 500 } }
     })
     if (!down && gone.size === cards.length) setTimeout(() => gone.clear() || set(i => to(i)), 600)
-  })
+  });
+
+  useSocket("cut_card", msg => {
+    console.log('somebody told me the decks been cut!')
+    setCutCard(msg.card);
+    setCards([...cards, '/cards/' + msg.card + '.svg']);
+  });
+
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div className="animated-cards-container" key={i} style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>

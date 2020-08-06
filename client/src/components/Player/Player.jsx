@@ -35,7 +35,6 @@ export const Player = (props) => {
     else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
     }
-    setTurn(false);
   };
 
   const handleCardClick = (e) => {

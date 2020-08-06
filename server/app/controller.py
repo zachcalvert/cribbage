@@ -78,7 +78,14 @@ def deal_hands(game_data, **kwargs):
 
 @game_interaction
 def discard(game_data, **kwargs):
-    print('in controller, kwargs are {}'.format(kwargs))
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.discard(game_data, **kwargs)
+    return game
+
+
+@game_interaction
+def cut_deck(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.cut_deck(game_data, **kwargs)
+    print('in controller, the cut card is: {}'.format(game['cut_card']))
     return game

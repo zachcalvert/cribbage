@@ -47,6 +47,7 @@ def start_game(game_data, **kwargs):
         'crib': [],
         'current_action': 'deal',
         'current_turn': [dealer],
+        'cut_card': '',
         'cutter': cutter,
         'dealer': dealer,
         'deck': list(cards.keys()),
@@ -115,10 +116,12 @@ def discard(game_data, **kwargs):
 
     return game_data
 
-    # player_done = len(g['hands'][player]) <= 4
-    # if player_done:
-    #     game_data['discarded'].append(player)
-    #
-    #     if set(game_data['discarded']) == set(game_data['players']):
-    #         all_have_discarded
-    # done_discarding = True
+
+def cut_deck(game_data, **kwargs):
+    print('cutting the deck inside cribbage!')
+    game_data['cut_card'] = game_data['deck'].pop()
+    game_data['current_action'] = 'play'
+    game_data['current_turn'] = game_data['first_to_score']
+
+    print('the cut card is {}'.format(game_data['cut_card']))
+    return game_data
