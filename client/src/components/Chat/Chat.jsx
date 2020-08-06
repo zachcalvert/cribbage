@@ -61,6 +61,7 @@ export const Chat = ()  => {
     if (message !== '') {
       socket.emit('chat_message', {name: nickname, message: message, game: game});
     }
+    document.getElementById('message-input').value = '';
     setMessage('');
   };
 
@@ -94,7 +95,7 @@ export const Chat = ()  => {
       {renderChat()}
       <div className="send-form">
         <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-          <TextField id="m" variant="outlined" style ={{width: '100%'}} inputstyle ={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}/>
+          <TextField id="message-input" variant="outlined" style ={{width: '100%'}} inputstyle ={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}/>
           <IconButton className="send-message" onClick={handleSend} aria-label="leave">
             <SendIcon fontSize="inherit" />
           </IconButton>
