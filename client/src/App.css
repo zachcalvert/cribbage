@@ -59,6 +59,14 @@ html, body {
   .card {
     padding: 10px 5px;
   }
+
+  .chat {
+    max-height: 33%;
+  }
+
+  .chat-log {
+    max-height: calc(66% - 50px);
+  }
 }
 
 
@@ -77,5 +85,5 @@ html, body {
 
   .game-name {
     padding: 10px;
-}
+  }
 }

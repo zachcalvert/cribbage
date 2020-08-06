@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSocket } from "use-socketio";
 import { Divider, IconButton, makeStyles, TextField, Typography } from "@material-ui/core";
 import SendIcon from '@material-ui/icons/Send';
@@ -36,10 +36,16 @@ const useStyles = makeStyles((theme) => ({
 
 export const Chat = ()  => {
   const [message, setMessage] = useState('');
-  const [chats, setChat] = useState([]);
+  const [chats, setChat] = useState(['Welcome!']);
   const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
   const classes = useStyles();
+
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+  };
+  useEffect(scrollToBottom, [chats]);
 
   const { socket } = useSocket("chat_message", newChat => {
     setChat([...chats, newChat]);
@@ -58,7 +64,7 @@ export const Chat = ()  => {
 
   const renderChat = () => {
     return chats.length ? (
-      <div className='chat-log'>
+      <div id='chat-log' className='chat-log'>
         {chats.map(({name, message}, index) => (
           <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
 
@@ -72,6 +78,7 @@ export const Chat = ()  => {
             }
           </div>
         ))}
+        <div ref={messagesEndRef} />
       </div>
     ) : (
       <p/>
