@@ -42,9 +42,11 @@ export const Chat = ()  => {
   const classes = useStyles();
 
   const messagesEndRef = useRef(null);
+
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
   useEffect(scrollToBottom, [chats]);
 
   const { socket } = useSocket("chat_message", newChat => {
