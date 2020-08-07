@@ -72,8 +72,8 @@ def play_card(msg):
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
-@socketio.on('score')
-def score(msg):
+@socketio.on('score_hand')
+def score_hand(msg):
     game = controller.score_hand(msg)
     emit('points', {'player': msg['player'], 'points': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])

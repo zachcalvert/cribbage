@@ -7,19 +7,21 @@ import { Deck } from "./Deck/Deck";
 import { Chat } from "./Chat/Chat";
 import { Player } from "./Player/Player";
 import { StartMenuProvider } from "./StartMenu/StartMenuContext";
+import { Opponent } from "./Opponent/Opponent";
+import {Opponents} from "./Opponent/Opponents";
 
 
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
-  const [players, setPlayers] = useState([]);
+  const [opponents, setOpponents] = useState([]);
 
-  const {socket} = useSocket("attendance_change", change =>
-    (change.type === 'join') ? (
-      setPlayers([...players, change.name])
+  const {socket} = useSocket("attendance_change", msg =>
+    (msg.type === 'join') ? (
+      setOpponents([...opponents, msg.name])
     ) : (
-      setPlayers(players.filter(player => player !== change.name))
+      setOpponents(opponents.filter(player => player !== msg.name))
     )
   );
 
@@ -48,17 +50,21 @@ export const Game = ()  => {
           <div className="chat col-lg-4">
             <Chat />
           </div>
-          <div className="game-table col-lg-8">
+          <div className="game-table col-lg-8 row">
             <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>
 
-            <div className="top-row row"></div>
+            <div className="top-row row">
+              <Opponents opponents={opponents} />
+            </div>
 
             <div className="middle-row row">
               <div className="scoreboard col-8">
+                {/*<Scoreboard player={name} opponents={opponents} />*/}
               </div>
-              <div className="deck col-4">
+              <div className="col-1"></div>
+              <div className="deck col-2">
                 <Deck />
               </div>
             </div>

@@ -36,7 +36,8 @@ const useStyles = makeStyles((theme) => ({
 
 export const Chat = ()  => {
   const [message, setMessage] = useState('');
-  const [chats, setChat] = useState(['Welcome!']);
+  const [chats, setChat] = useState([]);
+  const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
   const classes = useStyles();
@@ -44,7 +45,9 @@ export const Chat = ()  => {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({behavior: "smooth"});
+    }
   };
 
   useEffect(scrollToBottom, [chats]);
@@ -53,8 +56,6 @@ export const Chat = ()  => {
     setChat([...chats, newChat]);
     boop()
   });
-
-  const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
   const handleSend = e => {
     e.preventDefault();

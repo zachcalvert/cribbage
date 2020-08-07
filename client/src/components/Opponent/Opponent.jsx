@@ -7,8 +7,8 @@ import '../Player/Player.css'
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);
 
-  const { socket } = useSocket("deal", response => {
-    let dealt = response.hands[props.name];
+  useSocket("deal", msg => {
+    let dealt = msg.hands[props.name];
     setCards(dealt);
   });
 
@@ -19,6 +19,7 @@ export const Opponent = (props) => {
           <ReactSVG
             key={index}
             wrapper='span'
+            className='opponent-card'
             src={`/cards/${cards[index]}.svg`}
           />
         ))}
@@ -29,8 +30,8 @@ export const Opponent = (props) => {
   };
 
   return (
-    <div className="player">
-      <span>{ props.name }</span>
+    <div className="opponent">
+      <span>{ props }</span>
       <Divider variant="middle" />
       { renderCards() }
     </div>

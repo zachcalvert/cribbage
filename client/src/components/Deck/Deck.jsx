@@ -56,7 +56,6 @@ export const Deck = () => {
   });
 
   useSocket("cut_card", msg => {
-    console.log('somebody told me the decks been cut!')
     setCutCard(msg.card);
     setCards([...cards, '/cards/' + msg.card + '.svg']);
   });

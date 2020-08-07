@@ -30,7 +30,7 @@ export const Player = (props) => {
   const handleAction = (e) => {
     boop();
     if (action === 'start') {
-      socket.emit('start_game', {game: game, winning_score: 121, jokers: true});
+      socket.emit('start_game', {game: game, winning_score: 121, jokers: false});
     }
     else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
@@ -67,11 +67,11 @@ export const Player = (props) => {
   return (
     <>
       <Button
-          className="action-button"
-          variant="contained"
-          color="secondary"
-          onClick={handleAction}
-          disabled={!turn}
+        className="action-button"
+        variant="contained"
+        color="secondary"
+        onClick={handleAction}
+        disabled={!turn}
       >
         { action }
       </Button>
