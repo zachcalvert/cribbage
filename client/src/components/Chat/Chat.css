@@ -23,3 +23,29 @@
   bottom: 15px;
   width: 95%;
 }
+
+.show-emoji-picker {
+  border: none;
+  margin: 0;
+  cursor: pointer;
+}
+
+.emoji-picker {
+  position: relative;
+  bottom: 10px;
+  right: 0;
+}
+
+.emoji-mart {
+  width: 89%!important;
+}
+
+.emoji-mart-scroll {
+  height: 200px;
+  border-bottom: 0;
+  margin-bottom: 6px;
+}
+
+.emoji-mart-scroll + .emoji-mart-bar {
+  display: none;
+}

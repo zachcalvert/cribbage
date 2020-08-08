@@ -4,6 +4,8 @@ import { Divider, IconButton, makeStyles, TextField, Typography } from "@materia
 import SendIcon from '@material-ui/icons/Send';
 import useSound from "use-sound";
 import './Chat.css'
+import 'emoji-mart/css/emoji-mart.css'
+import { Picker } from 'emoji-mart'
 
 
 const useStyles = makeStyles((theme) => ({
@@ -34,22 +36,43 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+
+const customEmojis = [
+  {
+    name: 'Octocat',
+    short_names: ['octocat'],
+    text: '',
+    emoticons: [],
+    keywords: ['github'],
+    imageUrl: 'https://github.githubassets.com/images/icons/emoji/octocat.png',
+    customCategory: 'GitHub'
+  },
+  {
+    name: 'Meow Avicii',
+    short_names: ['meow_avicii'],
+    keywords: ['meow', 'avicii'],
+    imageUrl: 'emojis/meows/avicii.gif',
+    customCategory: 'meows'
+  },
+]
+
 export const Chat = ()  => {
   const [message, setMessage] = useState('');
   const [chats, setChat] = useState([]);
+  const [showEmojis, setShowEmojis] = useState([]);
+  const messagesEndRef = useRef(null);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
-  const nickname = sessionStorage.getItem('name');
-  const game = sessionStorage.getItem('game');
   const classes = useStyles();
 
-  const messagesEndRef = useRef(null);
+  const nickname = sessionStorage.getItem('name');
+  const game = sessionStorage.getItem('game');
+
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({behavior: "smooth"});
     }
   };
-
   useEffect(scrollToBottom, [chats]);
 
   const { socket } = useSocket("chat_message", newChat => {
@@ -64,6 +87,16 @@ export const Chat = ()  => {
     }
     document.getElementById('message-input').value = '';
     setMessage('');
+  };
+
+  const addEmoji = e => {
+    // console.log(e.native);
+    let emoji = e.native;
+    setMessage(message + emoji );
+  };
+
+  const closeMenu = e => {
+    setShowEmojis(false);
   };
 
   const renderChat = () => {
@@ -89,14 +122,35 @@ export const Chat = ()  => {
     );
   };
 
+  const renderPicker = () => {
+    if (showEmojis.length === 0) {
+      return (
+        <p className='show-emoji-picker' onClick={setShowEmojis(['test'])}>
+          {String.fromCodePoint(0x1f60a)}
+        </p>
+      )
+    } else {
+      return (
+        <span className='emoji-picker'>
+          <Picker
+            onSelect={addEmoji}
+            custom={customEmojis}
+            emojiTooltip={true}
+            title=''
+          />
+        </span>
+      )}
+  }
+
   return (
     <>
       <div className="game-name">Game: { game }</div>
       <Divider variant="middle"/>
       {renderChat()}
       <div className="send-form">
+        { renderPicker() }
         <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-          <TextField id="message-input" variant="outlined" style ={{width: '100%'}} inputstyle ={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}/>
+          <TextField id="message-input" variant="outlined" style ={{width: '100%'}} inputstyle={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}>{ message }</TextField>
           <IconButton className="send-message" onClick={handleSend} aria-label="leave">
             <SendIcon fontSize="inherit" />
           </IconButton>
