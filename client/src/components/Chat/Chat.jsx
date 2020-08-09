@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSocket } from "use-socketio";
-import { Divider, IconButton, makeStyles, TextField, Typography } from "@material-ui/core";
-import SendIcon from '@material-ui/icons/Send';
 import useSound from "use-sound";
+import { Divider, IconButton, makeStyles, TextField, Typography } from "@material-ui/core";
+import CancelIcon from "@material-ui/icons/Cancel";
 import './Chat.css'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -36,37 +36,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-
-const customEmojis = [
-  {
-    name: 'Octocat',
-    short_names: ['octocat'],
-    text: '',
-    emoticons: [],
-    keywords: ['github'],
-    imageUrl: 'https://github.githubassets.com/images/icons/emoji/octocat.png',
-    customCategory: 'GitHub'
-  },
-  {
-    name: 'Meow Avicii',
-    short_names: ['meow_avicii'],
-    keywords: ['meow', 'avicii'],
-    imageUrl: 'emojis/meows/avicii.gif',
-    customCategory: 'meows'
-  },
-]
-
 export const Chat = ()  => {
-  const [message, setMessage] = useState('');
   const [chats, setChat] = useState([]);
-  const [showEmojis, setShowEmojis] = useState([]);
+  const [message, setMessage] = useState('');
+  const [showEmojis, setShowEmojis] = useState(false);
   const messagesEndRef = useRef(null);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   const classes = useStyles();
 
   const nickname = sessionStorage.getItem('name');
   const game = sessionStorage.getItem('game');
-
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -80,8 +59,27 @@ export const Chat = ()  => {
     boop()
   });
 
-  const handleSend = e => {
+  const displayEmojiMenu = e => {
+    setShowEmojis(true);
+    document.addEventListener('click', {closeEmojiMenu});
+  };
+
+  const closeEmojiMenu = e => {
+    setShowEmojis(false);
+    document.removeEventListener('click', {closeEmojiMenu});
+  };
+
+  const handleChange = e => {
+    console.log(e.target);
+    console.log(e.target.value);
+
+    setMessage(e.target.toString());
+    console.log('message is ' + message);
+  };
+
+  const handleSubmit = e => {
     e.preventDefault();
+    console.log('message is ' + message);
     if (message !== '') {
       socket.emit('chat_message', {name: nickname, message: message, game: game});
     }
@@ -90,13 +88,8 @@ export const Chat = ()  => {
   };
 
   const addEmoji = e => {
-    // console.log(e.native);
     let emoji = e.native;
-    setMessage(message + emoji );
-  };
-
-  const closeMenu = e => {
-    setShowEmojis(false);
+    setMessage(message + ' ' + emoji);
   };
 
   const renderChat = () => {
@@ -122,40 +115,89 @@ export const Chat = ()  => {
     );
   };
 
-  const renderPicker = () => {
-    if (showEmojis.length === 0) {
-      return (
-        <p className='show-emoji-picker' onClick={setShowEmojis(['test'])}>
-          {String.fromCodePoint(0x1f60a)}
-        </p>
-      )
-    } else {
-      return (
-        <span className='emoji-picker'>
-          <Picker
-            onSelect={addEmoji}
-            custom={customEmojis}
-            emojiTooltip={true}
-            title=''
-          />
-        </span>
-      )}
-  }
-
   return (
     <>
       <div className="game-name">Game: { game }</div>
       <Divider variant="middle"/>
-      {renderChat()}
-      <div className="send-form">
-        { renderPicker() }
-        <form onSubmit={e => handleSend(e)} style={{display: 'flex'}}>
-          <TextField id="message-input" variant="outlined" style ={{width: '100%'}} inputstyle={{width: '100%'}} onChange={e => setMessage(e.target.value.trim())}>{ message }</TextField>
-          <IconButton className="send-message" onClick={handleSend} aria-label="leave">
-            <SendIcon fontSize="inherit" />
-          </IconButton>
+      { renderChat() }
+      <div style={styles.container} className="newMessageForm">
+        <form style={styles.form} onSubmit={handleSubmit}>
+          <input
+            id="message-input"
+            style={styles.input}
+            type="text"
+            value={message}
+            onChange={handleChange}
+            placeholder="Type a message and hit ENTER"
+          />
         </form>
+        {showEmojis ? (
+          <span style={styles.emojiPicker}>
+            <IconButton className="close-emoji-menu" onClick={closeEmojiMenu} aria-label="leave">
+              <CancelIcon fontSize="inherit" />
+            </IconButton>
+            <Picker
+              onSelect={addEmoji}
+              emojiTooltip={true}
+              custom={customEmojis}
+            />
+          </span>
+        ) : (
+          <p style={styles.getEmojiButton} onClick={displayEmojiMenu}>
+            {String.fromCodePoint(0x1f60a)}
+          </p>
+        )}
       </div>
     </>
   );
 };
+
+const styles = {
+  container: {
+    padding: 20,
+    borderTop: "1px #4C758F solid",
+    marginBottom: 20
+  },
+  form: {
+    display: "flex"
+  },
+  input: {
+    color: "inherit",
+    background: "none",
+    outline: "none",
+    border: "none",
+    flex: 1,
+    fontSize: 16
+  },
+  getEmojiButton: {
+    cssFloat: "left",
+    border: "none",
+    margin: 0,
+    cursor: "pointer"
+  },
+  emojiPicker: {
+    position: "absolute",
+    bottom: 10,
+    right: 0,
+    cssFloat: "right",
+    marginLeft: "15px",
+    marginBottom: "80px",
+  }
+};
+
+const customEmojis = [
+  {
+    name: 'Meow Avicii',
+    short_names: ['meow_avicii'],
+    keywords: ['meow', 'avicii'],
+    imageUrl: 'emojis/meows/avicii.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow Wat',
+    short_names: ['meow_wat'],
+    keywords: ['meow', 'wat'],
+    imageUrl: 'emojis/meows/wat.gif',
+    customCategory: 'meows'
+  }
+];

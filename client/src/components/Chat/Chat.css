@@ -49,3 +49,9 @@
 .emoji-mart-scroll + .emoji-mart-bar {
   display: none;
 }
+
+.close-emoji-menu {
+  margin-left: 84%!important;
+  color: red!important;
+  margin-bottom: -25px!important;
+}
