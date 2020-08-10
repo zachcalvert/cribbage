@@ -59,6 +59,13 @@ export const Chat = ()  => {
     boop()
   });
 
+  useSocket("animation", animation => {
+    let newChat = {name: animation.name, message: <div className='animation' style={{backgroundImage: `url(${animation.imageUrl})` }} />};
+    setChat([...chats, newChat]);
+    boop()
+  });
+
+
   const displayEmojiMenu = e => {
     setShowEmojis(true);
     document.addEventListener('click', {closeEmojiMenu});
@@ -70,16 +77,11 @@ export const Chat = ()  => {
   };
 
   const handleChange = e => {
-    console.log(e.target);
-    console.log(e.target.value);
-
-    setMessage(e.target.toString());
-    console.log('message is ' + message);
+    setMessage(e.target.value);
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log('message is ' + message);
     if (message !== '') {
       socket.emit('chat_message', {name: nickname, message: message, game: game});
     }
@@ -88,8 +90,13 @@ export const Chat = ()  => {
   };
 
   const addEmoji = e => {
-    let emoji = e.native;
-    setMessage(message + ' ' + emoji);
+    if (e.hasOwnProperty('imageUrl') && e.imageUrl ) {
+      socket.emit('animation', {name: nickname, imageUrl: e.imageUrl, game: game});
+    }
+    else {
+      setMessage(message + ' ' + e.native);
+      document.getElementById('message-input').value = '';
+    }
   };
 
   const renderChat = () => {
@@ -190,6 +197,8 @@ const customEmojis = [
     name: 'Meow Avicii',
     short_names: ['meow_avicii'],
     keywords: ['meow', 'avicii'],
+    text: '',
+    emoticons: [],
     imageUrl: 'emojis/meows/avicii.gif',
     customCategory: 'meows'
   },

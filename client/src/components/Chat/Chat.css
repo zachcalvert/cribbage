@@ -55,3 +55,10 @@
   color: red!important;
   margin-bottom: -25px!important;
 }
+
+.animation {
+  background-repeat: no-repeat;
+  background-size: 50px 50px;
+  width: 50px;
+  height: 50px;
+}
