@@ -63,6 +63,7 @@ export const Chat = ()  => {
     let newChat = {name: animation.name, message: <div className='animation' style={{backgroundImage: `url(${animation.imageUrl})` }} />};
     setChat([...chats, newChat]);
     boop()
+    closeEmojiMenu();
   });
 
 
@@ -200,6 +201,118 @@ const customEmojis = [
     text: '',
     emoticons: [],
     imageUrl: 'emojis/meows/avicii.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow Bongo',
+    short_names: ['meow_bongo'],
+    keywords: ['meow', 'bongo'],
+    imageUrl: 'emojis/meows/bongo.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow Bounce',
+    short_names: ['meow_bounce'],
+    keywords: ['meow', 'bounce'],
+    imageUrl: 'emojis/meows/bounce.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow gimme',
+    short_names: ['meow_gimme'],
+    keywords: ['meow', 'gimme'],
+    imageUrl: 'emojis/meows/gimme.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow hero',
+    short_names: ['meow_hero'],
+    keywords: ['meow', 'hero'],
+    imageUrl: 'emojis/meows/hero.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow maracas',
+    short_names: ['meow_maracas'],
+    keywords: ['meow', 'maracas'],
+    imageUrl: 'emojis/meows/maracas.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow party',
+    short_names: ['meow_party'],
+    keywords: ['meow', 'party'],
+    imageUrl: 'emojis/meows/party.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow peekaboo',
+    short_names: ['meow_peekaboo'],
+    keywords: ['meow', 'peekaboo'],
+    imageUrl: 'emojis/meows/peekaboo.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow popcorn',
+    short_names: ['meow_popcorn'],
+    keywords: ['meow', 'popcorn'],
+    imageUrl: 'emojis/meows/popcorn.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow rage',
+    short_names: ['meow_rage'],
+    keywords: ['meow', 'rage'],
+    imageUrl: 'emojis/meows/rage.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow Wat',
+    short_names: ['meow_wat'],
+    keywords: ['meow', 'wat'],
+    imageUrl: 'emojis/meows/wat.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow shocked',
+    short_names: ['meow_shocked'],
+    keywords: ['meow', 'shocked'],
+    imageUrl: 'emojis/meows/shocked.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow sip',
+    short_names: ['meow_sip'],
+    keywords: ['meow', 'sip'],
+    imageUrl: 'emojis/meows/sip.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow smug',
+    short_names: ['meow_smug'],
+    keywords: ['meow', 'smug'],
+    imageUrl: 'emojis/meows/smug.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow stretch',
+    short_names: ['meow_stretch'],
+    keywords: ['meow', 'stretch'],
+    imageUrl: 'emojis/meows/stretch.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow thinking',
+    short_names: ['meow_thinking'],
+    keywords: ['meow', 'thinking'],
+    imageUrl: 'emojis/meows/thinking.gif',
+    customCategory: 'meows'
+  },
+  {
+    name: 'Meow wave',
+    short_names: ['meow_wave'],
+    keywords: ['meow', 'wave'],
+    imageUrl: 'emojis/meows/wave.gif',
     customCategory: 'meows'
   },
   {
