@@ -7,7 +7,9 @@ import { Chat } from "./Chat/Chat";
 import { Deck } from "./Deck/Deck";
 import { Opponents } from "./Opponent/Opponents";
 import { Player } from "./Player/Player";
+import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenuProvider } from "./StartMenu/StartMenuContext";
+
 
 
 export const Game = ()  => {
@@ -59,7 +61,7 @@ export const Game = ()  => {
             </IconButton>
 
             <div className="top-row row">
-              {opponents}
+              <span>{opponents}</span>
               {opponents.map((opponent, index) => (
                 <div key={index} className={`opponent opponent-${index}`}>{opponent}</div>
               ))}
@@ -67,7 +69,7 @@ export const Game = ()  => {
 
             <div className="middle-row row">
               <div className="scoreboard col-8">
-                {/*<Scoreboard player={name} opponents={opponents} />*/}
+                <Scoreboard />
               </div>
               <div className="col-1"></div>
               <div className="deck col-2">

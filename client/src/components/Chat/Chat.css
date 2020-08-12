@@ -3,7 +3,7 @@
 }
 
 .chat-log {
-  height: calc(100% - 150px);
+  height: calc(100% - 130px);
   overflow-y: scroll;
   padding: 5px 0;
 }

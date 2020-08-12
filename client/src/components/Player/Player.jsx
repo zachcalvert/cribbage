@@ -4,6 +4,7 @@ import useSound from 'use-sound';
 import { ReactSVG } from 'react-svg'
 import { Button, Divider } from "@material-ui/core";
 import './Player.css'
+import Fab from "@material-ui/core/Fab";
 
 export const Player = (props) => {
   const [action, setAction] = useState('start');
@@ -66,15 +67,13 @@ export const Player = (props) => {
 
   return (
     <>
-      <Button
+      <Fab variant="extended"
         className="action-button"
-        variant="contained"
-        color="secondary"
+        color="primary"
         onClick={handleAction}
-        disabled={!turn}
-      >
+        disabled={!turn}>
         { action }
-      </Button>
+      </Fab>
       <Divider variant="middle" />
       <div className="player-cards">
       { renderCards() }
