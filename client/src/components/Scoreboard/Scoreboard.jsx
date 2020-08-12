@@ -18,17 +18,17 @@ export const Scoreboard = () => {
   const renderProgressBars = () => {
     return players.length ? (
       <>
-        {players.map((player, index) => (
+        {Object.entries(players).map( ([score, player]) => (
           <div className='scoreboard-player row'>
             <span className='scoreboard-player-name col-2'>{player}</span>
             <LinearProgress
               className='scoreboard-player-progress col-9'
               variant="determinate"
-              value={35}
+              value={score}
               aria-valuemax={winningScore}
             />
             <span className='scoreboard-player-total col-1'>
-              35
+              {score}
             </span>
           </div>
         ))}
