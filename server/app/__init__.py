@@ -49,6 +49,7 @@ def animation(msg):
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
+    emit('draw_board', {'players': list(game['players'].keys()), 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 

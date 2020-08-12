@@ -1,0 +1,18 @@
+.scoreboard {
+  padding: 0 0 0 40px;
+}
+
+.scoreboard-player {
+  padding: 5px 0;
+}
+
+.scoreboard-player-name {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.scoreboard-player-progress {
+  height: 12px!important;
+  border-radius: 6px!important;
+  margin-top: 6px!important;
+}

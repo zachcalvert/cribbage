@@ -167,7 +167,6 @@ const styles = {
   container: {
     padding: 20,
     borderTop: "1px #4C758F solid",
-    marginBottom: 20,
     display: "inline-flex",
     width: "100%"
   },

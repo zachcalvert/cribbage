@@ -74,7 +74,7 @@ html, body {
   }
 
   .chat-log {
-    height: calc(66% - 50px);
+    height: calc(66% - 30px);
   }
   .emoji-picker {
     margin-bottom: 0;
