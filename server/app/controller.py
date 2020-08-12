@@ -62,6 +62,12 @@ def remove_player(game, player):
         cache.set(game, json.dumps(g))
 
 
+def get_opponents(game, player):
+    g = json.loads(cache.get(game))
+    players = g['players']
+    return [p for p in players.keys() if p != player]
+
+
 @game_interaction
 def start_game(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))

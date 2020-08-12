@@ -74,15 +74,21 @@ html, body {
   }
 
   .chat-log {
-    max-height: calc(66% - 50px);
+    height: calc(66% - 50px);
+  }
+  .emoji-picker {
+    margin-bottom: 0;
+  }
+  .emoji-mart-scroll {
+    height: 100px;
   }
 }
 
 
 @media only screen and (max-width: 500px) {
   .animated-card {
-    width: 12vh;
-    height: 18vh;
+    width: 14vh;
+    height: 19vh;
     border-radius: 10px;
     background-size: 75px auto;
   }

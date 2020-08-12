@@ -9,10 +9,8 @@
 .animated-card {
   background-repeat: no-repeat;
   background-position: center center;
-  width: 12vh;
-  max-width: 322px;
-  height: 18vh;
-  max-height: 581px;
+  width: 15vh;
+  height: 22vh;
   will-change: transform;
   border-radius: 10px;
   background-size: 85px auto;

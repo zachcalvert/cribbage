@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
-import { Divider, IconButton, makeStyles, TextField, Typography } from "@material-ui/core";
+import { Divider, IconButton, makeStyles } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import './Chat.css'
 import 'emoji-mart/css/emoji-mart.css'
@@ -55,6 +55,10 @@ export const Chat = ()  => {
   useEffect(scrollToBottom, [chats]);
 
   const { socket } = useSocket("chat_message", newChat => {
+    if (newChat.name === 'game-updater') {
+      let update = {name: newChat.name, message: <div className='update'>{newChat.message}</div>};
+      newChat = update;
+    }
     setChat([...chats, newChat]);
     boop()
   });
@@ -65,7 +69,6 @@ export const Chat = ()  => {
     boop()
     closeEmojiMenu();
   });
-
 
   const displayEmojiMenu = e => {
     setShowEmojis(true);
@@ -106,13 +109,13 @@ export const Chat = ()  => {
         {chats.map(({name, message}, index) => (
           <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
 
-            <Typography className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
+            <div className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
               { message }
-            </Typography>
-            {nickname !== name ?
-              <Typography className={classes.chatMessageName} color="textSecondary" gutterBottom variant="body2" component="p">
+            </div>
+            {nickname !== name && name !== 'game-updater' ?
+              <div className={classes.chatMessageName} color="textSecondary">
                 {name}
-              </Typography> : <span />
+              </div> : <span />
             }
           </div>
         ))}
@@ -129,18 +132,8 @@ export const Chat = ()  => {
       <Divider variant="middle"/>
       { renderChat() }
       <div style={styles.container} className="newMessageForm">
-        <form style={styles.form} onSubmit={handleSubmit}>
-          <input
-            id="message-input"
-            style={styles.input}
-            type="text"
-            value={message}
-            onChange={handleChange}
-            placeholder="Type a message and hit ENTER"
-          />
-        </form>
         {showEmojis ? (
-          <span style={styles.emojiPicker}>
+          <span className='emoji-picker'>
             <IconButton className="close-emoji-menu" onClick={closeEmojiMenu} aria-label="leave">
               <CancelIcon fontSize="inherit" />
             </IconButton>
@@ -155,6 +148,16 @@ export const Chat = ()  => {
             {String.fromCodePoint(0x1f60a)}
           </p>
         )}
+        <form style={styles.form} onSubmit={handleSubmit}>
+          <input
+            id="message-input"
+            style={styles.input}
+            type="text"
+            value={message}
+            onChange={handleChange}
+            placeholder="Type a message and hit ENTER"
+          />
+        </form>
       </div>
     </>
   );
@@ -164,10 +167,12 @@ const styles = {
   container: {
     padding: 20,
     borderTop: "1px #4C758F solid",
-    marginBottom: 20
+    marginBottom: 20,
+    display: "inline-flex",
+    width: "100%"
   },
   form: {
-    display: "flex"
+    display: "flex",
   },
   input: {
     color: "inherit",
@@ -178,18 +183,10 @@ const styles = {
     fontSize: 16
   },
   getEmojiButton: {
-    cssFloat: "left",
     border: "none",
     margin: 0,
-    cursor: "pointer"
-  },
-  emojiPicker: {
-    position: "absolute",
-    bottom: 10,
-    right: 0,
-    cssFloat: "right",
-    marginLeft: "15px",
-    marginBottom: "80px",
+    cursor: "pointer",
+    padding: "0 20px 0 0"
   }
 };
 

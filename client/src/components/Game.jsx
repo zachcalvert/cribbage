@@ -3,12 +3,11 @@ import { useSocket } from "use-socketio";
 import { Button, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-import { Deck } from "./Deck/Deck";
 import { Chat } from "./Chat/Chat";
+import { Deck } from "./Deck/Deck";
+import { Opponents } from "./Opponent/Opponents";
 import { Player } from "./Player/Player";
 import { StartMenuProvider } from "./StartMenu/StartMenuContext";
-import { Opponent } from "./Opponent/Opponent";
-import {Opponents} from "./Opponent/Opponents";
 
 
 export const Game = ()  => {
@@ -17,13 +16,17 @@ export const Game = ()  => {
   const [room, setRoom] = useState('');
   const [opponents, setOpponents] = useState([]);
 
-  const {socket} = useSocket("attendance_change", msg =>
+  const {socket} = useSocket("attendance_change", msg => {
     (msg.type === 'join') ? (
-      setOpponents([...opponents, msg.name])
+        (msg.name === name) ? (
+            setOpponents(JSON.stringify(msg.opponents))
+        ) : (
+            setOpponents([...opponents, msg.name])
+        )
     ) : (
-      setOpponents(opponents.filter(player => player !== msg.name))
+        setOpponents(opponents.filter(player => player !== msg.name))
     )
-  );
+  });
 
   const handleJoin = e => {
     e.preventDefault();
@@ -56,7 +59,10 @@ export const Game = ()  => {
             </IconButton>
 
             <div className="top-row row">
-              <Opponents opponents={opponents} />
+              {opponents}
+              {opponents.map((opponent, index) => (
+                <div key={index} className={`opponent opponent-${index}`}>{opponent}</div>
+              ))}
             </div>
 
             <div className="middle-row row">

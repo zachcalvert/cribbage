@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React  from "react";
 import '../Player/Player.css'
 
 export const Opponents = (props) => {
-  const opponents = props.opponents;
 
-  const renderedOpponents = opponents.map((opponent) =>
-      <li key={opponent}>
-        {opponent}
-      </li>
-  );
+  const renderOpponents = () => {
+    console.log('rendering the opponents: ' + props.opponents);
+    return props.opponents.length ? (
+      <>
+        {props.opponents.map((opponent, index) => (
+          <div key={index} className={`opponent opponent-${index}`}>{opponent}</div>
+        ))}
+      </>
+    ) : (
+      <span />
+    );
+  };
 
   return (
-      <ul>{renderedOpponents}</ul>
+      <>
+      { renderOpponents() }
+      </>
   )
 }

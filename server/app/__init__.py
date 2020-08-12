@@ -22,15 +22,18 @@ def player_join(msg):
 
     controller.get_or_create_game(msg['game'])
     controller.add_player(msg['game'], msg['name'])
+    opponents = controller.get_opponents(msg['game'], msg['name'])
+    print('sending these opponents back: {}'.format(opponents))
 
-    emit('attendance_change', {'player': msg['name'], 'type': 'join'}, room=msg['game'])
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'cribby', 'message': 'Hi {}! Welcome :)'.format(msg['name'])})
+    emit('attendance_change', {'player': msg['name'], 'opponents': opponents, 'type': 'join'}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} has joined'.format(msg['name'])}, room=msg['game'])
 
 
 @socketio.on('player_leave')
 def player_leave(msg):
     leave_room(msg['game'])
     emit('attendance_change', {'player': msg['name'], 'type': 'leave'}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} left'.format(msg['name'])}, room=msg['game'])
 
 
 @socketio.on('chat_message')
