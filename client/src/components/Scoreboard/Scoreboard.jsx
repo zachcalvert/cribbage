@@ -13,8 +13,6 @@ export const Scoreboard = () => {
     setWinningScore(msg.winning_score);
   });
 
-  const normalise = value => (value - 0) * 100 / ({winningScore} - 0);
-
   const renderProgressBars = () => {
     return players.length ? (
       <>
