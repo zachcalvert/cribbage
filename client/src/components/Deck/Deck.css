@@ -31,8 +31,11 @@
   border: none;
   border-radius: 0;
   padding: 8px;
+  margin-top: 15px;
 }
 
 .chosen {
-  margin-top: -10px!important;
+  margin-top: 0px!important;
+  box-shadow: 0 8px 6px -6px black;
+  z-index: 2;
 }
