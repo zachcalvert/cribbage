@@ -11,5 +11,14 @@ services:
       - server/env.dev
     depends_on:
       - redis
+  react:
+    build: ./client
+    volumes:
+      - ./client/:/code
+    ports:
+      - 3000:3000
+    depends_on:
+      - flask
+    tty: true
   redis:
     image: redis
