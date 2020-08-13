@@ -31,7 +31,7 @@ export const Opponent = (props) => {
 
   return (
     <div className="opponent">
-      <span>{ props }</span>
+      <span>{ props.name }</span>
       <Divider variant="middle" />
       { renderCards() }
     </div>

@@ -5,12 +5,10 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
 import { Deck } from "./Deck/Deck";
-import { Opponents } from "./Opponent/Opponents";
+import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenuProvider } from "./StartMenu/StartMenuContext";
-
-
 
 export const Game = ()  => {
   const [id, setId] = useState('');
@@ -18,16 +16,8 @@ export const Game = ()  => {
   const [room, setRoom] = useState('');
   const [opponents, setOpponents] = useState([]);
 
-  const {socket} = useSocket("attendance_change", msg => {
-    (msg.type === 'join') ? (
-        (msg.name === name) ? (
-            setOpponents(JSON.stringify(msg.opponents))
-        ) : (
-            setOpponents([...opponents, msg.name])
-        )
-    ) : (
-        setOpponents(opponents.filter(player => player !== msg.name))
-    )
+  const { socket } = useSocket("players", msg => {
+    setOpponents(msg.players.filter(player => player !== name))
   });
 
   const handleJoin = e => {
@@ -35,10 +25,10 @@ export const Game = ()  => {
     if ((!name) || (!room)) {
       return alert("Please provide both your nickname and a game name.");
     }
-    setId(name);
     sessionStorage.setItem('name', name);
     sessionStorage.setItem('game', room);
     socket.emit("player_join", {name: name, game: room});
+    setId(name);
   };
 
   const handleLeave = e => {
@@ -47,6 +37,20 @@ export const Game = ()  => {
     sessionStorage.removeItem('game');
     socket.emit("player_leave", {name: name, game: room});
     setId('');
+  };
+
+  const renderOpponents = () => {
+    return opponents.length ? (
+      <>
+        {opponents.map(name => (
+          <div key={name} className={`opponent opponent-${name}`}>
+            <Opponent name={name} />
+          </div>
+        ))}
+      </>
+    ) : (
+      <span />
+    );
   };
 
   return id ? (
@@ -61,10 +65,7 @@ export const Game = ()  => {
             </IconButton>
 
             <div className="top-row row">
-              <span>{opponents}</span>
-              {opponents.map((opponent, index) => (
-                <div key={index} className={`opponent opponent-${index}`}>{opponent}</div>
-              ))}
+              { renderOpponents() }
             </div>
 
             <div className="middle-row row">
