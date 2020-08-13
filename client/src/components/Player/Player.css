@@ -34,3 +34,7 @@
 .player-name {
   padding: 0 20px;
 }
+
+.player-cards span {
+  padding: 3px;
+}

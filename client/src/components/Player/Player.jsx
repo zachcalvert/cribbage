@@ -2,9 +2,8 @@ import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import { ReactSVG } from 'react-svg'
-import { Button, Divider } from "@material-ui/core";
+import { Divider, Fab } from "@material-ui/core";
 import './Player.css'
-import Fab from "@material-ui/core/Fab";
 
 export const Player = (props) => {
   const [action, setAction] = useState('start');
@@ -12,13 +11,14 @@ export const Player = (props) => {
   const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState('');
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
-
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
     setAction(msg.action);
     if (msg.players.includes(props.name)) {
       setTurn(true);
+    } else {
+      setTurn(false);
     }
   });
 
@@ -34,7 +34,6 @@ export const Player = (props) => {
       svg.classList.add('played');
     }
   });
-
 
   const handleAction = (e) => {
     boop();
