@@ -125,3 +125,18 @@ def cut_deck(game_data, **kwargs):
 
     print('the cut card is {}'.format(game_data['cut_card']))
     return game_data
+
+
+def play_card(game_data, **kwargs):
+    player = kwargs['player']
+    card = kwargs['card']
+    value = game_data['cards'][card]['value']
+
+    game_data['hands'][player].remove(card)
+    game_data['pegging']['cards'].insert(0, card)
+    game_data['pegging']['last_played'] = player
+    game_data['pegging']['total'] += value
+    game_data['played_cards'][player].append(card)
+
+    return game_data
+

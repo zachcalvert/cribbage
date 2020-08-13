@@ -16,8 +16,8 @@ export const Player = (props) => {
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
+    setAction(msg.action);
     if (msg.players.includes(props.name)) {
-      setAction(msg.action);
       setTurn(true);
     }
   });
@@ -27,6 +27,14 @@ export const Player = (props) => {
       setCards(msg.cards[props.name]);
     }
   });
+
+  useSocket("card_played", msg => {
+    if (props.name === msg.player) {
+      let svg = document.getElementById(msg.card).getElementsByTagName('svg')[0];
+      svg.classList.add('played');
+    }
+  });
+
 
   const handleAction = (e) => {
     boop();

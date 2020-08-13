@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
 import { Divider } from "@material-ui/core";
-import '../Player/Player.css'
+import './Opponent.css'
 
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);
 
-  useSocket("deal", msg => {
-    let dealt = msg.hands[props.name];
-    setCards(dealt);
+  useSocket("cards", msg => {
+    if (props.name in msg.cards) {
+      setCards(msg.cards[props.name]);
+    }
   });
 
   const renderCards = () => {
@@ -30,10 +31,10 @@ export const Opponent = (props) => {
   };
 
   return (
-    <div className="opponent">
-      <span>{ props }</span>
-      <Divider variant="middle" />
+    <>
+      <span>{ props.name }</span>
+      <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
-    </div>
+    </>
   );
 }

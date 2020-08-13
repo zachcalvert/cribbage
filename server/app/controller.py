@@ -60,12 +60,7 @@ def remove_player(game, player):
         cache.delete(game)
     else:
         cache.set(game, json.dumps(g))
-
-
-def get_opponents(game, player):
-    g = json.loads(cache.get(game))
-    players = g['players']
-    return [p for p in players.keys() if p != player]
+    return g
 
 
 @game_interaction
@@ -93,5 +88,11 @@ def discard(game_data, **kwargs):
 def cut_deck(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.cut_deck(game_data, **kwargs)
-    print('in controller, the cut card is: {}'.format(game['cut_card']))
+    return game
+
+
+@game_interaction
+def play_card(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.play_card(game_data, **kwargs)
     return game
