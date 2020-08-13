@@ -88,5 +88,11 @@ def discard(game_data, **kwargs):
 def cut_deck(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.cut_deck(game_data, **kwargs)
-    print('in controller, the cut card is: {}'.format(game['cut_card']))
+    return game
+
+
+@game_interaction
+def play_card(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.play_card(game_data, **kwargs)
     return game

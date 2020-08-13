@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
 import { Divider } from "@material-ui/core";
-import '../Player/Player.css'
+import './Opponent.css'
 
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);
@@ -30,10 +30,10 @@ export const Opponent = (props) => {
   };
 
   return (
-    <div className="opponent">
+    <>
       <span>{ props.name }</span>
       <Divider variant="middle" />
       { renderCards() }
-    </div>
+    </>
   );
 }
