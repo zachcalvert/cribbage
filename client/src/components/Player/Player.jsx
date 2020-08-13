@@ -28,6 +28,14 @@ export const Player = (props) => {
     }
   });
 
+  useSocket("card_played", msg => {
+    if (props.name === msg.player) {
+      let svg = document.getElementById(msg.card).getElementsByTagName('svg')[0];
+      svg.classList.add('played');
+    }
+  });
+
+
   const handleAction = (e) => {
     boop();
     if (action === 'start') {

@@ -75,10 +75,10 @@ def cut_deck(msg):
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
-@socketio.on('play_card')
+@socketio.on('play')
 def play_card(msg):
     game = controller.play_card(msg)
-    emit('played_card', {'player': msg['player'], 'card': msg['card']}, room=msg['game'])
+    emit('card_played', {'player': msg['player'], 'card': msg['card'], 'points': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
