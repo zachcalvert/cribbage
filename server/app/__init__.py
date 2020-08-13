@@ -50,6 +50,8 @@ def animation(msg):
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
+    message = 'First to 121 wins! It\'s {}\'s crib.'.format(game['current_turn'][0])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'cribby', 'message': message}, room=msg['game'])
     emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
