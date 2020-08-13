@@ -21,7 +21,7 @@ export const Opponent = (props) => {
             key={index}
             wrapper='span'
             className='opponent-card'
-            src={`/cards/${cards[index]}.svg`}
+            src={`/cards/dark_blue.svg`}
           />
         ))}
       </span>
