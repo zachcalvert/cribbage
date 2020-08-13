@@ -159,7 +159,6 @@ export const Chat = ()  => {
             type="text"
             value={message}
             onChange={handleChange}
-            placeholder="Type a message and hit ENTER"
           />
         </form>
       </div>
