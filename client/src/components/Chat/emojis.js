@@ -121,20 +121,6 @@ export const customEmojis = [
     customCategory: 'meows'
   },
   {
-    name: 'Meow Wat',
-    short_names: ['meow_wat'],
-    keywords: ['meow', 'wat'],
-    imageUrl: 'emojis/meows/wat.gif',
-    customCategory: 'meows'
-  },
-  {
-    name: 'Meow smug',
-    short_names: ['meow_smug'],
-    keywords: ['meow', 'smug'],
-    imageUrl: 'emojis/meows/smug.gif',
-    customCategory: 'meows'
-  },
-  {
     name: 'Blob babyangel',
     short_names: ['blob_babyangel'],
     keywords: ['blob', 'babyangel'],
