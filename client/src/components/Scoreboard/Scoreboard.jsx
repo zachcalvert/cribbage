@@ -5,7 +5,7 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 
 
 export const Scoreboard = () => {
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
 
   useSocket("draw_board", msg => {
@@ -14,10 +14,10 @@ export const Scoreboard = () => {
   });
 
   const renderProgressBars = () => {
-    return players.length ? (
+    return players ? (
       <>
-        {Object.entries(players).map( ([score, player]) => (
-          <div className='scoreboard-player row'>
+        {Object.entries(players).map( ([player, score]) => (
+          <div key={player} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-2'>{player}</span>
             <LinearProgress
               className='scoreboard-player-progress col-9'
