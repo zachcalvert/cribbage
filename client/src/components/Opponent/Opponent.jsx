@@ -7,9 +7,10 @@ import './Opponent.css'
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);
 
-  useSocket("deal", msg => {
-    let dealt = msg.hands[props.name];
-    setCards(dealt);
+  useSocket("cards", msg => {
+    if (props.name in msg.cards) {
+      setCards(msg.cards[props.name]);
+    }
   });
 
   const renderCards = () => {
@@ -32,7 +33,7 @@ export const Opponent = (props) => {
   return (
     <>
       <span>{ props.name }</span>
-      <Divider variant="middle" />
+      <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
     </>
   );

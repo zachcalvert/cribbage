@@ -16,8 +16,8 @@ export const Player = (props) => {
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
+    setAction(msg.action);
     if (msg.players.includes(props.name)) {
-      setAction(msg.action);
       setTurn(true);
     }
   });
