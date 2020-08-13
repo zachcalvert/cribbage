@@ -37,6 +37,29 @@ const useStyles = makeStyles((theme) => ({
     borderBottomRightRadius: 0,
     color: 'white',
     background: '#1982FC'
+  },
+  container: {
+    padding: 20,
+    borderTop: "1px #4C758F solid",
+    display: "inline-flex",
+    width: "100%"
+  },
+  form: {
+    display: "flex",
+  },
+  input: {
+    color: "inherit",
+    background: "none",
+    outline: "none",
+    border: "none",
+    flex: 1,
+    fontSize: 16
+  },
+  getEmojiButton: {
+    border: "none",
+    margin: 0,
+    cursor: "pointer",
+    padding: "0 20px 0 0"
   }
 }));
 
@@ -135,7 +158,8 @@ export const Chat = ()  => {
       <div className="game-name">Game: { game }</div>
       <Divider variant="middle"/>
       { renderChat() }
-      <div style={styles.container} className="newMessageForm">
+      <div className={`newMessageForm ${classes.container}`}>
+
         {showEmojis ? (
           <span className='emoji-picker'>
             <IconButton className="close-emoji-menu" onClick={closeEmojiMenu} aria-label="leave">
@@ -148,14 +172,14 @@ export const Chat = ()  => {
             />
           </span>
         ) : (
-          <p style={styles.getEmojiButton} onClick={displayEmojiMenu}>
+          <p className={classes.getEmojiButton} onClick={displayEmojiMenu}>
             {String.fromCodePoint(0x1f60a)}
           </p>
         )}
-        <form style={styles.form} onSubmit={handleSubmit}>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <input
             id="message-input"
-            style={styles.input}
+            className={classes.input}
             type="text"
             value={message}
             onChange={handleChange}
@@ -164,30 +188,4 @@ export const Chat = ()  => {
       </div>
     </>
   );
-};
-
-const styles = {
-  container: {
-    padding: 20,
-    borderTop: "1px #4C758F solid",
-    display: "inline-flex",
-    width: "100%"
-  },
-  form: {
-    display: "flex",
-  },
-  input: {
-    color: "inherit",
-    background: "none",
-    outline: "none",
-    border: "none",
-    flex: 1,
-    fontSize: 16
-  },
-  getEmojiButton: {
-    border: "none",
-    margin: 0,
-    cursor: "pointer",
-    padding: "0 20px 0 0"
-  }
 };
