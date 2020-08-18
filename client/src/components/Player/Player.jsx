@@ -8,7 +8,8 @@ import './Player.css'
 export const Player = (props) => {
   const [action, setAction] = useState('start');
   const [turn, setTurn] = useState(true);
-  const [cards, setCards] = useState([]);
+  const [playableCards, setPlayableCards] = useState([]);
+  const [playedCards, setPlayedCards] = useState([]);
   const [activeCard, setActiveCard] = useState('');
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
@@ -28,18 +29,26 @@ export const Player = (props) => {
     } else {
       setShowPeggingTotal(false);
     }
+    if (msg.action === 'score' && playedCards.length !== 0) {
+      setPlayableCards(playedCards);
+      setPlayedCards([]);
+    }
+    if (msg.action === 'next') {
+      setPlayableCards([]);
+    }
   });
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
-      setCards(msg.cards[props.name]);
+      setPlayableCards(msg.cards[props.name]);
+      setPlayedCards([]);
     }
   });
 
   useSocket("card_played", msg => {
     if (props.name === msg.player) {
-      let svg = document.getElementById(msg.card).getElementsByTagName('svg')[0];
-      svg.classList.add('hidden');
+      setPlayableCards(playableCards.filter(card => card !== msg.card));
+      setPlayedCards([...playedCards, msg.card]);
     }
     setShowPeggingTotal(true);
     setPeggingTotal(msg.pegging_total);
@@ -70,10 +79,28 @@ export const Player = (props) => {
     }
   };
 
-  const renderCards = () => {
-    return cards.length ? (
+  const renderPlayedCards = () => {
+    return playedCards.length ? (
       <>
-        {cards.map((card, index) => (
+        {playedCards.map((card, index) => (
+          <ReactSVG
+            id={card}
+            className='played-card'
+            key={index}
+            wrapper='span'
+            src={`/cards/${card}.svg`}
+          />
+        ))}
+      </>
+    ) : (
+      <span />
+    );
+  };
+
+  const renderPlayableCards = () => {
+    return playableCards.length ? (
+      <>
+        {playableCards.map((card, index) => (
           <ReactSVG
             id={card}
             key={index}
@@ -91,7 +118,9 @@ export const Player = (props) => {
   return (
     <>
       <div className='row player-header'>
-        <div className='col-3 played-cards'></div>
+        <div className='col-3 played-cards'>
+          { renderPlayedCards() }
+        </div>
         <div className='col-6'>
           <Fab variant="extended"
             className="action-button"
@@ -111,7 +140,7 @@ export const Player = (props) => {
       </div>
       <Divider variant="middle" />
       <div className="player-cards">
-      { renderCards() }
+        { renderPlayableCards() }
       </div>
     </>
   );

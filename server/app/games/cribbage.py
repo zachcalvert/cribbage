@@ -357,6 +357,38 @@ def next_round(game_data, **kwargs):
     return game_data
 
 
+def play_again(game_data, **kwargs):
+    player = kwargs['player']
+    game_data['play_again'].append(player)
+
+    if set(game_data['play_again']) == set(game_data['players'].keys()):
+        return True
+    else:
+        game_data['current_turn'].remove(player)
+
+
+def reset_game_dict(game_data, **kwargs):
+    players = list(game_data['players'].keys())
+
+    fresh_game_dict = {
+        "name": game_data['name'],
+        'players': {},
+        'scoring_stats': {},
+        "winning_score": game_data['winning_score'],
+    }
+    for player in players:
+        fresh_game_dict['players'][player] = 0
+        fresh_game_dict['scoring_stats'][player] = {
+            'a_play': 0,
+            'b_hand': 0,
+            'c_crib': 0,
+
+        }
+
+    return fresh_game_dict
+
+
+
 class Hand:
     def __init__(self, cards, cut_card, is_crib=False):
         self.cards = cards
