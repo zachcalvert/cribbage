@@ -1,6 +1,6 @@
 from flask.cli import FlaskGroup
 
-from app import cribbage
+from app.games import cribbage
 
 
 cli = FlaskGroup(cribbage)
