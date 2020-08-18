@@ -19,7 +19,7 @@ export const Opponent = (props) => {
     }
   });
 
-  const renderCards = (show) => {
+  const renderCards = () => {
     return cards.length ? (
       <span>
         {cards.map((card, index) => (
