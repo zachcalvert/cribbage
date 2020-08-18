@@ -46,7 +46,7 @@ export const Player = (props) => {
   });
 
   useSocket("points", msg => {
-    if (props.reason === 'go') {
+    if (msg.reason === 'go') {
       setPeggingTotal(0);
     }
   });
