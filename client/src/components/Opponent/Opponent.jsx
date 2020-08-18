@@ -13,7 +13,7 @@ export const Opponent = (props) => {
     if (props.name in msg.cards) {
       setPlayableCards(msg.cards[props.name]);
     }
-    if (msg.crib === true) {
+    if (msg.show_to_all === true) {
       setShowCards(true);
     } else {
       setShowCards(false);

@@ -162,7 +162,6 @@ def cut_deck(game_data, **kwargs):
 
 
 def play_card(game_data, **kwargs):
-    print(game_data)
     player = kwargs['player']
     card_id = kwargs['card']
     card = game_data['cards'].get(card_id)
@@ -458,13 +457,13 @@ class Hand:
         ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
         distinct_ranks = sorted(list(set(ranks)))
 
-        # print('the ranks are: {}'.format(ranks))
+        print('the ranks are: {}'.format(ranks))
         groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
-        # print('the groups are: {}'.format(groups))
+        print('the groups are: {}'.format(groups))
         for group in groups:
             if len(group) > 2:
                 multiples = False
-                # print('this group has at least three cards: {}'.format(group))
+                print('this group has at least three cards: {}'.format(group))
                 for card in group:
                     if ranks.count(card) > 1:
                         multiples = True

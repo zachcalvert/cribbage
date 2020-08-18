@@ -8,9 +8,11 @@ import './Player.css'
 export const Player = (props) => {
   const [action, setAction] = useState('start');
   const [turn, setTurn] = useState(true);
+
+  const [activeCard, setActiveCard] = useState('');
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
-  const [activeCard, setActiveCard] = useState('');
+
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
@@ -28,13 +30,6 @@ export const Player = (props) => {
       setShowPeggingTotal(true);
     } else {
       setShowPeggingTotal(false);
-    }
-    if (msg.action === 'score' && playedCards.length !== 0) {
-      setPlayableCards(playedCards);
-      setPlayedCards([]);
-    }
-    if (msg.action === 'next') {
-      setPlayableCards([]);
     }
   });
 
