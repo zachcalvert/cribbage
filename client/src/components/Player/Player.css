@@ -9,6 +9,11 @@
   text-align: center;
 }
 
+.player-header {
+  max-height: 70px;
+  margin: auto;
+}
+
 .player svg {
   height: auto;
   width: 13%;
@@ -35,6 +40,10 @@
   padding: 0 20px;
 }
 
+.player-cards {
+  min-height: 210px;
+}
+
 .player-cards span {
   padding: 3px;
 }
@@ -42,4 +51,15 @@
 .pegging-total {
   font-size: 32px;
   color: #009688;
+}
+
+.played-cards {
+  margin: auto;
+  display: inline-flex;
+}
+
+.played-card svg {
+    height: 90px;
+    width: auto;
+    margin: -30px -25px 0 auto;
 }

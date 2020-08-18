@@ -5,32 +5,59 @@ import { Divider } from "@material-ui/core";
 import './Opponent.css'
 
 export const Opponent = (props) => {
-  const [cards, setCards] = useState([]);
+  const [playableCards, setPlayableCards] = useState([]);
+  const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
-      setCards(msg.cards[props.name]);
+      setPlayableCards(msg.cards[props.name]);
+      setPlayedCards([]);
     }
-    if (msg.crib === true) {
+    if (msg.show_to_all === true) {
       setShowCards(true);
     } else {
       setShowCards(false);
     }
   });
 
+  useSocket("card_played", msg => {
+    if (props.name === msg.player) {
+      setPlayableCards(playableCards.filter(card => card !== msg.card));
+      setPlayedCards([...playedCards, msg.card]);
+    }
+  });
+
   const renderCards = () => {
-    return cards.length ? (
+    return playableCards.length ? (
       <span>
-        {cards.map((card, index) => (
+        {playableCards.map((card, index) => (
           <ReactSVG
             key={index}
             wrapper='span'
             className='opponent-card'
-            src={ showCards ? `/cards/${cards[index]}.svg` : `/cards/dark_blue.svg`}
+            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
       </span>
+    ) : (
+      <span />
+    );
+  };
+
+  const renderPlayedCards = () => {
+    return playedCards.length ? (
+      <>
+        {playedCards.map((card, index) => (
+          <ReactSVG
+            id={card}
+            className='opponent-played-card'
+            key={index}
+            wrapper='span'
+            src={`/cards/${card}.svg`}
+          />
+        ))}
+      </>
     ) : (
       <span />
     );
@@ -41,6 +68,7 @@ export const Opponent = (props) => {
       <span>{ props.name }</span>
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
+      { renderPlayedCards() }
     </>
   );
 }

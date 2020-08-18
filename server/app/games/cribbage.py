@@ -162,7 +162,6 @@ def cut_deck(game_data, **kwargs):
 
 
 def play_card(game_data, **kwargs):
-    print(game_data)
     player = kwargs['player']
     card_id = kwargs['card']
     card = game_data['cards'].get(card_id)
@@ -357,6 +356,38 @@ def next_round(game_data, **kwargs):
     return game_data
 
 
+def play_again(game_data, **kwargs):
+    player = kwargs['player']
+    game_data['play_again'].append(player)
+
+    if set(game_data['play_again']) == set(game_data['players'].keys()):
+        return True
+    else:
+        game_data['current_turn'].remove(player)
+
+
+def reset_game_dict(game_data, **kwargs):
+    players = list(game_data['players'].keys())
+
+    fresh_game_dict = {
+        "name": game_data['name'],
+        'players': {},
+        'scoring_stats': {},
+        "winning_score": game_data['winning_score'],
+    }
+    for player in players:
+        fresh_game_dict['players'][player] = 0
+        fresh_game_dict['scoring_stats'][player] = {
+            'a_play': 0,
+            'b_hand': 0,
+            'c_crib': 0,
+
+        }
+
+    return fresh_game_dict
+
+
+
 class Hand:
     def __init__(self, cards, cut_card, is_crib=False):
         self.cards = cards
@@ -426,13 +457,13 @@ class Hand:
         ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
         distinct_ranks = sorted(list(set(ranks)))
 
-        # print('the ranks are: {}'.format(ranks))
+        print('the ranks are: {}'.format(ranks))
         groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
-        # print('the groups are: {}'.format(groups))
+        print('the groups are: {}'.format(groups))
         for group in groups:
             if len(group) > 2:
                 multiples = False
-                # print('this group has at least three cards: {}'.format(group))
+                print('this group has at least three cards: {}'.format(group))
                 for card in group:
                     if ranks.count(card) > 1:
                         multiples = True

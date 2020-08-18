@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import { Button, IconButton, TextField } from "@material-ui/core";
+import {Button, Fab, IconButton, TextField} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
@@ -92,7 +92,12 @@ export const Game = ()  => {
       <form style={{ marginTop: '150px' }} onSubmit={event => handleJoin(event)}>
         <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
         <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />
-        <Button color="primary" type="submit">Submit</Button>
+         <Fab variant="extended"
+            style={{ padding: '20px', margin: '20px' }}
+            color="primary"
+            type="submit">
+            Play
+         </Fab>
       </form>
     </div>
   );

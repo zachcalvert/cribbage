@@ -60,6 +60,12 @@ export const Deck = () => {
     setCards([...cards, '/cards/' + msg.card + '.svg']);
   });
 
+  useSocket("send_turn", msg => {
+    if (msg.action === 'deal') {
+      setCards(defaultDeck);
+    }
+  });
+
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div className="animated-cards-container" key={i} style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>

@@ -87,10 +87,7 @@ html, body {
 
 @media only screen and (max-width: 500px) {
   .animated-card {
-    width: 14vh;
-    height: 19vh;
-    border-radius: 10px;
-    background-size: 75px auto;
+    background-size: 65px auto;
   }
 
   .player-cards {
@@ -101,6 +98,12 @@ html, body {
     margin: 0 -10%;
     width: 30%;
     padding: 0;
+  }
+
+  .played-card svg {
+    height: 75px;
+    width: auto;
+    margin: -5px -40px 0 auto;
   }
 
   .game-name {

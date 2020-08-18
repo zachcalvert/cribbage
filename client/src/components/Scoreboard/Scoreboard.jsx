@@ -24,12 +24,12 @@ export const Scoreboard = () => {
           <div key={player} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-2'>{player}</span>
             <LinearProgress
-              className='scoreboard-player-progress col-9'
+              className='scoreboard-player-progress col-8'
               variant="determinate"
               value={score}
               aria-valuemax={winningScore}
             />
-            <span className='scoreboard-player-total col-1'>
+            <span className='scoreboard-player-total col-2'>
               {score}
             </span>
           </div>
