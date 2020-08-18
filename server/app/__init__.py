@@ -80,7 +80,20 @@ def cut_deck(msg):
 @socketio.on('play')
 def play_card(msg):
     game = controller.play_card(msg)
-    emit('card_played', {'player': msg['player'], 'card': msg['card'], 'points': game['players'][msg['player']]}, room=msg['game'])
+    emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
+    if game['previous_turn']['points'] > 0:
+        scorer = game['previous_turn']['player']
+        emit('points', {'player': scorer, 'points': game['players'][scorer]}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+
+@socketio.on('pass')
+def record_pass(msg):
+    game = controller.record_pass(msg)
+    if game['previous_turn']['action'] == 'go':
+        scorer = game['previous_turn']['player']
+        print('{}: and one for go'.format(scorer))
+        emit('points', {'player': scorer, 'points': game['players'][scorer], 'reason': game['previous_turn']['action']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 

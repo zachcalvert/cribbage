@@ -10,15 +10,23 @@ export const Player = (props) => {
   const [turn, setTurn] = useState(true);
   const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState('');
+  const [peggingTotal, setPeggingTotal] = useState(0);
+  const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
-    setAction(msg.action);
     if (msg.players.includes(props.name)) {
       setTurn(true);
+      setAction(msg.action);
     } else {
       setTurn(false);
+      setAction(`waiting for ${msg.players}`)
+    }
+    if (msg.action === 'play' || msg.action === 'pass') {
+      setShowPeggingTotal(true);
+    } else {
+      setShowPeggingTotal(false);
     }
   });
 
@@ -31,7 +39,15 @@ export const Player = (props) => {
   useSocket("card_played", msg => {
     if (props.name === msg.player) {
       let svg = document.getElementById(msg.card).getElementsByTagName('svg')[0];
-      svg.classList.add('played');
+      svg.classList.add('hidden');
+    }
+    setShowPeggingTotal(true);
+    setPeggingTotal(msg.pegging_total);
+  });
+
+  useSocket("points", msg => {
+    if (props.reason === 'go') {
+      setPeggingTotal(0);
     }
   });
 
@@ -74,13 +90,25 @@ export const Player = (props) => {
 
   return (
     <>
-      <Fab variant="extended"
-        className="action-button"
-        color="primary"
-        onClick={handleAction}
-        disabled={!turn}>
-        { action }
-      </Fab>
+      <div className='row player-header'>
+        <div className='col-3 played-cards'></div>
+        <div className='col-6'>
+          <Fab variant="extended"
+            className="action-button"
+            color="primary"
+            onClick={handleAction}
+            disabled={!turn}>
+            { action }
+          </Fab>
+        </div>
+        <div className='col-3'>
+          {showPeggingTotal ? (
+            <span className='pegging-total'>{peggingTotal}</span>
+          ) : (
+            <span />
+          )}
+        </div>
+      </div>
       <Divider variant="middle" />
       <div className="player-cards">
       { renderCards() }

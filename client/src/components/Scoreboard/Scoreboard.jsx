@@ -13,6 +13,10 @@ export const Scoreboard = () => {
     setWinningScore(msg.winning_score);
   });
 
+  useSocket("points", msg => {
+    setPlayers({...players, [msg.player]: msg.points});
+  });
+
   const renderProgressBars = () => {
     return players ? (
       <>
