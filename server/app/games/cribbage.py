@@ -167,18 +167,12 @@ def play_card(game_data, **kwargs):
     card_id = kwargs['card']
     card = deck.get(card_id)
 
-    # record play
-    game_data['hands'][player].remove(card_id)
-    game_data['pegging']['cards'].insert(0, card_id)
-    game_data['pegging']['last_played'] = player
-    game_data['pegging']['total'] += card['value']
-    game_data['played_cards'][player].append(card_id)
-
     # score play
     def _score_play(card_played):
         points = 0
         cards_on_table = [deck.get(c) for c in game_data['pegging']['cards']]
 
+        game_data['pegging']['total'] += card['value']
         if game_data['pegging']['total'] == 15 or game_data['pegging']['total'] == 31:
             points += 2
 
@@ -217,6 +211,12 @@ def play_card(game_data, **kwargs):
         'points': points_scored
     }
 
+    # record play
+    game_data['hands'][player].remove(card_id)
+    game_data['pegging']['cards'].insert(0, card_id)
+    game_data['pegging']['last_played'] = player
+    game_data['played_cards'][player].append(card_id)
+
     # determine next
     player_order = list(game_data['players'].keys())
     starting_point = player_order.index(game_data['current_turn'])
@@ -224,7 +224,8 @@ def play_card(game_data, **kwargs):
 
     next_to_play = next_for_this_round(players_in_order, game_data['hands'], game_data['pegging']['passed'])
     if not next_to_play:
-        game_data['players'][player] += 1
+        if game_data['pegging']['total'] != 31:
+            game_data['players'][player] += 1  # 1 for go
         game_data['pegging'].update({
             'cards': [],
             'last_played': '',
@@ -256,7 +257,8 @@ def record_pass(game_data, **kwargs):
     players_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
     next_to_play = next_for_this_round(players_in_order, game_data['hands'], game_data['pegging']['passed'])
     if not next_to_play:
-        game_data['players'][kwargs['player']] += 1
+        if game_data['pegging']['total'] != 31:
+            game_data['players'][kwargs['player']] += 1
         game_data['previous_turn'] = {
             'action': 'go',
             'points': 1,
@@ -467,13 +469,10 @@ class Hand:
         ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
         distinct_ranks = sorted(list(set(ranks)))
 
-        print('the ranks are: {}'.format(ranks))
         groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
-        print('the groups are: {}'.format(groups))
         for group in groups:
             if len(group) > 2:
                 multiples = False
-                print('this group has at least three cards: {}'.format(group))
                 for card in group:
                     if ranks.count(card) > 1:
                         multiples = True
