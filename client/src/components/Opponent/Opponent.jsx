@@ -12,6 +12,7 @@ export const Opponent = (props) => {
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
       setPlayableCards(msg.cards[props.name]);
+      setPlayedCards([]);
     }
     if (msg.show_to_all === true) {
       setShowCards(true);
@@ -44,11 +45,30 @@ export const Opponent = (props) => {
     );
   };
 
+  const renderPlayedCards = () => {
+    return playedCards.length ? (
+      <>
+        {playedCards.map((card, index) => (
+          <ReactSVG
+            id={card}
+            className='opponent-played-card'
+            key={index}
+            wrapper='span'
+            src={`/cards/${card}.svg`}
+          />
+        ))}
+      </>
+    ) : (
+      <span />
+    );
+  };
+
   return (
     <>
       <span>{ props.name }</span>
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
+      { renderPlayedCards() }
     </>
   );
 }

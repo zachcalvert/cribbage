@@ -87,7 +87,7 @@ html, body {
 
 @media only screen and (max-width: 500px) {
   .animated-card {
-    background-size: 75px auto;
+    background-size: 65px auto;
   }
 
   .player-cards {
