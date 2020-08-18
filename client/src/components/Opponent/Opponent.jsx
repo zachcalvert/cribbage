@@ -6,10 +6,16 @@ import './Opponent.css'
 
 export const Opponent = (props) => {
   const [cards, setCards] = useState([]);
+  const [showCards, setShowCards] = useState(false);
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
       setCards(msg.cards[props.name]);
+    }
+    if (msg.crib === true) {
+      setShowCards(true);
+    } else {
+      setShowCards(false);
     }
   });
 
@@ -21,8 +27,7 @@ export const Opponent = (props) => {
             key={index}
             wrapper='span'
             className='opponent-card'
-            // src={`/cards/${cards[index]}.svg`}
-            src={`/cards/dark_blue.svg`}
+            src={ showCards ? `/cards/${cards[index]}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
       </span>

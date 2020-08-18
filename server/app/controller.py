@@ -96,3 +96,31 @@ def play_card(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.play_card(game_data, **kwargs)
     return game
+
+
+@game_interaction
+def record_pass(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.record_pass(game_data, **kwargs)
+    return game
+
+
+@game_interaction
+def score_hand(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.score_hand(game_data, **kwargs)
+    return game
+
+
+@game_interaction
+def score_crib(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.score_crib(game_data, **kwargs)
+    return game
+
+
+@game_interaction
+def next_round(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.next_round(game_data, **kwargs)
+    return game

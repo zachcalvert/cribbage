@@ -80,27 +80,42 @@ def cut_deck(msg):
 @socketio.on('play')
 def play_card(msg):
     game = controller.play_card(msg)
-    emit('card_played', {'player': msg['player'], 'card': msg['card'], 'points': game['players'][msg['player']]}, room=msg['game'])
+    emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
+    if game['previous_turn']['points'] > 0:
+        scorer = game['previous_turn']['player']
+        emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
-@socketio.on('score_hand')
+@socketio.on('pass')
+def record_pass(msg):
+    game = controller.record_pass(msg)
+    if game['previous_turn']['action'] == 'go':
+        scorer = game['previous_turn']['player']
+        print('{}: and one for go'.format(scorer))
+        emit('points', {'player': scorer, 'amount': game['players'][scorer], 'reason': game['previous_turn']['action']}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+
+@socketio.on('score')
 def score_hand(msg):
     game = controller.score_hand(msg)
-    emit('points', {'player': msg['player'], 'points': game['players'][msg['player']]}, room=msg['game'])
+    emit('points', {'player': msg['player'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('crib')
-def crib(msg):
-    points = controller.crib(msg)
-    emit('scored_crib', {'player': msg['player'], 'points': points}, room=msg['game'])
+def score_crib(msg):
+    game = controller.score_crib(msg)
+    emit('cards', {'cards': game['hands'], 'crib': True}, room=msg['game'])
+    emit('points', {'player': game['dealer'], 'amount': game['players'][game['dealer']]}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('next')
 def next_round(msg):
     game = controller.next_round(msg)
-    emit(game['state'], {'player': game['current_player']}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 if __name__ == '__main__':

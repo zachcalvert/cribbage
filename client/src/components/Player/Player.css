@@ -38,3 +38,8 @@
 .player-cards span {
   padding: 3px;
 }
+
+.pegging-total {
+  font-size: 32px;
+  color: #009688;
+}
