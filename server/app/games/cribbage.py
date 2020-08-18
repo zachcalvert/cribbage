@@ -318,9 +318,42 @@ def score_crib(game_data, **kwargs):
         'points': crib_points,
         'player': player
     }
+    game_data['hands'] = game_data['hands'].fromkeys(game_data['hands'], [])
+    game_data['hands'][game_data['dealer']] = game_data['crib']
 
     game_data['current_action'] = 'next'
     game_data['current_turn'] = list(game_data['players'].keys())
+    return game_data
+
+
+def next_round(game_data, **kwargs):
+    player = kwargs['player']
+    game_data['ok_with_next_round'].append(player)
+
+    all_have_nexted = set(game_data['ok_with_next_round']) == set(list(game_data['players'].keys()))
+    if all_have_nexted:
+        next_to_deal = rotate_turn(game_data['dealer'], list(game_data['players'].keys()))
+        next_cutter = rotate_reverse(next_to_deal, list(game_data['players'].keys()))
+        next_to_score_first = rotate_turn(next_to_deal, list(game_data['players'].keys()))
+
+        game_data.update({
+            'cards': standard.deck,
+            'crib': [],
+            'current_action': 'deal',
+            'current_turn': next_to_deal,
+            'cutter': next_cutter,
+            'dealer': next_to_deal,
+            'first_to_score': next_to_score_first,
+            'hands': {},
+            'ok_with_next_round': [],
+            'played_cards': {},
+            'scored_hands': []
+        })
+        for player in list(game_data['players'].keys()):
+            game_data['played_cards'][player] = []
+    else:
+        game_data['current_turn'].remove(player)
+
     return game_data
 
 

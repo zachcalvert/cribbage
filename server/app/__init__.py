@@ -107,7 +107,7 @@ def score_hand(msg):
 @socketio.on('crib')
 def score_crib(msg):
     game = controller.score_crib(msg)
-    emit('scored_crib', {'player': game['dealer'], 'cards': game['crib']}, room=msg['game'])
+    emit('cards', {'cards': game['hands'], 'crib': True}, room=msg['game'])
     emit('points', {'player': game['dealer'], 'amount': game['players'][game['dealer']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
@@ -115,7 +115,7 @@ def score_crib(msg):
 @socketio.on('next')
 def next_round(msg):
     game = controller.next_round(msg)
-    emit(game['state'], {'player': game['current_player']}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 if __name__ == '__main__':

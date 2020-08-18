@@ -117,3 +117,10 @@ def score_crib(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.score_crib(game_data, **kwargs)
     return game
+
+
+@game_interaction
+def next_round(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.next_round(game_data, **kwargs)
+    return game
