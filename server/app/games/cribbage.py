@@ -116,6 +116,7 @@ def start_game(game_data, **kwargs):
             'player': '',
             'points': 0
         },
+        'rematch': False,
         'scored_hands': [],
         'scoring_stats': {},
         'turn': dealer,
@@ -197,8 +198,10 @@ def play_card(game_data, **kwargs):
         'points': 0,
         'reason': ''
     }
+    print('card was was just played, {} has {} points'.format(player, game_data['players'][player]))
 
-    def _one_for_go():
+    def _one_for_go(player):
+        game_data['players'][player] += 1
         game_data['previous_turn']['points'] += 1
         if game_data['previous_turn']['reason'] == '':
             game_data['previous_turn']['reason'] = 'go'
@@ -214,7 +217,6 @@ def play_card(game_data, **kwargs):
             'total': 0
         })
 
-    # score play
     def _score_play(card_played):
         points = 0
         points_source = []
@@ -266,6 +268,7 @@ def play_card(game_data, **kwargs):
         'points': points_scored,
         'reason': source
     })
+    print('in cribbage, {} now has {} points'.format(player, game_data['players'][player]))
 
     # record play
     game_data['hands'][player].remove(card_id)
@@ -290,7 +293,7 @@ def play_card(game_data, **kwargs):
     next_to_play = next_for_this_round(players_in_order, game_data['hands'], game_data['pegging']['passed'])
     if not next_to_play:
         if game_data['pegging']['total'] != 31:
-            _one_for_go()
+            _one_for_go(player)
         _reset_pegging_dict()
         next_to_play = next_with_cards(players_in_order, game_data['hands'])
 
@@ -321,7 +324,8 @@ def record_pass(game_data, **kwargs):
         game_data['previous_turn'] = {
             'action': 'go',
             'points': 1,
-            'player': game_data['pegging']['last_played']
+            'player': game_data['pegging']['last_played'],
+            'reason': 'go'
         }
         game_data['pegging'] = {
             'cards': [],
@@ -391,10 +395,12 @@ def score_crib(game_data, **kwargs):
 
     game_data['current_action'] = 'next'
     game_data['current_turn'] = list(game_data['players'].keys())
+    print('after crib, {} has {} points'.format(player, game_data['players'][player]))
     return game_data
 
 
 def next_round(game_data, **kwargs):
+    print('in next round')
     deck = jokers.deck if game_data['jokers'] else standard.deck
 
     player = kwargs['player']
@@ -426,42 +432,80 @@ def next_round(game_data, **kwargs):
         })
         for player in list(game_data['players'].keys()):
             game_data['played_cards'][player] = []
+
+        print('after updating the game dict for next round, game data is: {}'.format(game_data))
+    else:
+        game_data['current_turn'].remove(player)
+
+    print('after next round, {} has {} points'.format(player, game_data['players'][player]))
+    return game_data
+
+
+def grant_victory(game_data, **kwargs):
+    game_data['winner'] = kwargs['player']
+    game_data['current_turn'] = list(game_data['players'].keys())
+    game_data['current_action'] = 'rematch'
+    return game_data
+
+
+def rematch(game_data, **kwargs):
+    player = kwargs['player']
+    game_data['play_again'].append(player)
+
+    if set(game_data['play_again']) == set(game_data['players'].keys()):
+        game_data = refresh_game_dict(game_data)
     else:
         game_data['current_turn'].remove(player)
 
     return game_data
 
 
-def play_again(game_data, **kwargs):
-    player = kwargs['player']
-    game_data['play_again'].append(player)
-
-    if set(game_data['play_again']) == set(game_data['players'].keys()):
-        return True
-    else:
-        game_data['current_turn'].remove(player)
-
-
-def reset_game_dict(game_data, **kwargs):
+def refresh_game_dict(game_data):
     players = list(game_data['players'].keys())
+    dealer = random.choice(players)
+    cutter = rotate_reverse(dealer, players)
+    first_to_score = rotate_turn(dealer, players)
+    deck = jokers.deck if game_data['jokers'] else standard.deck
 
-    fresh_game_dict = {
-        "name": game_data['name'],
-        'players': {},
+    game_data.update({
+        'crib': [],
+        'current_action': 'deal',
+        'current_turn': [dealer],
+        'cut_card': '',
+        'cutter': cutter,
+        'dealer': dealer,
+        'deck': list(deck.keys()),
+        'first_to_score': first_to_score,
+        'hands': {},
+        'ok_with_next_round': [],
+        'pegging': {
+            'cards': [],
+            'passed': [],
+            'run': [],
+            'total': 0
+        },
+        'play_again': [],
+        'played_cards': {},
+        'previous_turn': {
+            'action': '',
+            'player': '',
+            'points': 0
+        },
+        'rematch': True,
+        'scored_hands': [],
         'scoring_stats': {},
-        "winning_score": game_data['winning_score'],
-    }
+        'turn': dealer,
+    })
     for player in players:
-        fresh_game_dict['players'][player] = 0
-        fresh_game_dict['scoring_stats'][player] = {
+        game_data['players'][player] = 0
+        game_data['played_cards'][player] = []
+        game_data['scoring_stats'][player] = {
             'a_play': 0,
             'b_hand': 0,
             'c_crib': 0,
 
         }
-
-    return fresh_game_dict
-
+    return game_data
 
 
 class Hand:

@@ -34,7 +34,6 @@ const defaultDeck = [
 
 
 export const Deck = () => {
-  const [cutCard, setCutCard] = useState('');
   const [cards, setCards] = useState(defaultDeck);
 
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
@@ -56,7 +55,6 @@ export const Deck = () => {
   });
 
   useSocket("cut_card", msg => {
-    setCutCard(msg.card);
     setCards([...cards, '/cards/' + msg.card + '.svg']);
   });
 
