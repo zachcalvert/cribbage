@@ -74,6 +74,15 @@ def discard(msg):
 def cut_deck(msg):
     game = controller.cut_deck(msg)
     emit('cut_card', {'card': game['cut_card']}, room=msg['game'])
+
+    if game['previous_turn']['points'] > 0:
+        scorer = game['previous_turn']['player']
+        action = game['previous_turn']['action']
+        message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
+
+        emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
+
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
