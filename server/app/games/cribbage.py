@@ -167,6 +167,22 @@ def play_card(game_data, **kwargs):
     card_id = kwargs['card']
     card = deck.get(card_id)
 
+    def _one_for_go():
+        game_data['previous_turn'] = {
+            'action': 'go',
+            'points': 1,
+            'player': player
+        }
+
+    def _reset_pegging_dict():
+        game_data['pegging'].update({
+            'cards': [],
+            'last_played': '',
+            'passed': [],
+            'run': [],
+            'total': 0
+        })
+
     # score play
     def _score_play(card_played):
         points = 0
@@ -222,17 +238,20 @@ def play_card(game_data, **kwargs):
     starting_point = player_order.index(game_data['current_turn'])
     players_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
 
+    # don't make folks pass on 31
+    if game_data['pegging']['total'] == 31:
+        next_to_play = next_with_cards(players_in_order, game_data['hands'])
+        if next_to_play:
+            _reset_pegging_dict()
+            game_data['current_action'] = 'play'
+            game_data['current_turn'] = next_to_play
+            return game_data
+
     next_to_play = next_for_this_round(players_in_order, game_data['hands'], game_data['pegging']['passed'])
     if not next_to_play:
         if game_data['pegging']['total'] != 31:
-            game_data['players'][player] += 1  # 1 for go
-        game_data['pegging'].update({
-            'cards': [],
-            'last_played': '',
-            'passed': [],
-            'run': [],
-            'total': 0
-        })
+            _one_for_go()
+        _reset_pegging_dict()
         next_to_play = next_with_cards(players_in_order, game_data['hands'])
 
     if next_to_play:
@@ -240,6 +259,7 @@ def play_card(game_data, **kwargs):
         game_data['current_action'] = play_or_pass(card_values, game_data['pegging']['total'])
         game_data['current_turn'] = next_to_play
     else:
+        _one_for_go()
         game_data['current_action'] = 'score'
         game_data['current_turn'] = game_data['first_to_score']
 
