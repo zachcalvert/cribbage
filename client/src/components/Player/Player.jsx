@@ -31,6 +31,9 @@ export const Player = (props) => {
     } else {
       setShowPeggingTotal(false);
     }
+    if (msg.action === 'deal') {
+      setPlayableCards([]);
+    }
   });
 
   useSocket("cards", msg => {
@@ -63,6 +66,7 @@ export const Player = (props) => {
     else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
     }
+    document.activeElement.blur();
   };
 
   const handleCardClick = (e) => {

@@ -98,7 +98,11 @@ def start_game(game_data, **kwargs):
         'play_again': [],
         'played_cards': {},
         'post_deal_action': 'discard',
-        'previous_turn': {},
+        'previous_turn': {
+            'action': '',
+            'player': '',
+            'points': 0
+        },
         'scored_hands': [],
         'scoring_stats': {},
         'turn': dealer,
@@ -174,13 +178,19 @@ def play_card(game_data, **kwargs):
     player = kwargs['player']
     card_id = kwargs['card']
     card = deck.get(card_id)
+    game_data['previous_turn'] = {
+        'action': '',
+        'player': player,
+        'points': 0
+    }
 
     def _one_for_go():
-        game_data['previous_turn'] = {
-            'action': 'go',
-            'points': 1,
-            'player': player
-        }
+        game_data['previous_turn']['points'] += 1
+        if game_data['previous_turn']['action'] == '':
+            game_data['previous_turn']['action'] = 'go'
+        else:
+            game_data['previous_turn']['action'] += ', go'
+
 
     def _reset_pegging_dict():
         game_data['pegging'].update({
@@ -276,7 +286,6 @@ def play_card(game_data, **kwargs):
         game_data['current_action'] = play_or_pass(card_values, game_data['pegging']['total'])
         game_data['current_turn'] = next_to_play
     else:
-        _one_for_go()
         game_data['current_action'] = 'score'
         game_data['current_turn'] = game_data['first_to_score']
 
@@ -360,7 +369,7 @@ def score_crib(game_data, **kwargs):
 
     game_data['players'][player] += crib_points
     game_data['previous_turn'] = {
-        'action': 'crib_score',
+        'action': 'from crib',
         'points': crib_points,
         'player': player
     }
@@ -395,6 +404,11 @@ def next_round(game_data, **kwargs):
             'hands': {},
             'ok_with_next_round': [],
             'played_cards': {},
+            'previous_turn': {
+                'action': '',
+                'player': '',
+                'points': 0
+            },
             'scored_hands': []
         })
         for player in list(game_data['players'].keys()):
