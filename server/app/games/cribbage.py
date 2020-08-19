@@ -186,10 +186,12 @@ def play_card(game_data, **kwargs):
     # score play
     def _score_play(card_played):
         points = 0
+        points_source = []
         cards_on_table = [deck.get(c) for c in game_data['pegging']['cards']]
 
         game_data['pegging']['total'] += card['value']
         if game_data['pegging']['total'] == 15 or game_data['pegging']['total'] == 31:
+            points_source.append(str(game_data['pegging']['total']))
             points += 2
 
         def _is_run(card_ranks):
@@ -210,19 +212,26 @@ def play_card(game_data, **kwargs):
             run_length = len(game_data['pegging']['run'])
         if run_length > 2:
             points += run_length
+            points_source.append('run of {}'.format(run_length))
 
-        ranks = [c['rank'] for c in cards_on_table]  # evaluate for pairs, threes, and fours
-        for count, rank in enumerate(ranks, 0):
+        # evaluate for pairs, threes, and fours
+        ranks = [c['rank'] for c in cards_on_table]
+        pair_string = None
+        for count, rank in enumerate(ranks, 1):
             if card_played['rank'] == rank:
                 points += count * 2
+                pair_string = '{} {}s'.format(count+1, card_played['name'])
             else:
                 break
-        return points
+        points_source.append(pair_string) if pair_string else None
 
-    points_scored = _score_play(card)
+        ps = ', '.join(points_source)
+        return points, ps
+
+    points_scored, source = _score_play(card)
     game_data['players'][player] += points_scored
     game_data['previous_turn'] = {
-        'action': 'play',
+        'action': source,
         'player': player,
         'points': points_scored
     }

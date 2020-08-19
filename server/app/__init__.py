@@ -81,29 +81,36 @@ def cut_deck(msg):
 def play_card(msg):
     game = controller.play_card(msg)
     emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
+
     if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
-        emit('points', {'player': scorer, 'amount': game['players'][scorer], 'type': 'points'}, room=msg['game'])
-        message = '+{} for {}'.format(game['previous_turn']['points'], scorer)
+        action = game['previous_turn']['action']
+        emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
+
+        message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
+
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('pass')
 def record_pass(msg):
     game = controller.record_pass(msg)
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} passed.'.format(msg['player'])}, room=msg['game'])
+
     if game['previous_turn']['action'] == 'go':
         scorer = game['previous_turn']['player']
-        message = '+{} for {}'.format(game['previous_turn']['points'], scorer)
-        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
+        message = '+{} for {} (go)'.format(game['previous_turn']['points'], scorer)
         emit('points', {'player': scorer, 'amount': game['players'][scorer], 'reason': game['previous_turn']['action']}, room=msg['game'])
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
+
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('score')
 def score_hand(msg):
     game = controller.score_hand(msg)
-    message = '+{} for {}'.format(game['previous_turn']['points'], msg['player'])
+    message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], msg['player'])
     emit('cards', {'cards': game['played_cards'], 'show_to_all': True}, room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
     emit('points', {'player': msg['player'], 'amount': game['players'][msg['player']]}, room=msg['game'])
@@ -113,7 +120,7 @@ def score_hand(msg):
 @socketio.on('crib')
 def score_crib(msg):
     game = controller.score_crib(msg)
-    message = '+{} for {}'.format(game['previous_turn']['points'], msg['player'])
+    message = '+{} for {} (from crib)'.format(game['previous_turn']['points'], msg['player'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
     emit('points', {'player': game['dealer'], 'amount': game['players'][game['dealer']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
