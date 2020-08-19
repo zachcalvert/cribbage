@@ -144,7 +144,7 @@ def deal_hands(game_data, **kwargs):
 
     hands = {}
     for player in game_data['players'].keys():
-        dealt_cards = [game_data['deck'].pop() for card in range(6)]
+        dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(game_data, dealt_cards)
     game_data['current_turn'] = list(game_data['players'].keys())
     game_data['hands'] = hands
@@ -204,7 +204,6 @@ def play_card(game_data, **kwargs):
             game_data['previous_turn']['reason'] = 'go'
         else:
             game_data['previous_turn']['reason'] += ', go'
-
 
     def _reset_pegging_dict():
         game_data['pegging'].update({
