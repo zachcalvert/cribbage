@@ -90,13 +90,15 @@ def cut_deck(msg):
 def play_card(msg):
     game = controller.play_card(msg)
     emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
+    message = '{} played {}'.format(msg['player'], game['previous_turn']['action'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
 
     if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
-        action = game['previous_turn']['action']
+        reason = game['previous_turn']['reason']
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
 
-        message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
+        message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
