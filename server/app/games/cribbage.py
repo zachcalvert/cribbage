@@ -66,6 +66,19 @@ def play_or_pass(card_values, pegging_total):
     return action
 
 
+def card_text_from_id(card_id):
+    """
+    Return text representation of card
+    :param card_id:
+    :return:
+    """
+    if 'joker' in card_id:
+        return 'a joker'
+    else:
+        card = standard.deck[card_id]
+        return 'the {} of {}'.format(card['name'], card['suit'])
+
+
 def start_game(game_data, **kwargs):
     winning_score = kwargs['winning_score']
     deck = jokers.deck if kwargs['jokers'] else standard.deck
@@ -179,17 +192,18 @@ def play_card(game_data, **kwargs):
     card_id = kwargs['card']
     card = deck.get(card_id)
     game_data['previous_turn'] = {
-        'action': '',
+        'action': card_text_from_id(card_id),
         'player': player,
-        'points': 0
+        'points': 0,
+        'reason': ''
     }
 
     def _one_for_go():
         game_data['previous_turn']['points'] += 1
-        if game_data['previous_turn']['action'] == '':
-            game_data['previous_turn']['action'] = 'go'
+        if game_data['previous_turn']['reason'] == '':
+            game_data['previous_turn']['reason'] = 'go'
         else:
-            game_data['previous_turn']['action'] += ', go'
+            game_data['previous_turn']['reason'] += ', go'
 
 
     def _reset_pegging_dict():
@@ -248,11 +262,11 @@ def play_card(game_data, **kwargs):
 
     points_scored, source = _score_play(card)
     game_data['players'][player] += points_scored
-    game_data['previous_turn'] = {
-        'action': source,
+    game_data['previous_turn'].update({
         'player': player,
-        'points': points_scored
-    }
+        'points': points_scored,
+        'reason': source
+    })
 
     # record play
     game_data['hands'][player].remove(card_id)
