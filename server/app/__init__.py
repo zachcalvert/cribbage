@@ -50,7 +50,7 @@ def animation(msg):
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
-    message = 'First to 121 wins! It\'s {}\'s crib.'.format(game['current_turn'][0])
+    message = 'First to {} wins! It\'s {}\'s crib.'.format(game['winning_score'], game['current_turn'][0])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
     emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
@@ -80,6 +80,7 @@ def cut_deck(msg):
         action = game['previous_turn']['action']
         message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
 
+        print('sending {} points to {}'.format(game['players'][scorer], scorer))
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
@@ -88,6 +89,9 @@ def cut_deck(msg):
 
 @socketio.on('play')
 def play_card(msg):
+    # valid_play = controller.valid_card(msg)
+    # if not valid_play:
+    #     emit('invalid_card', {'player': msg['player'], 'message': 'Please play a valid card.'})
     game = controller.play_card(msg)
     emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
     message = '{} played {}'.format(msg['player'], game['previous_turn']['action'])
@@ -96,6 +100,7 @@ def play_card(msg):
     if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
         reason = game['previous_turn']['reason']
+        print('sending {} points to {}'.format(game['players'][scorer], scorer))
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
 
         message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
@@ -109,10 +114,13 @@ def record_pass(msg):
     game = controller.record_pass(msg)
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} passed.'.format(msg['player'])}, room=msg['game'])
 
-    if game['previous_turn']['action'] == 'go':
+    if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
-        message = '+{} for {} (go)'.format(game['previous_turn']['points'], scorer)
-        emit('points', {'player': scorer, 'amount': game['players'][scorer], 'reason': game['previous_turn']['action']}, room=msg['game'])
+        reason = game['previous_turn']['reason']
+        print('sending {} points to {}'.format(game['players'][scorer], scorer))
+        emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
+
+        message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
@@ -124,6 +132,7 @@ def score_hand(msg):
     message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], msg['player'])
     emit('cards', {'cards': game['played_cards'], 'show_to_all': True}, room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
+    print('sending {} points to {}'.format(game['players'][msg['player']], msg['player']))
     emit('points', {'player': msg['player'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
@@ -133,7 +142,8 @@ def score_crib(msg):
     game = controller.score_crib(msg)
     message = '+{} for {} (from crib)'.format(game['previous_turn']['points'], msg['player'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
-    emit('points', {'player': game['dealer'], 'amount': game['players'][game['dealer']]}, room=msg['game'])
+    print('sending {} points to {}'.format(game['players'][msg['player']], msg['player']))
+    emit('points', {'player': game['dealer'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
     emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
 
@@ -144,6 +154,24 @@ def next_round(msg):
     if game['current_action'] == 'deal':
         message = 'New round! It is now {}\'s crib.'.format(game['dealer'])
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+
+@socketio.on('winner')
+def winner(msg):
+    game = controller.grant_victory(msg)
+    emit('winner', {'player': game['winner']}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player'])}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+
+@socketio.on('rematch')
+def rematch(msg):
+    game = controller.rematch(msg)
+    if game['rematch']:
+        message = 'First to {} wins! It\'s {}\'s crib.'.format(game['winning_score'], game['current_turn'][0])
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
+        emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     background: '#1982FC'
   },
   container: {
-    padding: 20,
+    padding: '20px 0',
     borderTop: "1px #4C758F solid",
     display: "inline-flex",
     width: "100%"
@@ -59,7 +59,7 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     margin: 0,
     cursor: "pointer",
-    padding: "0 20px 0 0"
+    padding: "0 10px 0 0"
   }
 }));
 
@@ -99,12 +99,10 @@ export const Chat = ()  => {
 
   const displayEmojiMenu = e => {
     setShowEmojis(true);
-    document.addEventListener('click', {closeEmojiMenu});
   };
 
   const closeEmojiMenu = e => {
     setShowEmojis(false);
-    document.removeEventListener('click', {closeEmojiMenu});
   };
 
   const handleChange = e => {

@@ -124,3 +124,17 @@ def next_round(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.next_round(game_data, **kwargs)
     return game
+
+
+@game_interaction
+def grant_victory(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.grant_victory(game_data, **kwargs)
+    return game
+
+
+@game_interaction
+def rematch(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.rematch(game_data, **kwargs)
+    return game

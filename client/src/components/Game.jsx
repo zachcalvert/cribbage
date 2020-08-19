@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import {Button, Fab, IconButton, TextField} from "@material-ui/core";
+import {Fab, IconButton, TextField} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
