@@ -309,6 +309,18 @@ def play_card(game_data, **kwargs):
     return game_data
 
 
+def is_valid_play(game_data, player, card):
+    card_object = standard.deck[card]
+
+    if card_object['value'] > (31 - game_data['pegging']['total']):
+        return False
+
+    if player not in game_data['current_turn']:
+        return False
+
+    return True
+
+
 def record_pass(game_data, **kwargs):
     deck = jokers.deck if game_data['jokers'] else standard.deck
 
