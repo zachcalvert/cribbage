@@ -43,6 +43,7 @@
 .player-cards {
   min-height: 210px;
   display: inline-flex;
+  padding: 0 10px;
 }
 
 .player-cards span {
