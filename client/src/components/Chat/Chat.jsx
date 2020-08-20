@@ -83,7 +83,15 @@ export const Chat = ()  => {
 
   const { socket } = useSocket("chat_message", newChat => {
     if (newChat.name === 'game-updater') {
-      let update = {name: newChat.name, message: <div className={`${newChat.type === 'points' ? 'points-message update' : 'update'}`}>{newChat.message}</div>};
+      let cn;
+      if (newChat.type === 'points') {
+        cn = 'points-message update'
+      } else if (newChat.type === 'big') {
+        cn = 'big-message update'
+      } else {
+        cn = 'update'
+      }
+      let update = {name: newChat.name, message: <div className={cn}>{newChat.message}</div>};
       newChat = update;
     }
     setChat([...chats, newChat]);
