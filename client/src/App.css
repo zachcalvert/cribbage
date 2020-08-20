@@ -7,7 +7,7 @@ html, body {
   height: 100%;
 }
 
-.container-fluid {
+.container-lg {
   height: 100%;
 }
 
@@ -59,20 +59,14 @@ html, body {
   padding: 20px;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 960px) {
   .game {
     height: 100%;
     margin: 0;
   }
-
-  .card {
-    padding: 4px;
-  }
-
   .chat {
     max-height: 33%;
   }
-
   .chat-log {
     height: calc(66% - 30px);
   }
@@ -82,16 +76,22 @@ html, body {
   .emoji-mart-scroll {
     height: 100px;
   }
-}
-
-
-@media only screen and (max-width: 500px) {
-  .animated-card {
-    background-size: 65px auto;
-  }
 
   .player-cards {
-    padding: 10px;
+    min-height: 150px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .top-row, .middle-row {
+    margin: 0;
+  }
+  .middle-row-spacer {
+    display: none;
+  }
+
+  .animated-card {
+    background-size: 65px auto;
   }
 
   .card {
@@ -109,4 +109,5 @@ html, body {
   .game-name {
     padding: 10px;
   }
+
 }

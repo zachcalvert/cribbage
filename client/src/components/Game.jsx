@@ -54,7 +54,7 @@ export const Game = ()  => {
   };
 
   return id ? (
-      <div className="container-fluid">
+      <div className="container-lg">
         <div className="game row">
           <div className="chat col-lg-4">
             <Chat />
@@ -72,7 +72,7 @@ export const Game = ()  => {
               <div className="scoreboard col-8">
                 <Scoreboard />
               </div>
-              <div className="col-1"></div>
+              <div className="col-1 middle-row-spacer"></div>
               <div className="deck col-2">
                 <Deck />
               </div>
