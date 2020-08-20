@@ -19,6 +19,7 @@ export const Player = (props) => {
   const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
+    setActiveCard('');
     if (msg.players.includes(props.name)) {
       setTurn(true);
       setAction(msg.action);
@@ -73,8 +74,6 @@ export const Player = (props) => {
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
     if (card) {
       setActiveCard(card);
-      let svg = document.getElementById(card).getElementsByTagName('svg')[0];
-      svg.classList.add('chosen');
     }
   };
 
@@ -102,6 +101,7 @@ export const Player = (props) => {
         {playableCards.map((card, index) => (
           <ReactSVG
             id={card}
+            className={activeCard === card ? 'active-card': 'available-card'}
             key={index}
             onClick={handleCardClick}
             wrapper='span'
