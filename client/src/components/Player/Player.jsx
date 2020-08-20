@@ -72,7 +72,10 @@ export const Player = (props) => {
 
   const handleCardClick = (e) => {
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
-    if (card) {
+    if (card === activeCard) {
+      setActiveCard('')
+    }
+    else if (card) {
       setActiveCard(card);
     }
   };

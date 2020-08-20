@@ -46,7 +46,7 @@
 }
 
 .player-cards span {
-  padding: 3px;
+  padding: 3px 3px 0;
 }
 
 .pegging-total {

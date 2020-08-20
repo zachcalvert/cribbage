@@ -30,7 +30,7 @@
 }
 
 .active-card {
-  background: red;
+  margin-top: -10px;
   box-shadow: 0 8px 6px -6px black;
   height: fit-content;
 }
