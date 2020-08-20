@@ -98,6 +98,13 @@ def play_card(game_data, **kwargs):
     return game
 
 
+def is_valid_play(game, player, card):
+    game_data = json.loads(cache.get(game))
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    valid = module.is_valid_play(game_data, player, card)
+    return valid
+
+
 @game_interaction
 def record_pass(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))

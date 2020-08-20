@@ -89,9 +89,11 @@ def cut_deck(msg):
 
 @socketio.on('play')
 def play_card(msg):
-    # valid_play = controller.valid_card(msg)
-    # if not valid_play:
-    #     emit('invalid_card', {'player': msg['player'], 'message': 'Please play a valid card.'})
+    valid_play = controller.is_valid_play(msg['game'], msg['player'], msg['card'])
+    if not valid_play:
+        emit('invalid_card', {'player': msg['player'], 'message': 'Please play a valid card.'})
+        return
+
     game = controller.play_card(msg)
     emit('card_played', {'player': msg['player'], 'card': msg['card'], 'pegging_total': game['pegging']['total']}, room=msg['game'])
     message = '{} played {}'.format(msg['player'], game['previous_turn']['action'])
