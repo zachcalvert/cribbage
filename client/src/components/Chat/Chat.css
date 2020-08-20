@@ -82,3 +82,7 @@
 .points-message {
   color: #388e3c;
 }
+
+.big-message {
+  font-weight: bold;
+}
