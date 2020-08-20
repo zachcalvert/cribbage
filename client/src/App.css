@@ -78,7 +78,7 @@ html, body {
   }
 
   .player-cards {
-    min-height: 150px;
+    min-height: 125px;
   }
 }
 
@@ -94,10 +94,17 @@ html, body {
     background-size: 65px auto;
   }
 
+  .available-card {
+    max-width: 80px;
+  }
+
   .card {
-    margin: 0 -10%;
-    width: 30%;
+    margin: 0;
     padding: 0;
+  }
+
+  .played-cards {
+    margin-top: -10px;
   }
 
   .played-card svg {

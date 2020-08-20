@@ -101,7 +101,7 @@ export const Player = (props) => {
         {playableCards.map((card, index) => (
           <ReactSVG
             id={card}
-            className={activeCard === card ? 'active-card': 'available-card'}
+            className={activeCard === card ? 'active-card available-card': 'available-card'}
             key={index}
             onClick={handleCardClick}
             wrapper='span'

@@ -42,6 +42,7 @@
 
 .player-cards {
   min-height: 210px;
+  display: inline-flex;
 }
 
 .player-cards span {
@@ -62,4 +63,10 @@
     height: 90px;
     width: auto;
     margin: -30px -25px 0 auto;
+}
+
+.available-card {
+  height: 100%;
+  display: inline-block;
+  max-width: 120px;
 }

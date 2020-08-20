@@ -19,7 +19,7 @@
 .card {
   position: relative;
   height: auto;
-  width: 14%;
+  width: 100%;
   display: -ms-flexbox;
   display: inline-flex;
   -ms-flex-direction: column;
