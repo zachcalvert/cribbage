@@ -80,6 +80,10 @@ html, body {
   .player-cards {
     min-height: 125px;
   }
+  
+  .scoreboard {
+    padding: 0 0 0 20px;
+  }
 }
 
 @media only screen and (max-width: 500px) {
