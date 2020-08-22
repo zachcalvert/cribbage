@@ -3,8 +3,9 @@ import { SocketIOProvider } from "use-socketio";
 import { Game } from "./components/Game";
 import './App.css';
 
+
 export const App = () => (
-  <SocketIOProvider url="https://cribbage.live">
+  <SocketIOProvider url={process.env.REACT_APP_SOCKET_HOST}>
     <Game />
   </SocketIOProvider>
 );

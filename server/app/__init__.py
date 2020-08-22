@@ -11,7 +11,7 @@ from threading import Lock
 from . import controller
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live'])
 thread = None
 thread_lock = Lock()
 

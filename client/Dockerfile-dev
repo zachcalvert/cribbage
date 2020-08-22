@@ -6,6 +6,8 @@ WORKDIR /code
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /code/node_modules/.bin:$PATH
+ARG REACT_APP_SOCKET_HOST
+ENV REACT_APP_SOCKET_HOST http://localhost:5000
 
 # install app dependencies
 COPY package.json ./

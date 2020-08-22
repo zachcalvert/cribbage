@@ -21,7 +21,7 @@ spec:
           ports:
             - containerPort: 5000
         - name: react
-          image: "gcr.io/optimum-pier-280005/cards-client:v3"
+          image: "gcr.io/optimum-pier-280005/cards-client:v5"
           ports:
             - containerPort: 80
         - name: redis
@@ -44,6 +44,9 @@ spec:
   - port: 80
     protocol: TCP
     name: cards-port
+  - port: 5000
+    protocol: TCP
+    name: flask-port
 ---
 apiVersion: cloud.google.com/v1beta1
 kind: BackendConfig
