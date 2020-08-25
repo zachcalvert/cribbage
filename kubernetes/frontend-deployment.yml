@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cards-frontend
+  template:
+    metadata:
+      labels:
+        app: cards-frontend
+    spec:
+      containers:
+        - name: react
+          image: "gcr.io/optimum-pier-280005/cards-client:v6"
+          ports:
+            - containerPort: 80

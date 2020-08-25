@@ -17,12 +17,8 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: cards-service
-          servicePort: cards-port
-      - path: /api
-        backend:
-          serviceName: cards-service
-          servicePort: flask-port
+          serviceName: cards-frontend
+          servicePort: cards-frontend-port
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
