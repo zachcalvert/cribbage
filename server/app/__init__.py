@@ -11,9 +11,14 @@ from threading import Lock
 from . import controller
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins='*')
 thread = None
 thread_lock = Lock()
+
+
+@app.route('/')
+def health_check():
+    return {'healthy': True}
 
 
 @socketio.on('player_join')
