@@ -3,7 +3,7 @@ FROM node:13.12.0-alpine as build
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 ARG REACT_APP_SOCKET_HOST
-ENV REACT_APP_SOCKET_HOST http://34.96.118.238:5000
+ENV REACT_APP_SOCKET_HOST https://cribbage.live/
 COPY package.json ./
 COPY package-lock.json ./
 RUN npm ci

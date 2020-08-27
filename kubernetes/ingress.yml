@@ -17,8 +17,12 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: cards-frontend
-          servicePort: cards-frontend-port
+          serviceName: frontend-service
+          servicePort: frontend-port
+      - path: /socket.io
+        backend:
+          serviceName: backend-service
+          servicePort: backend-port
 ---
 apiVersion: cert-manager.io/v1alpha2
 kind: Issuer
