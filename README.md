@@ -1,4 +1,4 @@
-## Real-time, multiplayer card games
+## Real-time, multiplayer cribbage
 
 ### To run locally:
 * docker-compose up --build
