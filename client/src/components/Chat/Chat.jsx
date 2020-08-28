@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     background: '#1982FC'
   },
   container: {
-    padding: '20px 0',
+    padding: '13px 0',
     borderTop: "1px #4C758F solid",
     display: "inline-flex",
     width: "100%"
@@ -59,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     margin: 0,
     cursor: "pointer",
-    padding: "0 10px 0 0"
+    padding: "0 10px 0 0",
+    fontSize: "26px"
   }
 }));
 
@@ -184,7 +185,7 @@ export const Chat = ()  => {
           </span>
         ) : (
           <p className={classes.getEmojiButton} onClick={displayEmojiMenu}>
-            {String.fromCodePoint(0x1f60a)}
+            {String.fromCodePoint(0x1f600)}
           </p>
         )}
         <form className={classes.form} onSubmit={handleSubmit}>
