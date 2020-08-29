@@ -20,15 +20,6 @@ export const Player = (props) => {
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
-  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog open={open} onExited={onExited} onClose={hideModal}>
-      <DialogTitle>Dialog Content</DialogTitle>
-      <DialogActions>
-        <Button onClick={hideModal}>Close</Button>
-      </DialogActions>
-    </Dialog>
-  ));
-
   const { socket } = useSocket("send_turn", msg => {
     setActiveCard('');
     if (msg.players.includes(props.name)) {
@@ -73,6 +64,21 @@ export const Player = (props) => {
   useSocket('invalid_card', msg => {
     setActiveCard('');
   });
+
+  const handleStartGame = (name, winningScore, jokers) => {
+    socket.emit('start_game', { game: name, winning_score: winningScore, jokers: jokers })
+    hideModal()
+  }
+
+  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+    <Dialog open={open} onExited={onExited} onClose={hideModal}>
+      <DialogTitle>Dialog Content</DialogTitle>
+      <DialogActions>
+        <Button className="close-modal" onClick={hideModal}>Close</Button>
+        <Fab onClick={() => handleStartGame(game, 121, false)}>Start</Fab>
+      </DialogActions>
+    </Dialog>
+  ));
 
   const handleAction = (e) => {
     boop();
