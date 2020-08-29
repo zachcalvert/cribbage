@@ -1,15 +1,14 @@
 import React, { useState } from "react";
-import { useModal } from "react-modal-hook";
 import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 
-import { Divider, Fab, Dialog, DialogActions, DialogTitle, Button } from "@material-ui/core";
+import { Divider, Fab } from "@material-ui/core";
 import './Player.css'
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
-  const [action, setAction] = useState('start');
+  const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
 
   const [activeCard, setActiveCard] = useState('');
@@ -65,30 +64,9 @@ export const Player = (props) => {
     setActiveCard('');
   });
 
-  const handleStartGame = (name, winningScore, jokers) => {
-    socket.emit('start_game', { game: name, winning_score: winningScore, jokers: jokers })
-    hideModal()
-  }
-
-  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog open={open} onExited={onExited} onClose={hideModal}>
-      <DialogTitle>Dialog Content</DialogTitle>
-      <DialogActions>
-        <Button className="close-modal" onClick={hideModal}>Close</Button>
-        <Fab onClick={() => handleStartGame(game, 121, false)}>Start</Fab>
-      </DialogActions>
-    </Dialog>
-  ));
-
   const handleAction = (e) => {
     boop();
-    if (action === 'start') {
-      socket.emit('starting', { game: game, player: props.name })
-      showModal()
-    }
-    else {
-      socket.emit(action, { game: game, player: props.name, card: activeCard })
-    }
+    socket.emit(action, { game: game, player: props.name, card: activeCard })
     document.activeElement.blur()
   };
 
@@ -144,7 +122,7 @@ export const Player = (props) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        <div className='col-6'>
+        {action ? <div className='col-6'>
           <Fab variant="extended"
             className="action-button"
             color="primary"
@@ -152,7 +130,7 @@ export const Player = (props) => {
             disabled={!turn}>
             { action }
           </Fab>
-        </div>
+        </div> : <span/>}
         <div className='col-3'>
           {showPeggingTotal ? (
             <span className='pegging-total'>{peggingTotal}</span>

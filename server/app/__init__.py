@@ -53,9 +53,9 @@ def animation(msg):
 
 
 @socketio.on('starting')
-def send(msg):
+def starting(msg):
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} is setting up the game..'.format(msg['player'])}, room=msg['game'])
-    emit('send_turn', {'players': [msg['player']], 'action': 'start'}, room=msg['game'])
+    emit('send_turn', {'players': [msg['player']], 'action': ''}, room=msg['game'])
 
 
 @socketio.on('start_game')

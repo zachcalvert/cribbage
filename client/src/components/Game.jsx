@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import { useModal } from "react-modal-hook";
 import { useSocket } from "use-socketio";
-import {Fab, IconButton, TextField} from "@material-ui/core";
+import { Dialog, DialogActions, DialogTitle, Fab, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
@@ -9,11 +10,13 @@ import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 
+
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [opponents, setOpponents] = useState([]);
+  const [inProgress, setInProgress] = useState(false);
 
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
@@ -37,6 +40,38 @@ export const Game = ()  => {
     socket.emit("player_leave", {name: name, game: room});
     setId('');
   };
+
+  const handleStartGame = (room, winningScore, jokers) => {
+    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, jokers: jokers });
+    hideModal();
+    setInProgress(true);
+  }
+
+  const handleStartClick = (e) => {
+    socket.emit('starting', { game: room, player: name });
+    showModal();
+    document.activeElement.blur();
+  };
+
+  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+    <Dialog className="cards-modal" open={open} onExited={onExited} onClose={hideModal}>
+      <DialogTitle>Dialog Content</DialogTitle>
+      <DialogActions>
+        <IconButton className="close-modal" onClick={hideModal} aria-label="leave">
+          <CloseIcon fontSize="inherit" />
+        </IconButton>
+        <p className="lead">
+          Click play to begin a game with:
+        </p>
+        <ul>
+         {opponents.map((opponent, index) => (
+             <li>{opponent}</li>
+        ))}
+        </ul>
+        <Fab variant="extended" onClick={() => handleStartGame(room,121, false)}>Start</Fab>
+      </DialogActions>
+    </Dialog>
+  ));
 
   const renderOpponents = () => {
     return opponents.length ? (
@@ -69,7 +104,9 @@ export const Game = ()  => {
 
             <div className="middle-row row">
               <div className="scoreboard col-8">
-                <Scoreboard />
+                {
+                  inProgress ? <Scoreboard /> : <Fab variant="extended" onClick={handleStartClick}>Start</Fab>
+                }
               </div>
               <div className="col-1 middle-row-spacer"></div>
               <div className="deck col-2">

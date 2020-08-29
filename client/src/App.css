@@ -16,6 +16,20 @@ html, body {
   margin: 0 15px;
 }
 
+.cards-modal {
+  width: 80%;
+  height: 80%;
+  max-height: 500px;
+  max-width: 500px;
+}
+
+.close-modal {
+  position: absolute!important;
+  top: 0;
+  right: 0;
+  color: red;
+}
+
 .chat {
   border: 1px solid #E0E0E0;
   border-bottom-left-radius: 10px;
