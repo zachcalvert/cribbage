@@ -38,6 +38,7 @@ export const Game = ()  => {
     sessionStorage.removeItem('name');
     sessionStorage.removeItem('game');
     socket.emit("player_leave", {name: name, game: room});
+    setInProgress(false);
     setId('');
   };
 
@@ -60,15 +61,9 @@ export const Game = ()  => {
         <IconButton className="close-modal" onClick={hideModal} aria-label="leave">
           <CloseIcon fontSize="inherit" />
         </IconButton>
-        <p className="lead">
-          Click play to begin a game with:
-        </p>
-        <ul>
-         {opponents.map((opponent, index) => (
-             <li>{opponent}</li>
-        ))}
-        </ul>
-        <Fab variant="extended" onClick={() => handleStartGame(room,121, false)}>Start</Fab>
+        <div className="row">
+          <Fab variant="extended" onClick={() => handleStartGame(room,121, false)}>Start</Fab>
+        </div>
       </DialogActions>
     </Dialog>
   ));
