@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import ReactModal from "react-modal";
 import { useModal } from "react-modal-hook";
 import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 
-import { Divider, Fab, Modal } from "@material-ui/core";
+import { Divider, Fab, Dialog, DialogActions, DialogTitle, Button } from "@material-ui/core";
 import './Player.css'
 
 export const Player = (props) => {
@@ -21,11 +20,13 @@ export const Player = (props) => {
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
-  const [showModal, hideModal] = useModal(() => (
-    <ReactModal isOpen>
-      <div>hi</div>
-      <button onClick={hideModal}>Hide modal</button>
-    </ReactModal>
+  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+    <Dialog open={open} onExited={onExited} onClose={hideModal}>
+      <DialogTitle>Dialog Content</DialogTitle>
+      <DialogActions>
+        <Button onClick={hideModal}>Close</Button>
+      </DialogActions>
+    </Dialog>
   ));
 
   const { socket } = useSocket("send_turn", msg => {
@@ -76,6 +77,7 @@ export const Player = (props) => {
   const handleAction = (e) => {
     boop();
     if (action === 'start') {
+      socket.emit('starting', { game: game, player: props.name })
       showModal()
     }
     else {

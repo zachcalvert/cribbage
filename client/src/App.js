@@ -1,12 +1,14 @@
 import React  from 'react';
 import { ModalProvider } from "react-modal-hook";
 import { SocketIOProvider } from "use-socketio";
+import { TransitionGroup } from "react-transition-group";
+
 import { Game } from "./components/Game";
 import './App.css';
 
 export const App = () => (
   <SocketIOProvider url={process.env.REACT_APP_SOCKET_HOST}>
-    <ModalProvider>
+    <ModalProvider rootComponent={TransitionGroup}>
       <Game />
     </ModalProvider>
   </SocketIOProvider>

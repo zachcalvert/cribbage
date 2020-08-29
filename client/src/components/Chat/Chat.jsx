@@ -142,11 +142,11 @@ export const Chat = ()  => {
       <div id='chat-log' className='chat-log'>
         {chats.map(({name, message}, index) => (
             name === 'game-updater' ? (
-              <div className='game-update' color='textPrimary'>
+              <div key={index} className='game-update' color='textPrimary'>
                 { message }
               </div>
             ) : (
-              <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
+              <div key={index} className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
                 <div className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
                   { message }
                 </div>
