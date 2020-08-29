@@ -181,6 +181,7 @@ export const Chat = ()  => {
               onSelect={addEmoji}
               emojiTooltip={true}
               custom={customEmojis}
+              exclude={['smileys', 'nature', 'objects', 'flags', 'places', 'activity', 'foods', 'people', 'symbols']}
             />
           </span>
         ) : (
