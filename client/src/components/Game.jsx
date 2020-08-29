@@ -8,7 +8,6 @@ import { Deck } from "./Deck/Deck";
 import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
-import { StartMenuProvider } from "./StartMenu/StartMenuContext";
 
 export const Game = ()  => {
   const [id, setId] = useState('');
@@ -79,9 +78,7 @@ export const Game = ()  => {
             </div>
 
             <footer className="bottom-row">
-              <StartMenuProvider>
-                <Player name={name}/>
-              </StartMenuProvider>
+              <Player name={name}/>
             </footer>
 
           </div>

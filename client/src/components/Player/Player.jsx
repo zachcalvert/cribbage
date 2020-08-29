@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import ReactModal from "react-modal";
+import { useModal } from "react-modal-hook";
+import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
-import { ReactSVG } from 'react-svg'
-import { Divider, Fab } from "@material-ui/core";
+
+import { Divider, Fab, Modal } from "@material-ui/core";
 import './Player.css'
 
 export const Player = (props) => {
@@ -17,6 +20,13 @@ export const Player = (props) => {
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
+
+  const [showModal, hideModal] = useModal(() => (
+    <ReactModal isOpen>
+      <div>hi</div>
+      <button onClick={hideModal}>Hide modal</button>
+    </ReactModal>
+  ));
 
   const { socket } = useSocket("send_turn", msg => {
     setActiveCard('');
@@ -66,12 +76,12 @@ export const Player = (props) => {
   const handleAction = (e) => {
     boop();
     if (action === 'start') {
-      socket.emit('start_game', {game: game, winning_score: 121, jokers: false});
+      showModal()
     }
     else {
-      socket.emit(action, { game: game, player: props.name, card: activeCard });
+      socket.emit(action, { game: game, player: props.name, card: activeCard })
     }
-    document.activeElement.blur();
+    document.activeElement.blur()
   };
 
   const handleCardClick = (e) => {
