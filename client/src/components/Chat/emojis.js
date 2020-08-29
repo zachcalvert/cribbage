@@ -135,6 +135,13 @@ export const customEmojis = [
     customCategory: 'blobs'
   },
   {
+    name: 'Blob bottleflip',
+    short_names: ['blob_bottleflip'],
+    keywords: ['blob', 'bottleflip'],
+    imageUrl: 'emojis/blobs/bottleflip.gif',
+    customCategory: 'blobs'
+  },
+  {
     name: 'Blob confused',
     short_names: ['blob_confused'],
     keywords: ['blob', 'confused'],
@@ -237,6 +244,20 @@ export const customEmojis = [
     short_names: ['blob_stare'],
     keywords: ['blob', 'stare'],
     imageUrl: 'emojis/blobs/stare.gif',
+    customCategory: 'blobs'
+  },
+  {
+    name: 'Blob supercool',
+    short_names: ['blob_supercool'],
+    keywords: ['blob', 'supercool'],
+    imageUrl: 'emojis/blobs/supercool.gif',
+    customCategory: 'blobs'
+  },
+  {
+    name: 'Blob thinking',
+    short_names: ['blob_thinking'],
+    keywords: ['blob', 'thinking'],
+    imageUrl: 'emojis/blobs/thinking.gif',
     customCategory: 'blobs'
   },
   {
@@ -357,5 +378,75 @@ export const customEmojis = [
     keywords: ['piggy', 'wave'],
     imageUrl: 'emojis/piggys/wave.gif',
     customCategory: 'piggys'
+  },
+  {
+    name: 'Cat dance',
+    short_names: ['cat_dance'],
+    keywords: ['cat', 'dance'],
+    imageUrl: 'emojis/misc/cat_dance.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Confused math lady',
+    short_names: ['confused_math_lady'],
+    keywords: ['confused', 'math', 'lady'],
+    imageUrl: 'emojis/misc/confused_math_lady.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Dancing Kermit',
+    short_names: ['dancing_kermit'],
+    keywords: ['dancing', 'kermit'],
+    imageUrl: 'emojis/misc/dancing_kermit.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Dancing Doge',
+    short_names: ['dancing_doge'],
+    keywords: ['dancing', 'doge'],
+    imageUrl: 'emojis/misc/dancing_doge.gif',
+    customCategory: 'misc'
+  },
+      {
+    name: 'Dancing Duck',
+    short_names: ['dancing_duck'],
+    keywords: ['dancing', 'duck'],
+    imageUrl: 'emojis/misc/dancing_duck.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Get Low',
+    short_names: ['get_low'],
+    keywords: ['dance', 'get', 'low'],
+    imageUrl: 'emojis/misc/get_low.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Hehe girl',
+    short_names: ['hehe_girl'],
+    keywords: ['hehe', 'girl', 'laugh'],
+    imageUrl: 'emojis/misc/hehe_girl.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Coffin dance',
+    short_names: ['rip'],
+    keywords: ['coffin', 'dance', 'rip'],
+    imageUrl: 'emojis/misc/RIP.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Shocked dog',
+    short_names: ['shocked_dog'],
+    keywords: ['shocked', 'dog', 'confused'],
+    imageUrl: 'emojis/misc/shocked_dog.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Tableflip',
+    short_names: ['tableflip'],
+    keywords: ['table', 'flip'],
+    imageUrl: 'emojis/misc/tableflip.gif',
+    customCategory: 'misc'
   }
 ];
