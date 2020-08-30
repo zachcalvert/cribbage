@@ -40,7 +40,7 @@ def get_or_create_game(name):
             "name": name,
             "players": {},
             "state": "INIT",
-            "type": 'cribbage'
+            "type": 'thirteen'
         }
         cache.set(name, json.dumps(g))
     return g
