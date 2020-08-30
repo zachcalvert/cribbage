@@ -177,6 +177,20 @@ export const customEmojis = [
     customCategory: 'blobs'
   },
   {
+    name: 'Blob delighted',
+    short_names: ['blob_delighted'],
+    keywords: ['blob', 'delighted'],
+    imageUrl: 'emojis/blobs/delighted.gif',
+    customCategory: 'blobs'
+  },
+    {
+    name: 'Blob dizzy',
+    short_names: ['blob_dizzy'],
+    keywords: ['blob', 'dizzy'],
+    imageUrl: 'emojis/blobs/dizzy.gif',
+    customCategory: 'blobs'
+  },
+  {
     name: 'Blob dundundun',
     short_names: ['blob_dundundun'],
     keywords: ['blob', 'dundundun'],
@@ -202,6 +216,13 @@ export const customEmojis = [
     short_names: ['blob_happy'],
     keywords: ['blob', 'happy'],
     imageUrl: 'emojis/blobs/happy.gif',
+    customCategory: 'blobs'
+  },
+  {
+    name: 'Blob nono',
+    short_names: ['blob_nono'],
+    keywords: ['blob', 'nono'],
+    imageUrl: 'emojis/blobs/nono.gif',
     customCategory: 'blobs'
   },
   {
@@ -380,6 +401,13 @@ export const customEmojis = [
     customCategory: 'piggys'
   },
   {
+    name: 'Angry frog',
+    short_names: ['angry_frog'],
+    keywords: ['angry', 'frog', 'mad'],
+    imageUrl: 'emojis/misc/angry_frog.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Cat dance',
     short_names: ['cat_dance'],
     keywords: ['cat', 'dance'],
@@ -407,11 +435,18 @@ export const customEmojis = [
     imageUrl: 'emojis/misc/dancing_doge.gif',
     customCategory: 'misc'
   },
-      {
+  {
     name: 'Dancing Duck',
     short_names: ['dancing_duck'],
     keywords: ['dancing', 'duck'],
     imageUrl: 'emojis/misc/dancing_duck.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Excuse me',
+    short_names: ['excuse_me'],
+    keywords: ['excuse', 'me'],
+    imageUrl: 'emojis/misc/excuse_me.gif',
     customCategory: 'misc'
   },
   {
@@ -447,6 +482,13 @@ export const customEmojis = [
     short_names: ['tableflip'],
     keywords: ['table', 'flip'],
     imageUrl: 'emojis/misc/tableflip.gif',
+    customCategory: 'misc'
+  },
+    {
+    name: 'Think smart',
+    short_names: ['think_smart'],
+    keywords: ['think', 'smart'],
+    imageUrl: 'emojis/misc/think_smart.gif',
     customCategory: 'misc'
   }
 ];
