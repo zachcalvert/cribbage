@@ -254,6 +254,13 @@ export const customEmojis = [
     customCategory: 'blobs'
   },
   {
+    name: 'Blob blblblb',
+    short_names: ['blob_blblblblb'],
+    keywords: ['blob', 'rainbow', 'dance', 'blblblblb'],
+    imageUrl: 'emojis/blobs/rainbow_blobby.gif',
+    customCategory: 'blobs'
+  },
+  {
     name: 'Blob smile',
     short_names: ['blob_smile'],
     keywords: ['blob', 'smile'],
@@ -450,6 +457,13 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Coffin dance',
+    short_names: ['rip'],
+    keywords: ['coffin', 'dance', 'rip'],
+    imageUrl: 'emojis/misc/RIP.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Confused math lady',
     short_names: ['confused_math_lady'],
     keywords: ['confused', 'math', 'lady'],
@@ -461,6 +475,26 @@ export const customEmojis = [
     short_names: ['cool_doge'],
     keywords: ['cool', 'doge'],
     imageUrl: 'emojis/misc/cool-doge.gif',
+    customCategory: 'misc'
+  },
+  { name: 'Confused Nick',
+    short_names: ['confused_nick'],
+    keywords: ['confused', 'nick'],
+    imageUrl: 'emojis/misc/confused_nick.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Confused Husky',
+    short_names: ['confused_husky'],
+    keywords: ['confused', 'husky'],
+    imageUrl: 'emojis/misc/confused_husky.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Cool Doge',
+    short_names: ['cool_doge'],
+    keywords: ['cool', 'doge'],
+    imageUrl: 'emojis/misc/doge_cool.gif',
     customCategory: 'misc'
   },
   {
@@ -506,6 +540,20 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Deal with it Doge',
+    short_names: ['doge_deal_with_it'],
+    keywords: ['doge', 'deal', 'with', 'it'],
+    imageUrl: 'emojis/misc/doge_deal_with_it.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Laughing Doge',
+    short_names: ['doge_laugh'],
+    keywords: ['doge', 'laugh', 'lol'],
+    imageUrl: 'emojis/misc/doge_laugh.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Get Low',
     short_names: ['get_low'],
     keywords: ['dance', 'get', 'low'],
@@ -513,17 +561,31 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Haha what boy',
+    short_names: ['haha_what_boy'],
+    keywords: ['haha', 'what', 'boy', 'lol'],
+    imageUrl: 'emojis/misc/haha_what_boy.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Hehe girl',
     short_names: ['hehe_girl'],
-    keywords: ['hehe', 'girl', 'laugh'],
+    keywords: ['hehe', 'girl', 'laugh', 'lol'],
     imageUrl: 'emojis/misc/hehe_girl.gif',
     customCategory: 'misc'
   },
   {
-    name: 'Coffin dance',
-    short_names: ['rip'],
-    keywords: ['coffin', 'dance', 'rip'],
-    imageUrl: 'emojis/misc/RIP.gif',
+    name: 'Panda wee',
+    short_names: ['panda wee'],
+    keywords: ['panda', 'wee', 'dance', 'happy'],
+    imageUrl: 'emojis/misc/panda_wee.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Screaming girl',
+    short_names: ['screaming_girl'],
+    keywords: ['screaming', 'girl', 'mad', 'rage'],
+    imageUrl: 'emojis/misc/screaming_girl.gif',
     customCategory: 'misc'
   },
   {
