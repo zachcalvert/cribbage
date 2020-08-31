@@ -457,10 +457,24 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Cool Doge',
+    short_names: ['cool_doge'],
+    keywords: ['cool', 'doge'],
+    imageUrl: 'emojis/misc/cool-doge.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Dancing Kermit',
     short_names: ['dancing_kermit'],
     keywords: ['dancing', 'kermit'],
     imageUrl: 'emojis/misc/dancing_kermit.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Dancey Doge',
+    short_names: ['dancey_doge'],
+    keywords: ['dancing', 'doge', 'dancey'],
+    imageUrl: 'emojis/misc/dancey_doge.gif',
     customCategory: 'misc'
   },
   {
@@ -481,14 +495,7 @@ export const customEmojis = [
     name: 'Excuse me',
     short_names: ['excuse_me'],
     keywords: ['excuse', 'me'],
-    imageUrl: 'emojis/misc/excuse_me.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Deal with it Doge',
-    short_names: ['doge_deal_with_it'],
-    keywords: ['doge', 'deal', 'with', 'it'],
-    imageUrl: 'emojis/misc/doge_deal_with_it.gif',
+    imageUrl: 'emojis/misc/excuseme.gif',
     customCategory: 'misc'
   },
   {
@@ -496,13 +503,6 @@ export const customEmojis = [
     short_names: ['eyebrows'],
     keywords: ['eyebrows', 'excited'],
     imageUrl: 'emojis/misc/eyebrows.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Laughing Doge',
-    short_names: ['doge_laugh'],
-    keywords: ['doge', 'laugh', 'lol'],
-    imageUrl: 'emojis/misc/doge_laugh.gif',
     customCategory: 'misc'
   },
   {
@@ -531,20 +531,6 @@ export const customEmojis = [
     short_names: ['disappearing_homer'],
     keywords: ['homer', 'disappear', 'bye'],
     imageUrl: 'emojis/misc/homer-disappear.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Panda wee',
-    short_names: ['panda wee'],
-    keywords: ['panda', 'wee', 'dance', 'happy'],
-    imageUrl: 'emojis/misc/panda_wee.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Screaming girl',
-    short_names: ['screaming_girl'],
-    keywords: ['screaming', 'girl', 'mad', 'rage'],
-    imageUrl: 'emojis/misc/screaming_girl.gif',
     customCategory: 'misc'
   },
   {
