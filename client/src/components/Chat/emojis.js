@@ -408,6 +408,41 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Ahhh toad',
+    short_names: ['ahhh_toad'],
+    keywords: ['toad', 'scared', 'nervous', 'ahhh'],
+    imageUrl: 'emojis/misc/ahhhhhhhtoad.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Ballmer hyped',
+    short_names: ['ballmer_hyped'],
+    keywords: ['ballmer', 'hyped', 'excited'],
+    imageUrl: 'emojis/misc/ballmer-hyped.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Banana dance',
+    short_names: ['banana_dance'],
+    keywords: ['banana', 'dance', 'hyped', 'excited'],
+    imageUrl: 'emojis/misc/bananadance.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Burn it all',
+    short_names: ['burn_it_all'],
+    keywords: ['burn', 'all', 'mad', 'excited', 'fire'],
+    imageUrl: 'emojis/misc/burnitall.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Burns Excellent',
+    short_names: ['mr_burns_excellent'],
+    keywords: ['mr', 'burns', 'excellent'],
+    imageUrl: 'emojis/misc/burns-excellent.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Cat dance',
     short_names: ['cat_dance'],
     keywords: ['cat', 'dance'],
@@ -450,6 +485,27 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Deal with it Doge',
+    short_names: ['doge_deal_with_it'],
+    keywords: ['doge', 'deal', 'with', 'it'],
+    imageUrl: 'emojis/misc/doge_deal_with_it.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Eyebrows',
+    short_names: ['eyebrows'],
+    keywords: ['eyebrows', 'excited'],
+    imageUrl: 'emojis/misc/eyebrows.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Laughing Doge',
+    short_names: ['doge_laugh'],
+    keywords: ['doge', 'laugh', 'lol'],
+    imageUrl: 'emojis/misc/doge_laugh.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Get Low',
     short_names: ['get_low'],
     keywords: ['dance', 'get', 'low'],
@@ -471,6 +527,27 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Homer disappear',
+    short_names: ['disappearing_homer'],
+    keywords: ['homer', 'disappear', 'bye'],
+    imageUrl: 'emojis/misc/homer-disappear.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Panda wee',
+    short_names: ['panda wee'],
+    keywords: ['panda', 'wee', 'dance', 'happy'],
+    imageUrl: 'emojis/misc/panda_wee.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Screaming girl',
+    short_names: ['screaming_girl'],
+    keywords: ['screaming', 'girl', 'mad', 'rage'],
+    imageUrl: 'emojis/misc/screaming_girl.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Shocked dog',
     short_names: ['shocked_dog'],
     keywords: ['shocked', 'dog', 'confused'],
@@ -484,11 +561,25 @@ export const customEmojis = [
     imageUrl: 'emojis/misc/tableflip.gif',
     customCategory: 'misc'
   },
-    {
+  {
     name: 'Think smart',
     short_names: ['think_smart'],
     keywords: ['think', 'smart'],
     imageUrl: 'emojis/misc/think_smart.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'This is fine fire',
+    short_names: ['this_is_fine'],
+    keywords: ['this', 'fine', 'fire'],
+    imageUrl: 'emojis/misc/this-is-fine-fire.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'WFH Parrot',
+    short_names: ['wfh_parrot'],
+    keywords: ['wfh', 'parrot'],
+    imageUrl: 'emojis/misc/wfh_parrot.gif',
     customCategory: 'misc'
   }
 ];

@@ -61,7 +61,7 @@ export const Player = (props) => {
 
   useSocket('invalid_card', msg => {
     setActiveCard('');
-  })
+  });
 
   const handleAction = (e) => {
     boop();

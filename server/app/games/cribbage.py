@@ -84,20 +84,17 @@ def start_game(game_data, **kwargs):
     deck = jokers.deck if kwargs['jokers'] else standard.deck
 
     players = list(game_data['players'].keys())
-    dealer = random.choice(players)
-    cutter = rotate_reverse(dealer, players)
-    first_to_score = rotate_turn(dealer, players)
 
     game_data.update({
         'crib': [],
-        'current_action': 'deal',
-        'current_turn': [dealer],
+        'current_action': 'ok',
+        'current_turn': players,
         'cut_card': '',
-        'cutter': cutter,
-        'dealer': dealer,
+        'cutter': '',
+        'dealer': '',
         'deck': list(deck.keys()),
         'deck_type': 'jokers' if kwargs['jokers'] else 'standard',
-        'first_to_score': first_to_score,
+        'first_to_score': '',
         'hand_size': 6 if len(players) <= 2 else 5,
         'hands': {},
         'jokers': False,
@@ -119,16 +116,47 @@ def start_game(game_data, **kwargs):
         'rematch': False,
         'scored_hands': [],
         'scoring_stats': {},
-        'turn': dealer,
         'winning_score': int(winning_score)
     })
     for player in players:
+        game_data['hands'][player] = [random.choice(game_data['deck'])]
         game_data['played_cards'][player] = []
         game_data['scoring_stats'][player] = {
             'a_play': 0,
             'b_hand': 0,
             'c_crib': 0
         }
+
+    # determine dealer based on the respective cut cards
+    low_cut = 15
+    dealer = None
+    for player in game_data['hands']:
+        if deck.get(game_data['hands'][player][0])['rank'] < low_cut:
+            low_cut = deck.get(game_data['hands'][player][0])['rank']
+            dealer = player
+
+    game_data['dealer'] = dealer
+    game_data['cutter'] = rotate_reverse(dealer, players)
+    game_data['first_to_score'] = rotate_turn(dealer, players)
+    game_data['low_cut'] = card_text_from_id(game_data['hands'][game_data['dealer']][0])
+    game_data['opening_message'] = '{} is the lowest cut, so {} deals first!'.format(game_data['low_cut'], dealer)
+
+    return game_data
+
+
+def ok(game_data, **kwargs):
+    player = kwargs['player']
+
+    game_data['hands'][player].pop()
+    player_ok = len(game_data['hands'][player]) == 0
+    if player_ok:
+        game_data['current_turn'].remove(player)
+
+    all_done = all(len(game_data['hands'][player]) == 0 for player in game_data['players'].keys())
+    if all_done:
+        game_data['current_action'] = 'deal'
+        game_data['current_turn'] = game_data['dealer']
+
     return game_data
 
 
@@ -147,6 +175,13 @@ def deal_hands(game_data, **kwargs):
     for player in game_data['players'].keys():
         dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(game_data, dealt_cards)
+
+    if len(game_data['players'].keys()) == 1:
+        game_data['crib'].append(game_data['deck'].pop())
+        game_data['crib'].append(game_data['deck'].pop())
+    elif len(game_data['players'].keys()) == 3:
+        game_data['crib'].append(game_data['deck'].pop())
+
     game_data['current_turn'] = list(game_data['players'].keys())
     game_data['hands'] = hands
     game_data['current_action'] = 'discard'
@@ -305,7 +340,6 @@ def play_card(game_data, **kwargs):
         game_data['current_action'] = 'score'
         game_data['current_turn'] = game_data['first_to_score']
 
-    print('game_dict: {}'.format(game_data))
     return game_data
 
 
@@ -474,20 +508,17 @@ def rematch(game_data, **kwargs):
 
 def refresh_game_dict(game_data):
     players = list(game_data['players'].keys())
-    dealer = random.choice(players)
-    cutter = rotate_reverse(dealer, players)
-    first_to_score = rotate_turn(dealer, players)
     deck = jokers.deck if game_data['jokers'] else standard.deck
 
     game_data.update({
         'crib': [],
-        'current_action': 'deal',
-        'current_turn': [dealer],
+        'current_action': 'ok',
+        'current_turn': players,
         'cut_card': '',
-        'cutter': cutter,
-        'dealer': dealer,
+        'cutter': '',
+        'dealer': '',
         'deck': list(deck.keys()),
-        'first_to_score': first_to_score,
+        'first_to_score': '',
         'hands': {},
         'ok_with_next_round': [],
         'pegging': {
@@ -506,17 +537,30 @@ def refresh_game_dict(game_data):
         'rematch': True,
         'scored_hands': [],
         'scoring_stats': {},
-        'turn': dealer,
     })
     for player in players:
         game_data['players'][player] = 0
+        game_data['hands'][player] = [random.choice(game_data['deck'])]
         game_data['played_cards'][player] = []
         game_data['scoring_stats'][player] = {
             'a_play': 0,
             'b_hand': 0,
             'c_crib': 0,
-
         }
+
+    # determine dealer based on the respective cut cards
+    low_cut = 15
+    dealer = None
+    for player in game_data['hands']:
+        if deck.get(game_data['hands'][player][0])['rank'] < low_cut:
+            low_cut = deck.get(game_data['hands'][player][0])['rank']
+            dealer = player
+
+    game_data['dealer'] = dealer
+    game_data['cutter'] = rotate_reverse(dealer, players)
+    game_data['first_to_score'] = rotate_turn(dealer, players)
+    game_data['low_cut'] = card_text_from_id(game_data['hands'][game_data['dealer']][0])
+    game_data['opening_message'] = '{} is the lowest cut, so {} deals first!'.format(game_data['low_cut'], dealer)
     return game_data
 
 

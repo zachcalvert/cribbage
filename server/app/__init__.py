@@ -55,9 +55,16 @@ def animation(msg):
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
-    message = 'First to {} wins! It\'s {}\'s crib.'.format(game['winning_score'], game['current_turn'][0])
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'big'}, room=msg['game'])
-    emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'}, room=msg['game'])
+    if game['type'] == 'cribbage':
+        emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
+        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
+    emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+
+@socketio.on('ok')
+def ok(msg):
+    game = controller.ok(msg)
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
@@ -167,8 +174,8 @@ def next_round(msg):
 @socketio.on('winner')
 def winner(msg):
     game = controller.grant_victory(msg)
-    emit('winner', {'player': game['winner']}, room=msg['game'])
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'}, room=msg['game'])
+    emit('winner', {'player': game['winner']})
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'})
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
@@ -176,8 +183,8 @@ def winner(msg):
 def rematch(msg):
     game = controller.rematch(msg)
     if game['rematch']:
-        message = 'First to {} wins! It\'s {}\'s crib.'.format(game['winning_score'], game['current_turn'][0])
-        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message']}, room=msg['game'])
+        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
         emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 

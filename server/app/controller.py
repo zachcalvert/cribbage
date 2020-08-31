@@ -71,6 +71,13 @@ def start_game(game_data, **kwargs):
 
 
 @game_interaction
+def ok(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.ok(game_data, **kwargs)
+    return game
+
+
+@game_interaction
 def deal_hands(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.deal_hands(game_data, **kwargs)
