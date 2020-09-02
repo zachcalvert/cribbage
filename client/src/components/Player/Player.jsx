@@ -6,6 +6,7 @@ import { Divider, Fab } from "@material-ui/core";
 import './Player.css'
 
 export const Player = (props) => {
+  const game = sessionStorage.getItem('game');
   const [action, setAction] = useState('start');
   const [turn, setTurn] = useState(true);
 
@@ -16,7 +17,6 @@ export const Player = (props) => {
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
-  const game = sessionStorage.getItem('game');
 
   const { socket } = useSocket("send_turn", msg => {
     setActiveCard('');
@@ -76,12 +76,11 @@ export const Player = (props) => {
 
   const handleCardClick = (e) => {
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
-    if (card === activeCard) {
+    card === activeCard ? (
       setActiveCard('')
-    }
-    else if (card) {
-      setActiveCard(card);
-    }
+    ) : (
+      setActiveCard(card)
+    )
   };
 
   const renderPlayedCards = () => {
@@ -108,7 +107,7 @@ export const Player = (props) => {
         {playableCards.map((card, index) => (
           <ReactSVG
             id={card}
-            className={activeCard === card ? 'active-card available-card': 'available-card'}
+            className={activeCard === card ? 'active-card available-card': 'available-card' && playableCards.length > 6 ? 'overlap' : '' }
             key={index}
             onClick={handleCardClick}
             wrapper='span'

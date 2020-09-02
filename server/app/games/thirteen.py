@@ -1,6 +1,6 @@
 import random
 
-from app.decks.standard import deck
+from app.decks.thirteen import deck
 
 
 def rotate_turn(current, players):
@@ -61,7 +61,7 @@ def start_game(game_data, **kwargs):
         'dealer': dealer,
         'deck': list(deck.keys()),
         'first_to_play': '',
-        'hand_size': 13 if len(players) == 4 else 17,
+        'hand_size': 13,
         'hands': {},
         'ok_with_next_round': [],
         'opening_message': 'First player to get rid of all their cards wins!',
@@ -89,11 +89,8 @@ def _sort_cards(cards):
     spades, diamonds, clubs, hearts
     """
     card_keys_and_values = [{card: deck.get(card)} for card in cards]
-    ascending_card_ids = []
-    for suit in ['clubs', 'diamonds', 'spades', 'hearts']:
-        ascending_suit_dicts = sorted((b for b in card_keys_and_values if next(iter(b.items()))[1]['suit'] == suit), key=lambda x: (x[list(x)[0]]['rank']))
-        ascending_suit_ids = [list(card_dict.keys())[0] for card_dict in ascending_suit_dicts]
-        ascending_card_ids.extend(ascending_suit_ids)
+    ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
+    ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
     return ascending_card_ids
 
 
