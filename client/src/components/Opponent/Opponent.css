@@ -19,3 +19,7 @@
   margin: 0 -10%;
   pointer-events: none;
 }
+
+.opponent-overlap {
+  margin: 0 -5px;
+}

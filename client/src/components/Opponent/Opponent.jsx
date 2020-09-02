@@ -14,11 +14,7 @@ export const Opponent = (props) => {
       setPlayableCards(msg.cards[props.name]);
       setPlayedCards([]);
     }
-    if (msg.show_to_all === true) {
-      setShowCards(true);
-    } else {
-      setShowCards(false);
-    }
+    msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
   });
 
   useSocket("card_played", msg => {
@@ -35,7 +31,7 @@ export const Opponent = (props) => {
           <ReactSVG
             key={index}
             wrapper='span'
-            className='opponent-card'
+            className={playableCards.length > 6 ? 'opponent-card opponent-overlap' : 'opponent-card' }
             src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
