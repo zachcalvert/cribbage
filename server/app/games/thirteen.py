@@ -60,26 +60,17 @@ def start_game(game_data, **kwargs):
         'current_turn': [dealer],
         'dealer': dealer,
         'deck': list(deck.keys()),
-        'first_to_play': '',
         'hand_size': 13,
         'hands': {},
-        'ok_with_next_round': [],
         'opening_message': 'First player to get rid of all their cards wins!',
-        'play_again': [],
         'play_round': {
             'last_card_played': [],
-            'current_play_type': '',  # pairs, runs of 4, singles
-            'passed': [],
-            '': 0
+            'current_play': '',  # pairs, runs of 4, singles, etc
+            'passed': []
         },
-        'played_cards': {},
+        'played_cards': [],
         'rematch': False,
-        'scored_hands': [],
-        'scoring_stats': {},
-        'turn': dealer
     })
-    for player in players:
-        game_data['played_cards'][player] = []
 
     return game_data
 
@@ -95,17 +86,15 @@ def _sort_cards(cards):
 
 
 def _lowest_card_belongs_to(hands):
-    if len(hands.keys()) == 1:
-        return list(hands.keys())[0]
-    clubs_belongs_to = None
-    three_of_spades = '04f17d1351'
-    three_of_clubs = '85ba715700'
-    for player in hands.keys():
-        if three_of_spades in hands[player]:
-            return player
-        if three_of_clubs in hands[player]:
-            clubs_belongs_to = player
-    return clubs_belongs_to
+    print(hands)
+    low_card = 53
+    player = None
+    for player, cards in hands.items():
+        lowest_in_hand = min([deck.get(card)['rank'] for card in cards])
+        if lowest_in_hand < low_card:
+            low_card = lowest_in_hand
+            player = player
+    return low_card, player
 
 
 def deal_hands(game_data, **kwargs):
@@ -115,7 +104,23 @@ def deal_hands(game_data, **kwargs):
     for player in game_data['players'].keys():
         dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(dealt_cards)
+
+    low_card, player = _lowest_card_belongs_to(hands)
     game_data['current_action'] = 'play'
-    game_data['current_turn'] = _lowest_card_belongs_to(hands)
+    game_data['current_turn'] = player
     game_data['hands'] = hands
+    game_data['low_card'] = low_card
+
     return game_data
+
+
+def is_valid_play(game_data, player, card):
+    card_object = deck[card]
+
+    if card_object['value'] > (31 - game_data['pegging']['total']):
+        return False
+
+    if player not in game_data['current_turn']:
+        return False
+
+    return True
