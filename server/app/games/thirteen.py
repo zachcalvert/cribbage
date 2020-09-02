@@ -87,14 +87,18 @@ def _sort_cards(cards):
 
 def _lowest_card_belongs_to(hands):
     print(hands)
-    low_card = 53
-    player = None
+    low_card = None
+    low_rank = 52
+    starter = None
+
     for player, cards in hands.items():
-        lowest_in_hand = min([deck.get(card)['rank'] for card in cards])
-        if lowest_in_hand < low_card:
-            low_card = lowest_in_hand
-            player = player
-    return low_card, player
+        for card in cards:
+            if deck.get(card)['rank'] < low_rank:
+                low_rank = deck.get(card)['rank']
+                low_card = card
+                starter = player
+
+    return low_card, starter
 
 
 def deal_hands(game_data, **kwargs):
@@ -115,12 +119,8 @@ def deal_hands(game_data, **kwargs):
 
 
 def is_valid_play(game_data, player, card):
-    card_object = deck[card]
 
-    if card_object['value'] > (31 - game_data['pegging']['total']):
-        return False
+    if game_data['low_card'] and card != game_data['low_card']:
+        return False, 'Whoops! You must start by making a play with the lowest card in your hand.'
 
-    if player not in game_data['current_turn']:
-        return False
-
-    return True
+    return True, ''

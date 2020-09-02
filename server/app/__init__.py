@@ -101,9 +101,10 @@ def cut_deck(msg):
 
 @socketio.on('play')
 def play_card(msg):
-    valid_play = controller.is_valid_play(msg['game'], msg['player'], msg['card'])
+    valid_play, message = controller.is_valid_play(msg['game'], msg['player'], msg['card'])
     if not valid_play:
-        emit('invalid_card', {'player': msg['player'], 'message': 'Please play a valid card.'})
+        emit('invalid_card')
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message})
         return
 
     game = controller.play_card(msg)
