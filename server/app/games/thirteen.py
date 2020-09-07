@@ -40,14 +40,14 @@ def next_with_cards(players_in_order, hands):
     return None
 
 
-def play_or_pass(card_values, pegging_total):
+def play_or_pass(card_values, play_on_table):
     """
     Determine if the next player has cards to play or should pass.
     """
     action = 'pass'
-    remainder = 31 - pegging_total
-    if any(int(value) <= remainder for value in card_values):
-        action = 'play'
+    if _determine_play_type(card_values) == play_on_table['type']:
+        if _highest_card(card_values) > play_on_table['highest_card']:
+            action = 'play'
     return action
 
 
@@ -63,12 +63,9 @@ def start_game(game_data, **kwargs):
         'hand_size': 13,
         'hands': {},
         'opening_message': 'First player to get rid of all their cards wins!',
-        'play_round': {
-            'last_card_played': [],
-            'current_play': '',  # pairs, runs of 4, singles, etc
-            'passed': []
-        },
-        'played_cards': [],
+        'play_on_table': {},
+        'passed_list': [],
+        'previous_turn': {'points': 0},  # only here for cribbage
         'rematch': False,
     })
 
@@ -118,9 +115,75 @@ def deal_hands(game_data, **kwargs):
     return game_data
 
 
-def is_valid_play(game_data, player, card):
+def _determine_play_type(cards):
+    MAP = {
+        1: 'singles',
+        2: 'pairs',
+        3: 'threes',
+        4: 'four'
+    }
 
-    if game_data['low_card'] and card != game_data['low_card']:
-        return False, 'Whoops! You must start by making a play with the lowest card in your hand.'
+    if all([deck.get(cards[x]['value'] for x in cards)]) == deck.get(cards[0])['value']:
+        return MAP[len(cards)]
+
+    def is_run(card_ranks):
+        groups = [list(group) for group in mit.consecutive_groups(card_ranks)]
+        if any(len(group) == len(ranks) for group in groups):
+            return True
+        return False
+
+    ranks = sorted(deck.get(card)['rank'] for card in cards)
+    if is_run(ranks):
+        return 'run'
+
+    return 'invalid'
+
+
+def _highest_card(cards):
+    high = 3
+    for card in cards:
+        if deck.get(card)['rank'] > high:
+            high = deck.get(card)['rank']
+    return high
+
+
+def is_valid_play(game_data, player, cards):
+
+    if game_data['low_card'] and game_data['low_card'] not in cards:
+        return False, 'Whoops! You must start the game by making a play with the lowest card in your hand.'
+
+    play_type = _determine_play_type(cards)
+    if play_type == 'invalid':
+        return False, 'Whoops! You cant play all those cards together.'
+
+    # compare length of current_play
+    if play_type == game_data['play_on_table']['type']:
+        if _highest_card(cards) < game_data['play_on_table']['highest_card']:
+            return False, 'That\'s the right play type, but it doesn\'t beat what\'s already on the table.'
+    else:
+        return False, 'Whoops! That\'s not the right play type.'
 
     return True, ''
+
+
+def play_card(game_data, player, cards):
+    """
+    cards: list of card ids []
+    """
+    game_data['play_on_table']['type'] = _determine_play_type(cards)
+    game_data['play_on_table']['highest_card'] = _highest_card(cards)
+
+    player_order = list(game_data['players'].keys())
+    starting_point = player_order.index(game_data['current_turn'])
+    players_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
+
+    next = next_player(players_in_order, game_data['hands'], game_data['passed_list'])
+    game_data['current_turn'] = next
+    game_data['current_action'] = play_or_pass(game_data['hands'][next_player], game_data['play_on_table'])
+
+    return game_data
+
+
+def record_pass(game_data, player):
+    game_data['pegging']['passed'].append(player)
+    return game_data
