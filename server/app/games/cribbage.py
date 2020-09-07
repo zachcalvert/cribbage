@@ -350,12 +350,12 @@ def is_valid_play(game_data, player, card):
     card_object = standard.deck[card]
 
     if card_object['value'] > (31 - game_data['pegging']['total']):
-        return False
+        return False, 'Whoops! You gotta play a card with a lower value.'
 
     if player not in game_data['current_turn']:
-        return False
+        return False, 'Whoops! It is currently {}\'s turn to play.'.format(game_data['current_turn'])
 
-    return True
+    return True, ''
 
 
 def record_pass(game_data, **kwargs):

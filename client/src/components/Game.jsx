@@ -54,12 +54,12 @@ export const Game = ()  => {
   };
 
   return id ? (
-      <div className="container-lg">
+      <div className="container-xl">
         <div className="game row">
-          <div className="chat col-lg-4">
+          <div className="chat col-xl-4">
             <Chat />
           </div>
-          <div className="game-table col-lg-8 row">
+          <div className="game-table col-xl-8 row">
             <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>
