@@ -177,13 +177,6 @@ export const customEmojis = [
     customCategory: 'blobs'
   },
   {
-    name: 'Blob delighted',
-    short_names: ['blob_delighted'],
-    keywords: ['blob', 'delighted'],
-    imageUrl: 'emojis/blobs/delighted.gif',
-    customCategory: 'blobs'
-  },
-    {
     name: 'Blob dizzy',
     short_names: ['blob_dizzy'],
     keywords: ['blob', 'dizzy'],
