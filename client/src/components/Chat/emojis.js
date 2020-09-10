@@ -422,6 +422,13 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Awkward monkey',
+    short_names: ['awkward_monkey'],
+    keywords: ['awkward', 'monkey', 'stare'],
+    imageUrl: 'emojis/misc/awkward_monkey.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Ballmer hyped',
     short_names: ['ballmer_hyped'],
     keywords: ['ballmer', 'hyped', 'excited'],
@@ -575,6 +582,13 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Its Happening',
+    short_names: ['its_happening'],
+    keywords: ['its', 'happening', 'excited', 'hype'],
+    imageUrl: 'emojis/misc/its_happening.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Panda wee',
     short_names: ['panda wee'],
     keywords: ['panda', 'wee', 'dance', 'happy'],
@@ -607,6 +621,13 @@ export const customEmojis = [
     short_names: ['tableflip'],
     keywords: ['table', 'flip'],
     imageUrl: 'emojis/misc/tableflip.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'The horror',
+    short_names: ['the_horror'],
+    keywords: ['the', 'horror', 'monkey'],
+    imageUrl: 'emojis/misc/the_horror.gif',
     customCategory: 'misc'
   },
   {
