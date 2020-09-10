@@ -5,6 +5,14 @@ import LinearProgress from "@material-ui/core/LinearProgress";
 import './Scoreboard.css'
 
 
+const colorMap = {
+  1: 'primary',
+  2: 'secondary',
+  3: 'success',
+  4: 'warning'
+}
+
+
 export const Scoreboard = () => {
   const game = sessionStorage.getItem('game');
   const [players, setPlayers] = useState({});
@@ -34,18 +42,17 @@ export const Scoreboard = () => {
   const renderProgressBars = () => {
     return players ? (
       <>
-        {Object.entries(players).map( ([player, score]) => (
-          <div key={player} className='scoreboard-player row'>
-            <span className='scoreboard-player-name col-2'>{player}</span>
+        {Object.entries(players).map( ([player, score], index) => (
+          <div key={index} className='scoreboard-player row'>
+            <span className='scoreboard-player-name col-12'>{player}</span>
             <LinearProgress
-              className='scoreboard-player-progress col-8'
+              className='scoreboard-player-progress col-10'
               variant="determinate"
               value={score}
               aria-valuemax={winningScore}
+              color={colorMap[index]}
             />
-            <span className='scoreboard-player-total col-2'>
-              {score}
-            </span>
+            <div className="scoreboard-player-score col-2">{score}</div>
           </div>
         ))}
       </>
