@@ -477,13 +477,6 @@ export const customEmojis = [
     imageUrl: 'emojis/misc/confused_math_lady.gif',
     customCategory: 'misc'
   },
-  {
-    name: 'Cool Doge',
-    short_names: ['cool_doge'],
-    keywords: ['cool', 'doge'],
-    imageUrl: 'emojis/misc/cool-doge.gif',
-    customCategory: 'misc'
-  },
   { name: 'Confused Nick',
     short_names: ['confused_nick'],
     keywords: ['confused', 'nick'],
