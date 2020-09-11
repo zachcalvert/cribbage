@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     display: "flex",
+    width: "100%"
   },
   input: {
     color: "inherit",
