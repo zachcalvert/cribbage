@@ -367,7 +367,14 @@ def record_pass(game_data, **kwargs):
     starting_point = player_order.index(game_data['current_turn'])
     players_in_order = player_order[starting_point + 1:] + player_order[:starting_point + 1]
     next_to_play = next_for_this_round(players_in_order, game_data['hands'], game_data['pegging']['passed'])
-    if not next_to_play:
+    if next_to_play:
+        game_data['previous_turn'] = {
+            'action': '',
+            'points': 0,
+            'player': game_data['pegging']['last_played'],
+            'reason': 'go'
+        }
+    else:
         if game_data['pegging']['total'] != 31:
             game_data['players'][kwargs['player']] += 1
         game_data['previous_turn'] = {
