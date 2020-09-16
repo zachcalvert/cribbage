@@ -345,6 +345,13 @@ export const customEmojis = [
     customCategory: 'piggys'
   },
   {
+    name: 'Piggy gong',
+    short_names: ['piggy_gong'],
+    keywords: ['piggy', 'gong'],
+    imageUrl: 'emojis/piggys/gong.gif',
+    customCategory: 'piggys'
+  },
+  {
     name: 'Piggy happy',
     short_names: ['piggy_happy'],
     keywords: ['piggy', 'happy'],
@@ -401,6 +408,76 @@ export const customEmojis = [
     customCategory: 'piggys'
   },
   {
+    name: 'Yoyo angery',
+    short_names: ['yoyo_angery'],
+    keywords: ['yoyo', 'angry', 'angery', 'mad'],
+    imageUrl: 'emojis/yoyos/angery.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo backfired',
+    short_names: ['yoyo_backfired'],
+    keywords: ['yoyo', 'backfired', 'oops'],
+    imageUrl: 'emojis/yoyos/backfired.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo holding_bomb',
+    short_names: ['yoyo_holding_bomb'],
+    keywords: ['yoyo', 'holding', 'bomb'],
+    imageUrl: 'emojis/yoyos/holding_bomb.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo looking',
+    short_names: ['yoyo_looking'],
+    keywords: ['yoyo', 'looking'],
+    imageUrl: 'emojis/yoyos/looking.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo money_bath',
+    short_names: ['yoyo_money_bath'],
+    keywords: ['yoyo', 'money', 'bath'],
+    imageUrl: 'emojis/yoyos/money_bath.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo nudge',
+    short_names: ['yoyo_nudge'],
+    keywords: ['yoyo', 'nudge', 'eh'],
+    imageUrl: 'emojis/yoyos/nudge.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo scared',
+    short_names: ['yoyo_scared'],
+    keywords: ['yoyo', 'scared'],
+    imageUrl: 'emojis/yoyos/scared.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo scheming',
+    short_names: ['yoyo_scheming'],
+    keywords: ['yoyo', 'scheming'],
+    imageUrl: 'emojis/yoyos/scheming.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo temper tantrum',
+    short_names: ['yoyo_temper_tantrum'],
+    keywords: ['yoyo', 'angry', 'angery', 'temper', 'tantrum'],
+    imageUrl: 'emojis/yoyos/temper_tantrum.gif',
+    customCategory: 'yoyos'
+  },
+  {
+    name: 'Yoyo success',
+    short_names: ['yoyo_success'],
+    keywords: ['yoyo', 'success'],
+    imageUrl: 'emojis/yoyos/success.gif',
+    customCategory: 'yoyos'
+  },
+  {
     name: 'Angry frog',
     short_names: ['angry_frog'],
     keywords: ['angry', 'frog', 'mad'],
@@ -429,10 +506,31 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Bart dancing',
+    short_names: ['bart_dancing'],
+    keywords: ['bart', 'hyped', 'excited', 'dancing'],
+    imageUrl: 'emojis/misc/bart_dancing.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Banana dance',
     short_names: ['banana_dance'],
     keywords: ['banana', 'dance', 'hyped', 'excited'],
     imageUrl: 'emojis/misc/bananadance.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Beep beep',
+    short_names: ['beep_beep'],
+    keywords: ['beep', 'dance', 'hyped', 'excited'],
+    imageUrl: 'emojis/misc/beep_beep.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Bernie no',
+    short_names: ['bernie_no'],
+    keywords: ['bernie', 'no'],
+    imageUrl: 'emojis/misc/bernie_no.gif',
     customCategory: 'misc'
   },
   {
@@ -484,10 +582,31 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Confused Travolta',
+    short_names: ['confused_travolta'],
+    keywords: ['confused', 'travolta', 'what'],
+    imageUrl: 'emojis/misc/confused_travolta.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Cool Doge',
     short_names: ['cool_doge'],
     keywords: ['cool', 'doge'],
     imageUrl: 'emojis/misc/doge_cool.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Crab rave',
+    short_names: ['crab_rave'],
+    keywords: ['crab', 'rave', 'dance', 'hyped', 'excited'],
+    imageUrl: 'emojis/misc/crab_rave.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Curtsy',
+    short_names: ['curtsy'],
+    keywords: ['curtsy', 'bow'],
+    imageUrl: 'emojis/misc/curtsy.gif',
     customCategory: 'misc'
   },
   {
@@ -526,13 +645,6 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
-    name: 'Eyebrows',
-    short_names: ['eyebrows'],
-    keywords: ['eyebrows', 'excited'],
-    imageUrl: 'emojis/misc/eyebrows.gif',
-    customCategory: 'misc'
-  },
-  {
     name: 'Deal with it Doge',
     short_names: ['doge_deal_with_it'],
     keywords: ['doge', 'deal', 'with', 'it'],
@@ -540,10 +652,17 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
-    name: 'Laughing Doge',
-    short_names: ['doge_laugh'],
-    keywords: ['doge', 'laugh', 'lol'],
-    imageUrl: 'emojis/misc/doge_laugh.gif',
+    name: 'Dumpster fire',
+    short_names: ['dumpster_fire'],
+    keywords: ['dumpster', 'fire', 'bad'],
+    imageUrl: 'emojis/misc/dumpster-fire.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Eyebrows',
+    short_names: ['eyebrows'],
+    keywords: ['eyebrows', 'excited'],
+    imageUrl: 'emojis/misc/eyebrows.gif',
     customCategory: 'misc'
   },
   {
@@ -561,31 +680,17 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Happy drake',
+    short_names: ['happy_drake'],
+    keywords: ['happy', 'excited', 'drake', 'dancing'],
+    imageUrl: 'emojis/misc/happy_drake.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Hehe girl',
     short_names: ['hehe_girl'],
     keywords: ['hehe', 'girl', 'laugh', 'lol'],
     imageUrl: 'emojis/misc/hehe_girl.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Its Happening',
-    short_names: ['its_happening'],
-    keywords: ['its', 'happening', 'excited', 'hype'],
-    imageUrl: 'emojis/misc/its_happening.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Panda wee',
-    short_names: ['panda wee'],
-    keywords: ['panda', 'wee', 'dance', 'happy'],
-    imageUrl: 'emojis/misc/panda_wee.gif',
-    customCategory: 'misc'
-  },
-  {
-    name: 'Screaming girl',
-    short_names: ['screaming_girl'],
-    keywords: ['screaming', 'girl', 'mad', 'rage'],
-    imageUrl: 'emojis/misc/screaming_girl.gif',
     customCategory: 'misc'
   },
   {
@@ -596,10 +701,59 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Its Happening',
+    short_names: ['its_happening'],
+    keywords: ['its', 'happening', 'excited', 'hype'],
+    imageUrl: 'emojis/misc/its_happening.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Laughing Doge',
+    short_names: ['doge_laugh'],
+    keywords: ['doge', 'laugh', 'lol'],
+    imageUrl: 'emojis/misc/doge_laugh.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Panda wee',
+    short_names: ['panda wee'],
+    keywords: ['panda', 'wee', 'dance', 'happy'],
+    imageUrl: 'emojis/misc/panda_wee.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Raving doge',
+    short_names: ['raving_doge'],
+    keywords: ['raving', 'doge', 'dancing', 'excited'],
+    imageUrl: 'emojis/misc/raving_doge.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Sad drake',
+    short_names: ['sad_drake'],
+    keywords: ['sad', 'drake'],
+    imageUrl: 'emojis/misc/sad_drake.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Screaming girl',
+    short_names: ['screaming_girl'],
+    keywords: ['screaming', 'girl', 'mad', 'rage'],
+    imageUrl: 'emojis/misc/screaming_girl.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Shocked dog',
     short_names: ['shocked_dog'],
     keywords: ['shocked', 'dog', 'confused'],
     imageUrl: 'emojis/misc/shocked_dog.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Skunk alert',
+    short_names: ['skunk_alert'],
+    keywords: ['skunk', 'alert'],
+    imageUrl: 'emojis/misc/skunk.gif',
     customCategory: 'misc'
   },
   {
