@@ -81,6 +81,7 @@ def card_text_from_id(card_id):
 
 def start_game(game_data, **kwargs):
     winning_score = kwargs['winning_score']
+    print('winning score: {}'.format(winning_score))
     deck = jokers.deck if kwargs['jokers'] else standard.deck
 
     players = list(game_data['players'].keys())

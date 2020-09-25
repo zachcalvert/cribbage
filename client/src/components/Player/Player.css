@@ -71,3 +71,7 @@
   display: inline-block;
   max-width: 120px;
 }
+
+.ReactModal__Content {
+  text-align: center;
+}

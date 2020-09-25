@@ -1,3 +1,7 @@
+.ReactModal__Content{
+  text-align: center;
+}
+
 .cards-modal {
   position: absolute;
   z-index: 99;

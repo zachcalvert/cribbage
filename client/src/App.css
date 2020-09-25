@@ -16,6 +16,27 @@ html, body {
   margin: 0 15px;
 }
 
+.MuiDialog-paper {
+  margin: auto;
+  width: 80%;
+  height: auto;
+  max-height: 500px;
+  max-width: 500px;
+  text-align: center;
+}
+
+.MuiButtonBase-root {
+  margin-left: auto!important;
+  margin-right: auto!important;
+}
+
+.close-modal {
+  position: absolute!important;
+  top: 0;
+  right: 0;
+  color: red;
+}
+
 .chat {
   border: 1px solid #E0E0E0;
   border-bottom-left-radius: 10px;

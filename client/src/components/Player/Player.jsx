@@ -7,7 +7,7 @@ import './Player.css'
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
-  const [action, setAction] = useState('start');
+  const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
 
   const [activeCard, setActiveCard] = useState('');
@@ -65,12 +65,7 @@ export const Player = (props) => {
 
   const handleAction = (e) => {
     boop();
-    if (action === 'start') {
-      socket.emit('start_game', {game: game, winning_score: 121, jokers: false});
-    }
-    else {
-      socket.emit(action, { game: game, player: props.name, card: activeCard });
-    }
+    socket.emit(action, { game: game, player: props.name, card: activeCard });
     document.activeElement.blur();
   };
 
@@ -126,7 +121,7 @@ export const Player = (props) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        <div className='col-6'>
+        {action ? <div className='col-6'>
           <Fab variant="extended"
             className="action-button"
             color="primary"
@@ -134,7 +129,7 @@ export const Player = (props) => {
             disabled={!turn}>
             { action }
           </Fab>
-        </div>
+        </div> : <span/>}
         <div className='col-3'>
           {showPeggingTotal ? (
             <span className='pegging-total'>{peggingTotal}</span>

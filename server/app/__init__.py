@@ -52,6 +52,12 @@ def animation(msg):
     emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])
 
 
+@socketio.on('setup')
+def setup(msg):
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} is setting up the game..'.format(msg['player'])}, room=msg['game'])
+    emit('send_turn', {'players': [msg['player']], 'action': ''}, room=msg['game'])
+
+
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
