@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
-import LinearProgress from "@material-ui/core/LinearProgress";
 
 import './Scoreboard.css'
 
 const colorClassMap = {
-  0: 'scoreboard-player-progress col-10 player-one',
-  1: 'scoreboard-player-progress col-10 player-two',
-  2: 'scoreboard-player-progress col-10 player-three',
-  3: 'scoreboard-player-progress col-10 player-four'
+  0: 'scoreboard-player-progress player-one',
+  1: 'scoreboard-player-progress player-two',
+  2: 'scoreboard-player-progress player-three',
+  3: 'scoreboard-player-progress player-four'
 }
 
 export const Scoreboard = () => {
@@ -45,12 +44,14 @@ export const Scoreboard = () => {
         {Object.entries(players).map( ([player, score], index) => (
           <div key={index} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-10'>{player}</span>
-            <LinearProgress
-              className={`${colorClassMap[index]}`}
-              value={score}
-              variant="determinate"
-              aria-valuemax={winningScore}
-            />
+            <div className="progress col-10">
+              <div
+                className={`${colorClassMap[index]} progress-bar`}
+                role="progressbar"
+                aria-valuemin="0" aria-valuenow={score} aria-valuemax={winningScore}
+                style={{"width": `${score/winningScore * 100}%`}}>
+              </div>
+            </div>
             <div className="scoreboard-player-score col-2">{score}</div>
           </div>
         ))}
