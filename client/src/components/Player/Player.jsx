@@ -43,9 +43,6 @@ export const Player = (props) => {
     } else {
       setShowPeggingTotal(false);
     }
-    if (msg.action === 'deal') {
-      setPlayableCards([]);
-    }
   });
 
   useSocket("cards", msg => {

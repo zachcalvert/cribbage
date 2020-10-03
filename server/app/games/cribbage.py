@@ -88,7 +88,7 @@ def start_game(game_data, **kwargs):
 
     game_data.update({
         'crib': [],
-        'current_action': 'ok',
+        'current_action': 'draw',
         'current_turn': players,
         'cut_card': '',
         'cutter': '',
@@ -120,7 +120,7 @@ def start_game(game_data, **kwargs):
         'winning_score': int(winning_score)
     })
     for player in players:
-        game_data['hands'][player] = [random.choice(game_data['deck'])]
+        game_data['hands'][player] = []
         game_data['played_cards'][player] = []
         game_data['scoring_stats'][player] = {
             'a_play': 0,
@@ -128,38 +128,40 @@ def start_game(game_data, **kwargs):
             'c_crib': 0
         }
 
-    # determine dealer based on the respective cut cards
-    low_cut = 15
-    dealer = None
-    for player in game_data['hands']:
-        if deck.get(game_data['hands'][player][0])['rank'] == low_cut:
-            game_data['hands'][player][0] = random.choice(['75e734d054', '60575e1068', 'ae2caea4bb', '36493dcc05'])
-
-        if deck.get(game_data['hands'][player][0])['rank'] < low_cut:
-            low_cut = deck.get(game_data['hands'][player][0])['rank']
-            dealer = player
-
-    game_data['dealer'] = dealer
-    game_data['cutter'] = rotate_reverse(dealer, players)
-    game_data['first_to_score'] = rotate_turn(dealer, players)
-    game_data['low_cut'] = card_text_from_id(game_data['hands'][game_data['dealer']][0])
-    game_data['opening_message'] = 'First to {} wins! {} is the lowest cut, so {} gets first crib.'.format(winning_score, game_data['low_cut'], dealer)
-
+    game_data['opening_message'] = 'First to {} wins! Lowest drawn card gets first crib.'.format(winning_score)
     return game_data
 
 
-def ok(game_data, **kwargs):
+def draw(game_data, **kwargs):
+    game_data['opening_message'] = ''
     player = kwargs['player']
+    players = list(game_data['players'].keys())
 
-    game_data['hands'][player].pop()
-    player_ok = len(game_data['hands'][player]) == 0
-    if player_ok:
-        game_data['current_turn'].remove(player)
+    random.shuffle(game_data['deck'])
+    game_data['hands'][player] = [game_data['deck'].pop()]
+    game_data['current_turn'].remove(player)
 
-    all_done = all(len(game_data['hands'][player]) == 0 for player in game_data['players'].keys())
-    if all_done:
+    all_have_drawn = all(len(game_data['hands'][player]) == 1 for player in game_data['players'].keys())
+    if all_have_drawn:
+        # determine dealer based on the respective cut cards
+        low_cut = 15
+        dealer = None
+        for player in game_data['hands']:
+            if standard.deck.get(game_data['hands'][player][0])['rank'] == low_cut:
+                game_data['hands'][player][0] = random.choice(['75e734d054', '60575e1068', 'ae2caea4bb', '36493dcc05'])
+
+            if standard.deck.get(game_data['hands'][player][0])['rank'] < low_cut:
+                low_cut = standard.deck.get(game_data['hands'][player][0])['rank']
+                dealer = player
+
+        game_data['dealer'] = dealer
+        game_data['cutter'] = rotate_reverse(dealer, players)
+        game_data['first_to_score'] = rotate_turn(dealer, players)
         game_data['current_action'] = 'deal'
         game_data['current_turn'] = game_data['dealer']
+
+        message = "{} is the lowest, {} gets first crib!".format(card_text_from_id(game_data['hands'][game_data['dealer']][0]), dealer)
+        game_data['opening_message'] = message
 
     return game_data
 
@@ -523,7 +525,7 @@ def refresh_game_dict(game_data):
 
     game_data.update({
         'crib': [],
-        'current_action': 'ok',
+        'current_action': 'draw',
         'current_turn': players,
         'cut_card': '',
         'cutter': '',
@@ -559,18 +561,6 @@ def refresh_game_dict(game_data):
             'c_crib': 0,
         }
 
-    # determine dealer based on the respective cut cards
-    low_cut = 15
-    dealer = None
-    for player in game_data['hands']:
-        if deck.get(game_data['hands'][player][0])['rank'] < low_cut:
-            low_cut = deck.get(game_data['hands'][player][0])['rank']
-            dealer = player
-
-    game_data['dealer'] = dealer
-    game_data['cutter'] = rotate_reverse(dealer, players)
-    game_data['first_to_score'] = rotate_turn(dealer, players)
-    game_data['low_cut'] = card_text_from_id(game_data['hands'][game_data['dealer']][0])
     game_data['opening_message'] = '{} is the lowest cut, so {} gets first crib!'.format(game_data['low_cut'], dealer)
     return game_data
 
