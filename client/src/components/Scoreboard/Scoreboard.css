@@ -1,6 +1,7 @@
 .scoreboard {
   margin: auto 0;
   padding: 0 0 0 60px;
+  text-align: center;
 }
 
 .scoreboard-player {
@@ -8,7 +9,9 @@
   text-align: center;
 }
 
-.scoreboard-player-progress {
+.progress {
+  padding-left: 0!important;
+  padding-right: 0!important;
   height: 14px!important;
   border-radius: 5px!important;
   margin-top: 0!important;
@@ -20,34 +23,18 @@
 }
 
 .player-one {
-  background-color: #6ab7ff!important;
-}
-
-.player-one .MuiLinearProgress-barColorPrimary {
   background-color: #1565c0!important;
 }
 
 .player-two {
-  background-color: #ff6f60!important;
-}
-
-.player-two .MuiLinearProgress-barColorPrimary {
   background-color: #b71c1c!important;
 }
 
 
 .player-three {
-  background-color: #ffffa8!important;
-}
-
-.player-three .MuiLinearProgress-barColorPrimary {
-  background-color: #fdd835!important;
+  background-color: #388e3c!important;
 }
 
 .player-four {
-  background-color: #98ee99!important;
-}
-
-.player-four .MuiLinearProgress-barColorPrimary {
-  background-color: #388e3c!important;
+  background-color: #fdd835!important;
 }

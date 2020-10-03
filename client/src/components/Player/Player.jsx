@@ -2,20 +2,31 @@ import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import { ReactSVG } from 'react-svg'
-import { Divider, Fab } from "@material-ui/core";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Divider,
+  Fab,
+  IconButton,
+  TextField
+} from "@material-ui/core";
 import './Player.css'
+import {useModal} from "react-modal-hook";
+import CloseIcon from "@material-ui/icons/Close";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
   const [action, setAction] = useState('start');
   const [turn, setTurn] = useState(true);
-
   const [activeCard, setActiveCard] = useState('');
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
-
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
+  const [winningScore, setWinningScore] = useState(100);
+
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
   const { socket } = useSocket("send_turn", msg => {
@@ -31,9 +42,6 @@ export const Player = (props) => {
       setShowPeggingTotal(true);
     } else {
       setShowPeggingTotal(false);
-    }
-    if (msg.action === 'deal') {
-      setPlayableCards([]);
     }
   });
 
@@ -63,12 +71,39 @@ export const Player = (props) => {
     setActiveCard('');
   });
 
+  const handleStartGame = e => {
+    e.preventDefault();
+    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, jokers: false });
+    hideModal();
+  };
+
+  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
+    <Dialog className="cards-modal" open={open} onExited={onExited} onClose={hideModal}>
+      <DialogTitle>Game setup</DialogTitle>
+        <IconButton className="close-modal" onClick={hideModal} aria-label="leave">
+          <CloseIcon fontSize="inherit" />
+        </IconButton>
+      <DialogContent>
+        <TextField
+            defaultValue="121"
+            id="name"
+            onChange={e => setWinningScore(e.target.value.trim())}
+            label="winning score" /><br />
+      </DialogContent>
+      <DialogActions>
+        <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
+          <Fab variant="extended" type="submit">Start</Fab>
+        </form>
+      </DialogActions>
+    </Dialog>
+  ), [winningScore]);
+
   const handleAction = (e) => {
     boop();
     if (action === 'start') {
-      socket.emit('start_game', {game: game, winning_score: 121, jokers: false});
-    }
-    else {
+      socket.emit('setup', { game: game, player: props.name });
+      showModal();
+    } else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
     }
     document.activeElement.blur();
@@ -126,7 +161,7 @@ export const Player = (props) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        <div className='col-6'>
+        {action ? <div className='col-6'>
           <Fab variant="extended"
             className="action-button"
             color="primary"
@@ -134,7 +169,7 @@ export const Player = (props) => {
             disabled={!turn}>
             { action }
           </Fab>
-        </div>
+        </div> : <span/>}
         <div className='col-3'>
           {showPeggingTotal ? (
             <span className='pegging-total'>{peggingTotal}</span>
@@ -149,4 +184,4 @@ export const Player = (props) => {
       </div>
     </>
   );
-}
+};

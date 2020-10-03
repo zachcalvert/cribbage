@@ -52,20 +52,30 @@ def animation(msg):
     emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])
 
 
+@socketio.on('setup')
+def setup(msg):
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} is setting up the game..'.format(msg['player'])}, room=msg['game'])
+    emit('send_turn', {'players': [msg['player']], 'action': ''}, room=msg['game'])
+
+
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'}, room=msg['game'])
     if game['type'] == 'cribbage':
         emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
-        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
-@socketio.on('ok')
-def ok(msg):
-    game = controller.ok(msg)
+@socketio.on('draw')
+def draw(msg):
+    game = controller.draw(msg)
+    emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+    if game['opening_message']:
+        emit('chat_message',
+             {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'},
+             room=msg['game'])
 
 
 @socketio.on('deal')
@@ -147,7 +157,6 @@ def score_hand(msg):
     message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], msg['player'])
     emit('cards', {'cards': game['played_cards'], 'show_to_all': True}, room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
-    print('sending {} points to {}'.format(game['players'][msg['player']], msg['player']))
     emit('points', {'player': msg['player'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
