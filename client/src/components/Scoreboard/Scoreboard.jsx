@@ -24,6 +24,7 @@ export const Scoreboard = () => {
   });
 
   useSocket("points", msg => {
+    // let width = (msg.amount / winningScore) * 100;
     setPlayers({...players, [msg.player]: msg.amount});
     if (msg.amount >= winningScore) {
       announceWin(msg.player);
@@ -46,8 +47,8 @@ export const Scoreboard = () => {
             <span className='scoreboard-player-name col-10'>{player}</span>
             <LinearProgress
               className={`${colorClassMap[index]}`}
-              variant="determinate"
               value={score}
+              variant="determinate"
               aria-valuemax={winningScore}
             />
             <div className="scoreboard-player-score col-2">{score}</div>

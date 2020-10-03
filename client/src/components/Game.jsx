@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { useModal } from "react-modal-hook";
 import { useSocket } from "use-socketio";
-import { Dialog, DialogActions, DialogContent, DialogTitle, Fab, IconButton, TextField } from "@material-ui/core";
+import { Fab, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
@@ -15,15 +14,9 @@ export const Game = ()  => {
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [opponents, setOpponents] = useState([]);
-  const [inProgress, setInProgress] = useState(false);
-  const [winningScore, setWinningScore] = useState(90);
 
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
-  });
-
-  useSocket("draw_board", msg => {
-    setInProgress(true)
   });
 
   const handleJoin = e => {
@@ -44,35 +37,6 @@ export const Game = ()  => {
     socket.emit("player_leave", {name: name, game: room});
     setId('');
   };
-
-  const handleStartGame = e => {
-    e.preventDefault();
-    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, jokers: false });
-    hideModal();
-  };
-
-  const handleStartClick = (e) => {
-    socket.emit('setup', { game: room, player: name });
-    showModal();
-    document.activeElement.blur();
-  };
-
-  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog className="cards-modal" open={open} onExited={onExited} onClose={hideModal}>
-      <DialogTitle>Start a game</DialogTitle>
-        <IconButton className="close-modal" onClick={hideModal} aria-label="leave">
-          <CloseIcon fontSize="inherit" />
-        </IconButton>
-        <DialogContent>
-          <TextField id="winning-score" onChange={e => setWinningScore(e.target.value.trim())} label="winning score" />
-        </DialogContent>
-      <DialogActions>
-        <form onSubmit={event => handleStartGame(event)}>
-          <Fab variant="extended" type="submit">Start</Fab>
-        </form>
-      </DialogActions>
-    </Dialog>
-  ));
 
   const renderOpponents = () => {
     return opponents.length ? (
@@ -105,9 +69,7 @@ export const Game = ()  => {
 
             <div className="middle-row row">
               <div className="scoreboard col-8">
-                {
-                  inProgress ? <Scoreboard /> : <Fab variant="extended" onClick={handleStartClick}>Start</Fab>
-                }
+                <Scoreboard />
               </div>
               <div className="col-1 middle-row-spacer"></div>
               <div className="deck col-2">
@@ -116,7 +78,7 @@ export const Game = ()  => {
             </div>
 
             <footer className="bottom-row">
-              <Player name={name}/>
+              <Player name={ name }/>
             </footer>
 
           </div>

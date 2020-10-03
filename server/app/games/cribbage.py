@@ -143,7 +143,7 @@ def start_game(game_data, **kwargs):
     game_data['cutter'] = rotate_reverse(dealer, players)
     game_data['first_to_score'] = rotate_turn(dealer, players)
     game_data['low_cut'] = card_text_from_id(game_data['hands'][game_data['dealer']][0])
-    game_data['opening_message'] = '{} is the lowest cut, so {} gets first crib!'.format(game_data['low_cut'], dealer)
+    game_data['opening_message'] = 'First to {} wins! {} is the lowest cut, so {} gets first crib.'.format(winning_score, game_data['low_cut'], dealer)
 
     return game_data
 
