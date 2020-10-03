@@ -155,8 +155,8 @@ def ok(game_data, **kwargs):
     if player_ok:
         game_data['current_turn'].remove(player)
 
-    all_done = all(len(game_data['hands'][player]) == 0 for player in game_data['players'].keys())
-    if all_done:
+    all_ok = all(len(game_data['hands'][player]) == 0 for player in game_data['players'].keys())
+    if all_ok:
         game_data['current_action'] = 'deal'
         game_data['current_turn'] = game_data['dealer']
 

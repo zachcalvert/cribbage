@@ -2,6 +2,7 @@
 import eventlet
 eventlet.monkey_patch()
 
+import time
 import uuid
 
 from flask import Flask
@@ -9,6 +10,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from threading import Lock
 
 from . import controller
+from .games.cribbage import card_text_from_id
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live'])
@@ -58,7 +60,16 @@ def start_game(msg):
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'}, room=msg['game'])
     if game['type'] == 'cribbage':
         emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
-        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
+
+    for player in game['players']:
+        cards = {
+            player: game['hands'][player]
+        }
+        emit('cards', {'cards': cards, 'show_to_all': True}, room=msg['game'])
+        message = '{} drew the {}'.format(player, card_text_from_id(cards[player][0]))
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
+        time.sleep(2)
+
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
