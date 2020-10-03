@@ -87,7 +87,11 @@ export const Player = (props) => {
           <CloseIcon fontSize="inherit" />
         </IconButton>
       <DialogContent>
-        <TextField id="name" onChange={e => setWinningScore(e.target.value.trim())} label="winning score" /><br />
+        <TextField
+            defaultValue="121"
+            id="name"
+            onChange={e => setWinningScore(e.target.value.trim())}
+            label="winning score" /><br />
       </DialogContent>
       <DialogActions>
         <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
