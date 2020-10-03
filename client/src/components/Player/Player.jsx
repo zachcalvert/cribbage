@@ -25,7 +25,7 @@ export const Player = (props) => {
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
-  const [winningScore, setWinningScore] = useState(100);
+  const [winningScore, setWinningScore] = useState(121);
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
