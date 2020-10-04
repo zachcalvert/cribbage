@@ -74,7 +74,7 @@ def draw(msg):
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
     if game['opening_message']:
         emit('chat_message',
-             {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'},
+             {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message']},
              room=msg['game'])
 
 
@@ -185,7 +185,7 @@ def next_round(msg):
 def winner(msg):
     game = controller.grant_victory(msg)
     emit('winner', {'player': game['winner']})
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'})
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
@@ -193,7 +193,7 @@ def winner(msg):
 def rematch(msg):
     game = controller.rematch(msg)
     if game['rematch']:
-        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message']}, room=msg['game'])
+        emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'}, room=msg['game'])
         emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
         emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])

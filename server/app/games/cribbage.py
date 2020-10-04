@@ -81,20 +81,20 @@ def card_text_from_id(card_id):
 
 def start_game(game_data, **kwargs):
     winning_score = kwargs['winning_score']
-    print('winning score: {}'.format(winning_score))
-    deck = jokers.deck if kwargs['jokers'] else standard.deck
+    deck = standard.deck
 
     players = list(game_data['players'].keys())
 
     game_data.update({
         'crib': [],
+        'crib_size': kwargs['crib_size'],
         'current_action': 'draw',
         'current_turn': players,
         'cut_card': '',
         'cutter': '',
         'dealer': '',
         'deck': list(deck.keys()),
-        'deck_type': 'jokers' if kwargs['jokers'] else 'standard',
+        'deck_type': 'standard',
         'first_to_score': '',
         'hand_size': 6 if len(players) <= 2 else 5,
         'hands': {},
@@ -160,14 +160,14 @@ def draw(game_data, **kwargs):
         game_data['current_action'] = 'deal'
         game_data['current_turn'] = game_data['dealer']
 
-        message = "{} is the lowest, {} gets first crib!".format(card_text_from_id(game_data['hands'][game_data['dealer']][0]), dealer)
+        message = "{} is the lowest, {} gets first crib".format(card_text_from_id(game_data['hands'][game_data['dealer']][0]), dealer)
         game_data['opening_message'] = message
 
     return game_data
 
 
 def _sort_cards(g, cards):
-    deck = jokers.deck if g['jokers'] else standard.deck
+    deck = standard.deck
     card_keys_and_values = [{card: deck.get(card)} for card in cards]
     ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
     ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
@@ -181,12 +181,6 @@ def deal_hands(game_data, **kwargs):
     for player in game_data['players'].keys():
         dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(game_data, dealt_cards)
-
-    if len(game_data['players'].keys()) == 1:
-        game_data['crib'].append(game_data['deck'].pop())
-        game_data['crib'].append(game_data['deck'].pop())
-    elif len(game_data['players'].keys()) == 3:
-        game_data['crib'].append(game_data['deck'].pop())
 
     game_data['current_turn'] = list(game_data['players'].keys())
     game_data['hands'] = hands
@@ -206,6 +200,9 @@ def discard(game_data, **kwargs):
 
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
     if all_done:
+        while len(game_data['crib']) < game_data['crib_size']:
+            game_data['crib'].append(game_data['deck'].pop())
+
         game_data['current_action'] = 'cut'
         game_data['current_turn'] = game_data['cutter']
 
@@ -228,7 +225,7 @@ def cut_deck(game_data, **kwargs):
 
 
 def play_card(game_data, **kwargs):
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     player = kwargs['player']
     card_id = kwargs['card']
@@ -362,7 +359,7 @@ def is_valid_play(game_data, player, card):
 
 
 def record_pass(game_data, **kwargs):
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     game_data['pegging']['passed'].append(kwargs['player'])
 
@@ -407,10 +404,10 @@ def record_pass(game_data, **kwargs):
 
 
 def score_hand(game_data, **kwargs):
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     player = kwargs['player']
-    player_cards = game_data['played_cards'][player]
+    player_cards = _sort_cards(game_data, game_data['played_cards'][player])
     cards = [deck.get(c) for c in player_cards]
     cut_card = deck.get(game_data['cut_card'])
     hand = Hand(cards, cut_card)
@@ -434,7 +431,7 @@ def score_hand(game_data, **kwargs):
 
 
 def score_crib(game_data, **kwargs):
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     player = kwargs['player']
     crib_card_ids = game_data['crib']
@@ -443,6 +440,7 @@ def score_crib(game_data, **kwargs):
     crib = Hand(cards, cut_card, is_crib=True)
     crib_points = crib.calculate_points()
 
+    game_data['crib'] = _sort_cards(game_data, game_data['crib'])
     game_data['players'][player] += crib_points
     game_data['previous_turn'] = {
         'action': 'from crib',
@@ -460,7 +458,7 @@ def score_crib(game_data, **kwargs):
 
 def next_round(game_data, **kwargs):
     print('in next round')
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     player = kwargs['player']
     game_data['ok_with_next_round'].append(player)
@@ -521,7 +519,7 @@ def rematch(game_data, **kwargs):
 
 def refresh_game_dict(game_data):
     players = list(game_data['players'].keys())
-    deck = jokers.deck if game_data['jokers'] else standard.deck
+    deck = standard.deck
 
     game_data.update({
         'crib': [],
@@ -553,7 +551,7 @@ def refresh_game_dict(game_data):
     })
     for player in players:
         game_data['players'][player] = 0
-        game_data['hands'][player] = [random.choice(game_data['deck'])]
+        game_data['hands'][player] = []
         game_data['played_cards'][player] = []
         game_data['scoring_stats'][player] = {
             'a_play': 0,
@@ -561,7 +559,7 @@ def refresh_game_dict(game_data):
             'c_crib': 0,
         }
 
-    game_data['opening_message'] = '{} is the lowest cut, so {} gets first crib!'.format(game_data['low_cut'], dealer)
+    game_data['opening_message'] = 'First to {} wins! Lowest drawn card gets first crib.'.format(game_data['winning_score'])
     return game_data
 
 
