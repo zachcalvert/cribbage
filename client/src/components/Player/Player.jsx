@@ -80,8 +80,14 @@ export const Player = (props) => {
 
   const handleStartGame = e => {
     e.preventDefault();
-    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, crib_size: cribSize });
-    hideModal();
+    if (Number.isInteger(winningScore)) {
+      socket.emit('start_game', {
+        game: sessionStorage.getItem('game'),
+        winning_score: winningScore,
+        crib_size: cribSize
+      });
+      hideModal();
+    }
   };
 
   const handleCribSizeChange = (event) => {
@@ -91,9 +97,6 @@ export const Player = (props) => {
   const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
     <Dialog className="cards-modal" open={open} onExited={onExited} onClose={hideModal}>
       <DialogTitle>Game setup</DialogTitle>
-        <IconButton className="close-modal" onClick={hideModal} aria-label="leave">
-          <CloseIcon fontSize="inherit" />
-        </IconButton>
       <DialogContent>
         <TextField
             defaultValue="121"
@@ -107,6 +110,7 @@ export const Player = (props) => {
             Cribs
           </InputLabel>
           <Select
+            defaultValue="4"
             onChange={handleCribSizeChange}
           >
             <MenuItem value={4}>Standard (4 cards)</MenuItem>
@@ -117,7 +121,7 @@ export const Player = (props) => {
       </DialogContent>
       <DialogActions>
         <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
-          <Fab variant="extended" type="submit">Start</Fab>
+          <Fab variant="extended" type="submit">Start game</Fab>
         </form>
       </DialogActions>
     </Dialog>
@@ -125,11 +129,19 @@ export const Player = (props) => {
 
   const handleAction = (e) => {
     boop();
+    if ((action == 'play' || action =='discard') && !(activeCard)) {
+      socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game});
+      return;
+    }
+
     if (action === 'start') {
       socket.emit('setup', { game: game, player: props.name });
       showModal();
     } else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
+    }
+    if (action == 'next') {
+      setPlayableCards([])
     }
     document.activeElement.blur();
   };

@@ -5,6 +5,12 @@ import more_itertools as mit
 from app.decks import jokers, standard
 
 
+CRIB_SIZE_MAP = {
+    4: 'standard',
+    5: 'spicy',
+    6: 'chaotic'
+}
+
 def rotate_turn(current, players):
     """
     :param current:
@@ -128,7 +134,7 @@ def start_game(game_data, **kwargs):
             'c_crib': 0
         }
 
-    game_data['opening_message'] = 'First to {} wins! Lowest drawn card gets first crib.'.format(winning_score)
+    game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(game_data['winning_score'], CRIB_SIZE_MAP[game_data['crib_size']])
     return game_data
 
 
@@ -160,7 +166,7 @@ def draw(game_data, **kwargs):
         game_data['current_action'] = 'deal'
         game_data['current_turn'] = game_data['dealer']
 
-        message = "{} is the lowest, {} gets first crib".format(card_text_from_id(game_data['hands'][game_data['dealer']][0]), dealer)
+        message = "{} is the lowest card, {} gets first crib".format(card_text_from_id(game_data['hands'][game_data['dealer']][0]), dealer)
         game_data['opening_message'] = message
 
     return game_data
@@ -559,7 +565,7 @@ def refresh_game_dict(game_data):
             'c_crib': 0,
         }
 
-    game_data['opening_message'] = 'First to {} wins! Lowest drawn card gets first crib.'.format(game_data['winning_score'])
+    game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(game_data['winning_score'], game_data['cribs'])
     return game_data
 
 
