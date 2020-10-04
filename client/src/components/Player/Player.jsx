@@ -15,6 +15,10 @@ import {
 import './Player.css'
 import {useModal} from "react-modal-hook";
 import CloseIcon from "@material-ui/icons/Close";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
@@ -25,6 +29,8 @@ export const Player = (props) => {
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
+
+  const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
@@ -34,6 +40,7 @@ export const Player = (props) => {
     if (msg.players.includes(props.name)) {
       setTurn(true);
       setAction(msg.action);
+
     } else {
       setTurn(false);
       setAction(`waiting for ${msg.players}`)
@@ -73,8 +80,12 @@ export const Player = (props) => {
 
   const handleStartGame = e => {
     e.preventDefault();
-    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, jokers: false });
+    socket.emit('start_game', { game: sessionStorage.getItem('game'), winning_score: winningScore, crib_size: cribSize });
     hideModal();
+  };
+
+  const handleCribSizeChange = (event) => {
+    setCribSize(event.target.value);
   };
 
   const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
@@ -88,7 +99,21 @@ export const Player = (props) => {
             defaultValue="121"
             id="name"
             onChange={e => setWinningScore(e.target.value.trim())}
-            label="winning score" /><br />
+            label="Winning score"
+        />
+        <br /><br />
+        <FormControl>
+          <InputLabel>
+            Cribs
+          </InputLabel>
+          <Select
+            onChange={handleCribSizeChange}
+          >
+            <MenuItem value={4}>Standard (4 cards)</MenuItem>
+            <MenuItem value={5}>Spicy (5 cards)</MenuItem>
+            <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
+          </Select>
+        </FormControl>
       </DialogContent>
       <DialogActions>
         <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
@@ -96,7 +121,7 @@ export const Player = (props) => {
         </form>
       </DialogActions>
     </Dialog>
-  ), [winningScore]);
+  ), [winningScore, cribSize]);
 
   const handleAction = (e) => {
     boop();
