@@ -156,7 +156,7 @@ def record_pass(msg):
 def score_hand(msg):
     game = controller.score_hand(msg)
     message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], msg['player'])
-    emit('cards', {'cards': game['played_cards'], 'show_to_all': True}, room=msg['game'])
+    emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
     emit('points', {'player': msg['player'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])

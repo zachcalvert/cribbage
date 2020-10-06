@@ -414,6 +414,7 @@ def score_hand(game_data, **kwargs):
 
     player = kwargs['player']
     player_cards = _sort_cards(game_data, game_data['played_cards'][player])
+
     cards = [deck.get(c) for c in player_cards]
     cut_card = deck.get(game_data['cut_card'])
     hand = Hand(cards, cut_card)
@@ -433,6 +434,7 @@ def score_hand(game_data, **kwargs):
     else:
         game_data['current_turn'] = rotate_turn(player, list(game_data['players'].keys()))
 
+    game_data['hands'][player] = player_cards
     return game_data
 
 
