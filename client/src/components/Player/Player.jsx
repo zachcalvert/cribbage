@@ -128,7 +128,7 @@ export const Player = (props) => {
   const handleAction = (e) => {
     boop();
     if ((action === 'play' || action ==='discard') && !(activeCard)) {
-      socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game});
+      socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
       return;
     }
 
