@@ -44,7 +44,8 @@ def player_leave(msg):
 
 @socketio.on('chat_message')
 def send_message(msg):
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=msg['game'])
+    room = None if msg.get('private') else msg['game']
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=room)
 
 
 @socketio.on('animation')
