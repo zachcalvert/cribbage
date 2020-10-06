@@ -86,9 +86,16 @@ export const Game = ()  => {
       </div>
   ) : (
     <div style={{ textAlign: 'center', height: '100%', width: '100%', display: 'inline-block' }}>
-      <form style={{ marginTop: '150px' }} onSubmit={event => handleJoin(event)}>
-        <TextField id="name" onChange={e => setName(e.target.value.trim())} label="name" /><br />
-        <TextField id="room" onChange={e => setRoom(e.target.value.trim())} label="game" /><br />
+      <img style={{ marginTop: '20px' }} src="logo.png" />
+      <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+        <TextField
+            id="name"
+            label="nickname"
+            onChange={e => setName(e.target.value.trim())}  /><br />
+        <TextField
+            id="room"
+            label="game name"
+            onChange={e => setRoom(e.target.value.trim())} /><br />
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}
             color="primary"
