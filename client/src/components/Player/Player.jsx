@@ -9,12 +9,10 @@ import {
   DialogTitle,
   Divider,
   Fab,
-  IconButton,
   TextField
 } from "@material-ui/core";
 import './Player.css'
 import {useModal} from "react-modal-hook";
-import CloseIcon from "@material-ui/icons/Close";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -80,7 +78,7 @@ export const Player = (props) => {
 
   const handleStartGame = e => {
     e.preventDefault();
-    if (Number.isInteger(winningScore)) {
+    if (Number.isInteger(parseInt(winningScore))) {
       socket.emit('start_game', {
         game: sessionStorage.getItem('game'),
         winning_score: winningScore,
@@ -101,7 +99,7 @@ export const Player = (props) => {
         <TextField
             defaultValue="121"
             id="name"
-            onChange={e => setWinningScore(e.target.value.trim())}
+            onChange={e => setWinningScore(e.target.value)}
             label="Winning score"
         />
         <br /><br />
@@ -129,7 +127,7 @@ export const Player = (props) => {
 
   const handleAction = (e) => {
     boop();
-    if ((action == 'play' || action =='discard') && !(activeCard)) {
+    if ((action === 'play' || action ==='discard') && !(activeCard)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game});
       return;
     }
@@ -140,7 +138,7 @@ export const Player = (props) => {
     } else {
       socket.emit(action, { game: game, player: props.name, card: activeCard });
     }
-    if (action == 'next') {
+    if (action === 'next') {
       setPlayableCards([])
     }
     document.activeElement.blur();
