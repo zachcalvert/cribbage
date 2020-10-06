@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
+import { useTrail, animated } from 'react-spring'
+
 import { ReactSVG } from 'react-svg'
 import {
   Dialog,
@@ -28,8 +30,19 @@ export const Player = (props) => {
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
 
+  // start menu options
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
+
+  // dealt card animation
+  const config = { mass: 5, tension: 2000, friction: 100 }
+  const trail = useTrail(playableCards.length, {
+    config,
+    opacity: playableCards ? 1 : 1,
+    x: playableCards ? 0 : 20,
+    height: playableCards ? 20 : 0,
+    from: { opacity: 1, x: 20, height: 0 },
+  })
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
@@ -174,15 +187,22 @@ export const Player = (props) => {
   const renderPlayableCards = () => {
     return playableCards.length ? (
       <>
-        {playableCards.map((card, index) => (
-          <ReactSVG
-            id={card}
-            className={activeCard === card ? 'active-card available-card': 'available-card' }
-            key={index}
-            onClick={handleCardClick}
-            wrapper='span'
-            src={`/cards/${card}.svg`}
-          />
+        {trail.map(({ x, height, ...rest }, index) => (
+          <animated.div
+            key={playableCards[index]}
+            className="trails-text"
+            style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
+            <animated.div style={{ height }}>
+              <ReactSVG
+                id={playableCards[index]}
+                className={activeCard === playableCards[index] ? 'active-card available-card': 'available-card' }
+                key={index}
+                onClick={handleCardClick}
+                wrapper='span'
+                src={`/cards/${playableCards[index]}.svg`}
+              />
+            </animated.div>
+          </animated.div>
         ))}
       </>
     ) : (
