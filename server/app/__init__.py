@@ -123,7 +123,9 @@ def play_card(msg):
     message = '{} played {}'.format(msg['player'], game['previous_turn']['action'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
 
-    if game['previous_turn']['points'] > 0:
+    if 'cards_on_table' in game:
+        pass
+    elif 'previous_turn' in game and game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
         reason = game['previous_turn']['reason']
         print('sending {} points to {}'.format(game['players'][scorer], scorer))

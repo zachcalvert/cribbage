@@ -220,7 +220,7 @@ export const Player = (props) => {
           <Fab variant="extended"
             className="action-button"
             color="primary"
-            onClick={handleAction}
+            onClick={ handleAction }
             disabled={!turn}>
             { action }
           </Fab>

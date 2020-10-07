@@ -40,7 +40,7 @@ def get_or_create_game(name):
             "name": name,
             "players": {},
             "state": "INIT",
-            "type": 'cribbage'
+            "type": 'war'
         }
         cache.set(name, json.dumps(g))
     return g
@@ -66,8 +66,8 @@ def remove_player(game, player):
 @game_interaction
 def start_game(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
-    result = module.start_game(game_data, **kwargs)
-    return result
+    game = module.start_game(game_data, **kwargs)
+    return game
 
 
 @game_interaction
