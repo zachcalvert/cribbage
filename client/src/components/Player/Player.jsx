@@ -3,36 +3,19 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import { useTrail, animated } from 'react-spring'
 
+import { Divider, Fab, TextField } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Divider,
-  Fab,
-  TextField
-} from "@material-ui/core";
 import './Player.css'
-import {useModal} from "react-modal-hook";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormControl from "@material-ui/core/FormControl";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
-  const [action, setAction] = useState('start');
+  const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
   const [activeCard, setActiveCard] = useState('');
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
-
-  // start menu options
-  const [cribSize, setCribSize] = useState(4);
-  const [winningScore, setWinningScore] = useState(121);
 
   // dealt card animation
   const config = { mass: 5, tension: 2000, friction: 100 }
@@ -51,7 +34,6 @@ export const Player = (props) => {
     if (msg.players.includes(props.name)) {
       setTurn(true);
       setAction(msg.action);
-
     } else {
       setTurn(false);
       setAction(`waiting for ${msg.players}`)
@@ -89,71 +71,17 @@ export const Player = (props) => {
     setActiveCard('');
   });
 
-  const handleStartGame = e => {
-    e.preventDefault();
-    if (Number.isInteger(parseInt(winningScore))) {
-      socket.emit('start_game', {
-        game: sessionStorage.getItem('game'),
-        winning_score: winningScore,
-        crib_size: cribSize
-      });
-      hideModal();
-    }
-  };
-
-  const handleCribSizeChange = (event) => {
-    setCribSize(event.target.value);
-  };
-
-  const [showModal, hideModal] = useModal(({ in: open, onExited }) => (
-    <Dialog className="cards-modal" open={open} onExited={onExited} onClose={hideModal}>
-      <DialogTitle>Game setup</DialogTitle>
-      <DialogContent>
-        <TextField
-            defaultValue="121"
-            id="name"
-            onChange={e => setWinningScore(e.target.value)}
-            label="Winning score"
-        />
-        <br /><br />
-        <FormControl>
-          <InputLabel>
-            Cribs
-          </InputLabel>
-          <Select
-            defaultValue="4"
-            onChange={handleCribSizeChange}
-          >
-            <MenuItem value={4}>Standard (4 cards)</MenuItem>
-            <MenuItem value={5}>Spicy (5 cards)</MenuItem>
-            <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
-          </Select>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
-          <Fab variant="extended" type="submit">Start game</Fab>
-        </form>
-      </DialogActions>
-    </Dialog>
-  ), [winningScore, cribSize]);
-
   const handleAction = (e) => {
     boop();
     if ((action === 'play' || action ==='discard') && !(activeCard)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
       return;
     }
-
-    if (action === 'start') {
-      socket.emit('setup', { game: game, player: props.name });
-      showModal();
-    } else {
-      socket.emit(action, { game: game, player: props.name, card: activeCard });
-    }
     if (action === 'next') {
       setPlayableCards([])
     }
+
+    socket.emit(action, { game: game, player: props.name, card: activeCard });
     document.activeElement.blur();
   };
 

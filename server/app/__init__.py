@@ -56,15 +56,15 @@ def animation(msg):
 @socketio.on('setup')
 def setup(msg):
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} is setting up the game..'.format(msg['player'])}, room=msg['game'])
-    emit('send_turn', {'players': [msg['player']], 'action': 'start'}, room=msg['game'])
+    emit('setup_started', {'players': [msg['player']]}, room=msg['game'])
 
 
 @socketio.on('start_game')
 def start_game(msg):
     game = controller.start_game(msg)
+    emit('game_begun', room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': game['opening_message'], 'type': 'big'}, room=msg['game'])
-    if game['type'] == 'cribbage':
-        emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
+    emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 

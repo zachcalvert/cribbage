@@ -8,15 +8,21 @@ import { Deck } from "./Deck/Deck";
 import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
+import { StartMenu } from "./StartMenu/StartMenu";
 
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
   const [opponents, setOpponents] = useState([]);
+  const [inProgress, setInProgress] = useState(false);
 
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
+  });
+
+  useSocket("game_begun", msg => {
+    setInProgress(true);
   });
 
   const handleJoin = e => {
@@ -36,6 +42,7 @@ export const Game = ()  => {
     sessionStorage.removeItem('game');
     socket.emit("player_leave", {name: name, game: room});
     setId('');
+    setInProgress(false);
   };
 
   const renderOpponents = () => {
@@ -69,7 +76,7 @@ export const Game = ()  => {
 
             <div className="middle-row row">
               <div className="scoreboard col-8">
-                <Scoreboard />
+                { inProgress ? (<Scoreboard />) : (<StartMenu />) }
               </div>
               <div className="col-1 middle-row-spacer"></div>
               <div className="deck col-2">
