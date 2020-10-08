@@ -33,7 +33,6 @@ export const StartMenu = () => {
 
   const [showModal, hideModal] = useModal(({in: open, onExited}) => (
       <Dialog className="cards-modal" open={open} onExited={hideModal} onClose={hideModal}>
-        <DialogTitle>Game setup</DialogTitle>
         <DialogContent>
           <MenuStepper />
         </DialogContent>

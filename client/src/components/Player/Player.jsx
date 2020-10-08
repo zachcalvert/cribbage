@@ -3,7 +3,7 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import { useTrail, animated } from 'react-spring'
 
-import { Divider, Fab, TextField } from "@material-ui/core";
+import { Divider, Fab } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 

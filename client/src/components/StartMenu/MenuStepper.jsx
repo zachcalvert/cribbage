@@ -5,7 +5,7 @@ import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import {DialogActions, DialogContent, Fab, TextField} from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
@@ -17,12 +17,15 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   backButton: {
-    marginRight: theme.spacing(1),
+    marginRight: theme.spacing(2),
   },
   instructions: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  actions: {
+    padding: "20px 0",
+  }
 }));
 
 export default function MenuStepper() {
@@ -30,9 +33,11 @@ export default function MenuStepper() {
   const game = sessionStorage.getItem('game');
   const [activeStep, setActiveStep] = useState(0);
 
-  const [gameType, setGameType] = useState('cribbage')
+  const [gameType, setGameType] = useState('cribbage');
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
+  const [deck, setDeck] = useState('standard');
+
   const steps = getSteps();
 
   const { socket } = useSocket("setup_started");
@@ -50,10 +55,10 @@ export default function MenuStepper() {
   };
 
   function getSteps() {
-    return ['Select Game', 'Select Settings', 'Confirm'];
+    return ['Game', 'Settings'];
   }
 
-  function getStepContent(stepIndex) {
+  function getStepContent(stepIndex, gameType) {
 
     switch (stepIndex) {
       case 0:
@@ -67,40 +72,58 @@ export default function MenuStepper() {
               onChange={e => setGameType(e.target.value)}
             >
               <MenuItem value="cribbage">Cribbage</MenuItem>
-              <MenuItem value="war">War</MenuItem>
+              <MenuItem value="war">War (coming soon)</MenuItem>
             </Select>
           </FormControl>
         );
       case 1:
-        return (
-            <>
-              <TextField
-                defaultValue="121"
-                id="name"
-                onChange={e => setWinningScore(e.target.value)}
-                label="Winning score"
-              />
-              <FormControl><br /><br />
-              <InputLabel>
-                Cribs
-              </InputLabel>
-              <Select
-                defaultValue="4"
-                onChange={e => setCribSize(e.target.value)}
-              >
-                <MenuItem value={4}>Standard (4 cards)</MenuItem>
-                <MenuItem value={5}>Spicy (5 cards)</MenuItem>
-                <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
-              </Select>
-            </FormControl>
-          </>
-        )
-      case 2:
-        return (
-          <form style={{"width": "100%"}} onSubmit={event => handleStartGame(event)}>
-            <Fab variant="extended" type="submit">Start game</Fab>
-          </form>
-        );
+        switch (gameType) {
+          case 'cribbage':
+            return (
+              <>
+                <TextField
+                  defaultValue="121"
+                  id="name"
+                  onChange={e => setWinningScore(e.target.value)}
+                  label="Winning score"
+                />
+                <br /><br />
+                <FormControl>
+                <InputLabel>
+                  Cribs
+                </InputLabel>
+                <Select
+                  defaultValue="4"
+                  onChange={e => setCribSize(e.target.value)}
+                >
+                  <MenuItem value={4}>Standard (4 cards)</MenuItem>
+                  <MenuItem value={5}>Spicy (5 cards)</MenuItem>
+                  <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          );
+          case 'war':
+            return (
+              <>
+                <FormControl>
+                <InputLabel>
+                  Deck
+                </InputLabel>
+                <Select
+                  defaultValue="standard"
+                  onChange={e => setDeck(e.target.value)}
+                >
+                  <MenuItem value="standard">Standard</MenuItem>
+                  <MenuItem value="pinochle">Pinochle</MenuItem>
+                </Select>
+              </FormControl>
+            </>
+          );
+          default:
+            return 'Unknown game type'
+        }
+
       default:
         return 'Unknown stepIndex';
     }
@@ -113,7 +136,8 @@ export default function MenuStepper() {
         game: game,
         type: gameType,
         winning_score: winningScore,
-        crib_size: cribSize
+        crib_size: cribSize,
+        deck: deck
       });
     }
   };
@@ -128,15 +152,18 @@ export default function MenuStepper() {
         ))}
       </Stepper>
       <div>
-        {activeStep === steps.length ? (
+        {activeStep === steps.length - 1 ? (
           <div>
-            <Typography className={classes.instructions}>All steps completed</Typography>
-            <Button onClick={handleReset}>Reset</Button>
+            <div className={classes.instructions}>{getStepContent(activeStep, gameType)}</div>
+            <div className={classes.actions}>
+              <Button onClick={handleReset}>Reset</Button>
+              <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
+            </div>
           </div>
         ) : (
           <div>
-            <Typography className={classes.instructions}>{getStepContent(activeStep)}</Typography>
-            <div>
+            <div className={classes.instructions}>{getStepContent(activeStep, gameType)}</div>
+            <div className={classes.actions}>
               <Button
                 disabled={activeStep === 0}
                 onClick={handleBack}
@@ -144,9 +171,7 @@ export default function MenuStepper() {
               >
                 Back
               </Button>
-              <Button variant="contained" color="primary" onClick={handleNext}>
-                {activeStep === steps.length - 1 ? 'Start game' : 'Next'}
-              </Button>
+              <Button variant="contained" color="primary" onClick={handleNext}>Next</Button>
             </div>
           </div>
         )}
