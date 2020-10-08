@@ -123,6 +123,7 @@ def start_game(game_data, **kwargs):
         'rematch': False,
         'scored_hands': [],
         'scoring_stats': {},
+        'type': 'cribbage',
         'winning_score': int(winning_score)
     })
     for player in players:
