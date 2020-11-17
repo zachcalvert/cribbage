@@ -42,17 +42,7 @@ export default function MenuStepper() {
 
   const { socket } = useSocket("setup_started");
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
 
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
 
   function getSteps() {
     return ['Game', 'Settings'];
@@ -62,21 +52,6 @@ export default function MenuStepper() {
 
     switch (stepIndex) {
       case 0:
-        return (
-           <FormControl>
-            <InputLabel>
-              Game
-            </InputLabel>
-            <Select
-              defaultValue="cribbage"
-              onChange={e => setGameType(e.target.value)}
-            >
-              <MenuItem value="cribbage">Cribbage</MenuItem>
-              <MenuItem value="war">War (coming soon)</MenuItem>
-            </Select>
-          </FormControl>
-        );
-      case 1:
         switch (gameType) {
           case 'cribbage':
             return (
@@ -103,27 +78,9 @@ export default function MenuStepper() {
               </FormControl>
             </>
           );
-          case 'war':
-            return (
-              <>
-                <FormControl>
-                <InputLabel>
-                  Deck
-                </InputLabel>
-                <Select
-                  defaultValue="standard"
-                  onChange={e => setDeck(e.target.value)}
-                >
-                  <MenuItem value="standard">Standard</MenuItem>
-                  <MenuItem value="pinochle">Pinochle</MenuItem>
-                </Select>
-              </FormControl>
-            </>
-          );
           default:
             return 'Unknown game type'
         }
-
       default:
         return 'Unknown stepIndex';
     }
@@ -152,29 +109,12 @@ export default function MenuStepper() {
         ))}
       </Stepper>
       <div>
-        {activeStep === steps.length - 1 ? (
-          <div>
-            <div className={classes.instructions}>{getStepContent(activeStep, gameType)}</div>
-            <div className={classes.actions}>
-              <Button onClick={handleReset}>Reset</Button>
-              <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
-            </div>
+        <div>
+          <div className={classes.instructions}>{getStepContent(activeStep, gameType)}</div>
+          <div className={classes.actions}>
+            <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
           </div>
-        ) : (
-          <div>
-            <div className={classes.instructions}>{getStepContent(activeStep, gameType)}</div>
-            <div className={classes.actions}>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.backButton}
-              >
-                Back
-              </Button>
-              <Button variant="contained" color="primary" onClick={handleNext}>Next</Button>
-            </div>
-          </div>
-        )}
+        </div>
       </div>
     </div>
   );
