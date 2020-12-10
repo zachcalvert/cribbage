@@ -478,6 +478,13 @@ export const customEmojis = [
     customCategory: 'yoyos'
   },
   {
+    name: 'Angery',
+    short_names: ['angery'],
+    keywords: ['angry', 'angery'],
+    imageUrl: 'emojis/misc/angery.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Angry frog',
     short_names: ['angry_frog'],
     keywords: ['angry', 'frog', 'mad'],
@@ -659,6 +666,13 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Elmo fire',
+    short_names: ['elmo_fire'],
+    keywords: ['elmo', 'fire'],
+    imageUrl: 'emojis/misc/elmo_fire.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Eyebrows',
     short_names: ['eyebrows'],
     keywords: ['eyebrows', 'excited'],
@@ -705,6 +719,13 @@ export const customEmojis = [
     short_names: ['its_happening'],
     keywords: ['its', 'happening', 'excited', 'hype'],
     imageUrl: 'emojis/misc/its_happening.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Keanu Thanks',
+    short_names: ['keanu_thanks'],
+    keywords: ['keanu', 'thanks'],
+    imageUrl: 'emojis/misc/keanu_thanks.gif',
     customCategory: 'misc'
   },
   {
@@ -785,10 +806,31 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Thug Life',
+    short_names: ['thug_life'],
+    keywords: ['thug', 'life'],
+    imageUrl: 'emojis/misc/thug_life.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Wacky Wavy',
+    short_names: ['wacky_wavy'],
+    keywords: ['wacky', 'wavy'],
+    imageUrl: 'emojis/misc/wacky_wavy.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'WFH Parrot',
     short_names: ['wfh_parrot'],
     keywords: ['wfh', 'parrot'],
     imageUrl: 'emojis/misc/wfh_parrot.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Winner',
+    short_names: ['winner'],
+    keywords: ['winner'],
+    imageUrl: 'emojis/misc/winner.gif',
     customCategory: 'misc'
   }
 ];
