@@ -568,7 +568,11 @@ def refresh_game_dict(game_data):
             'c_crib': 0,
         }
 
-    game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(game_data['winning_score'], game_data['cribs'])
+    game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(
+        game_data['winning_score'],
+        CRIB_SIZE_MAP[game_data['crib_size']]
+    )
+
     return game_data
 
 
