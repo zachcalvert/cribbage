@@ -5,7 +5,8 @@ import useSound from "use-sound";
 
 import { Dialog, DialogContent, DialogTitle, Fab } from "@material-ui/core";
 
-import MenuStepper from "./MenuStepper";
+import GameSettings from "./GameSettings";
+import {Game} from "../Game";
 
 
 export const StartMenu = () => {
@@ -37,7 +38,7 @@ export const StartMenu = () => {
           Game settings
         </DialogTitle>
         <DialogContent>
-          <MenuStepper />
+          <GameSettings />
         </DialogContent>
       </Dialog>
   ));
