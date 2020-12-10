@@ -5,8 +5,8 @@ Flask_SocketIO
 itsdangerous==1.1.0
 Jinja2==2.10.2
 MarkupSafe==1.1.0
-python-engineio
-python-socketio
+python-engineio==3.14.2
+python-socketio==4.6.1
 six>=1.12
 Flask-FontAwesome
 more_itertools
