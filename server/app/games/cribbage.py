@@ -2,14 +2,31 @@ import random
 from itertools import chain, combinations
 import more_itertools as mit
 
-from app.decks import jokers, standard
-
+from app.decks.jokers import deck as jokers_deck
+from app.decks.standard import deck as standard_deck
 
 CRIB_SIZE_MAP = {
     4: 'standard',
     5: 'spicy',
     6: 'chaotic'
 }
+
+TEXT_TO_RANK_MAP = {
+    'ace': 1,
+    'two': 2,
+    'three': 3,
+    'four': 4,
+    'five': 5,
+    'six': 6,
+    'seven': 7,
+    'eight': 8,
+    'nine': 9,
+    'ten': 10,
+    'jack': 11,
+    'queen': 12,
+    'king': 13,
+}
+
 
 def rotate_turn(current, players):
     """
@@ -81,19 +98,21 @@ def card_text_from_id(card_id):
     if 'joker' in card_id:
         return 'a joker'
     else:
-        card = standard.deck[card_id]
+        card = standard_deck[card_id]
         return 'the {} of {}'.format(card['name'], card['suit'])
 
 
 def start_game(game_data, **kwargs):
-    winning_score = kwargs['winning_score']
-    deck = standard.deck
+    crib_size = kwargs.get('crib_size', 4)
+    jokers = kwargs.get('jokers', False)
+    winning_score = kwargs.get('winning_score', 121)
+    deck = jokers_deck if jokers else standard_deck
 
     players = list(game_data['players'].keys())
 
     game_data.update({
         'crib': [],
-        'crib_size': kwargs['crib_size'],
+        'crib_size': crib_size,
         'current_action': 'draw',
         'current_turn': players,
         'cut_card': '',
@@ -104,7 +123,9 @@ def start_game(game_data, **kwargs):
         'first_to_score': '',
         'hand_size': 6 if len(players) <= 2 else 5,
         'hands': {},
-        'jokers': False,
+        'jokers': jokers,
+        'joker1': {},
+        'joker2': {},
         'ok_with_next_round': [],
         'pegging': {
             'cards': [],
@@ -154,11 +175,11 @@ def draw(game_data, **kwargs):
         low_cut = 15
         dealer = None
         for player in game_data['hands']:
-            if standard.deck.get(game_data['hands'][player][0])['rank'] == low_cut:
+            if standard_deck.get(game_data['hands'][player][0])['rank'] == low_cut:
                 game_data['hands'][player][0] = random.choice(['75e734d054', '60575e1068', 'ae2caea4bb', '36493dcc05'])
 
-            if standard.deck.get(game_data['hands'][player][0])['rank'] < low_cut:
-                low_cut = standard.deck.get(game_data['hands'][player][0])['rank']
+            if standard_deck.get(game_data['hands'][player][0])['rank'] < low_cut:
+                low_cut = standard_deck.get(game_data['hands'][player][0])['rank']
                 dealer = player
 
         game_data['dealer'] = dealer
@@ -174,7 +195,7 @@ def draw(game_data, **kwargs):
 
 
 def _sort_cards(g, cards):
-    deck = standard.deck
+    deck = jokers_deck if g['jokers'] else standard_deck
     card_keys_and_values = [{card: deck.get(card)} for card in cards]
     ascending_card_dicts = sorted(card_keys_and_values, key=lambda x: (x[list(x)[0]]['rank']))
     ascending_card_ids = [list(card_dict.keys())[0] for card_dict in ascending_card_dicts]
@@ -186,12 +207,25 @@ def deal_hands(game_data, **kwargs):
 
     hands = {}
     for player in game_data['players'].keys():
-        dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
+        dealt_cards = [game_data['deck'].pop() for card in range(5)]
+        dealt_cards.append('joker1')
         hands[player] = _sort_cards(game_data, dealt_cards)
 
-    game_data['current_turn'] = list(game_data['players'].keys())
     game_data['hands'] = hands
     game_data['current_action'] = 'discard'
+    game_data['current_turn'] = list(game_data['players'].keys())
+
+    return game_data
+
+
+def handle_joker_selection(game_data, **kwargs):
+    rank = TEXT_TO_RANK_MAP[kwargs['rank']]
+    suit = kwargs['suit']
+    joker_id = kwargs['joker_id']
+    game_data[joker_id]['suit'] = suit
+    game_data[joker_id]['rank'] = rank
+    game_data[joker_id]['value'] = rank if rank < 10 else 10
+
     return game_data
 
 
@@ -232,7 +266,7 @@ def cut_deck(game_data, **kwargs):
 
 
 def play_card(game_data, **kwargs):
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
     card_id = kwargs['card']
@@ -354,7 +388,8 @@ def play_card(game_data, **kwargs):
 
 
 def is_valid_play(game_data, player, card):
-    card_object = standard.deck[card]
+    deck = jokers_deck if game_data['jokers'] else standard_deck
+    card_object = deck[card]
 
     if card_object['value'] > (31 - game_data['pegging']['total']):
         return False, 'Whoops! You gotta play a card with a lower value.'
@@ -366,7 +401,7 @@ def is_valid_play(game_data, player, card):
 
 
 def record_pass(game_data, **kwargs):
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     game_data['pegging']['passed'].append(kwargs['player'])
 
@@ -411,7 +446,7 @@ def record_pass(game_data, **kwargs):
 
 
 def score_hand(game_data, **kwargs):
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
     player_cards = _sort_cards(game_data, game_data['played_cards'][player])
@@ -440,7 +475,7 @@ def score_hand(game_data, **kwargs):
 
 
 def score_crib(game_data, **kwargs):
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
     crib_card_ids = game_data['crib']
@@ -467,7 +502,7 @@ def score_crib(game_data, **kwargs):
 
 def next_round(game_data, **kwargs):
     print('in next round')
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
     game_data['ok_with_next_round'].append(player)
@@ -528,7 +563,7 @@ def rematch(game_data, **kwargs):
 
 def refresh_game_dict(game_data):
     players = list(game_data['players'].keys())
-    deck = standard.deck
+    deck = jokers_deck if game_data['jokers'] else standard_deck
 
     game_data.update({
         'crib': [],

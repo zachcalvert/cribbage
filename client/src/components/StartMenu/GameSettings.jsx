@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import { TextField } from "@material-ui/core";
+import { TextField, Checkbox } from "@material-ui/core";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useSocket } from "use-socketio";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,6 +33,7 @@ export default function GameSettings() {
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
   const [deck, setDeck] = useState('standard');
+  const [jokers, setJokers] = useState(false);
 
   const { socket } = useSocket("setup_started");
 
@@ -43,7 +45,8 @@ export default function GameSettings() {
         type: gameType,
         winning_score: winningScore,
         crib_size: cribSize,
-        deck: deck
+        deck: deck,
+        jokers: jokers
       });
     }
   };
@@ -57,6 +60,18 @@ export default function GameSettings() {
               id="name"
               onChange={e => setWinningScore(e.target.value)}
               label="Winning score"
+            />
+            <br /><br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={jokers}
+                  onChange={e => setJokers(e.target.checked)}
+                  name="checkedB"
+                  color="primary"
+                />
+              }
+              label="Jokers"
             />
             <br /><br />
             <FormControl>

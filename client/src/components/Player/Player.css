@@ -75,3 +75,18 @@
 .ReactModal__Content {
   text-align: center;
 }
+
+
+.selected-rank {
+  border: 2px solid blue;
+  border-radius: 10%;
+}
+
+.selected-suit {
+  border: 2px solid blue;
+  border-radius: 10%;
+}
+
+.joker-suit-selection-row {
+  padding: 0 0 20px 0;
+}

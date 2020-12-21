@@ -3,9 +3,10 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import { useTrail, animated } from 'react-spring'
 
-import { Divider, Fab } from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
+import { useModal } from "react-modal-hook";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
@@ -17,6 +18,11 @@ export const Player = (props) => {
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
 
+  const [jokerOne, setJokerOne] = useState(false);
+  const [jokerTwo, setJokerTwo] = useState(false);
+  const [jokerSuit, setJokerSuit] = useState('______');
+  const [jokerRank, setJokerRank] = useState('______');
+
   // dealt card animation
   const config = { mass: 5, tension: 2000, friction: 100 }
   const trail = useTrail(playableCards.length, {
@@ -25,7 +31,7 @@ export const Player = (props) => {
     x: playableCards ? 0 : 20,
     height: playableCards ? 20 : 0,
     from: { opacity: 1, x: 20, height: 0 },
-  })
+  });
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
@@ -49,6 +55,18 @@ export const Player = (props) => {
     if (props.name in msg.cards) {
       setPlayableCards(msg.cards[props.name]);
       setPlayedCards([]);
+      if (msg.cards[props.name].includes('joker1')) {
+        showJokerModal();
+        setJokerOne(true);
+      } else {
+        setJokerOne(false);
+      }
+      if (msg.cards[props.name].includes('joker2')) {
+        showJokerModal();
+        setJokerTwo(true);
+      } else {
+        setJokerTwo(false);
+      }
     }
   });
 
@@ -137,6 +155,75 @@ export const Player = (props) => {
       <span />
     );
   };
+
+  const handleSuitSelection = (e) => {
+    var suits = document.querySelectorAll('.selected-suit');
+    for (var i = 0; i < suits.length; i++) {
+      suits[i].classList.remove('selected-suit')
+    }
+    setJokerSuit(e.target.getAttribute('data-value'));
+    e.target.classList.add('selected-suit');
+  };
+
+  const handleRankSelection = (e) => {
+    var ranks = document.querySelectorAll('.selected-rank');
+    for (var i = 0; i < ranks.length; i++) {
+      ranks[i].classList.remove('selected-rank')
+    }
+    setJokerRank(e.target.getAttribute('data-value'));
+    e.target.classList.add('selected-rank');
+  };
+
+  const handleJokerSelection = (e) => {
+    if (jokerOne) {
+      socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit, joker_id: 'joker1' });
+      hideJokerModal();
+      setJokerOne(false);
+    } else if (jokerTwo) {
+      socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit, joker_id: 'joker2' });
+      hideJokerModal();
+      setJokerTwo(false);
+    }
+  };
+
+  const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (
+    <>
+      <Dialog className="cards-modal" open={open} onExited={hideJokerModal} onClose={hideJokerModal}>
+        <DialogTitle>
+          You got a joker!
+        </DialogTitle>
+        <DialogContent>
+          <span>You can turn it into any card you like.</span>
+          <br />
+          <div style={{height: '65px', fontSize: '32px'}}>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="ace">A</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="two">2</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="three">3</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="four">4</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="five">5</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="six">6</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="seven">7</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="eight">8</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="nine">9</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="ten">10</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="jack">J</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="queen">Q</span>
+            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="king">K</span>
+          </div>
+          <div className="joker-suit-selection-row">
+            <img style={{width: '25%'}} data-value="hearts" onClick={handleSuitSelection} src="/cards/hearts"/>
+            <img style={{width: '25%'}} data-value="spades" onClick={handleSuitSelection} src="/cards/spades"/>
+            <img style={{width: '25%'}} data-value="diamonds" onClick={handleSuitSelection} src="/cards/diamonds"/>
+            <img style={{width: '25%'}} data-value="clubs" onClick={handleSuitSelection} src="/cards/clubs"/>
+          </div>
+          <span></span>
+          <button id="select-joker" className="btn btn-default btn-primary btn-block" onClick={handleJokerSelection}>
+            Make my joker the {jokerRank} of {jokerSuit}
+          </button>
+        </DialogContent>
+      </Dialog>
+    </>
+  ), [jokerRank, jokerSuit]);
 
   return (
     <>

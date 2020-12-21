@@ -84,6 +84,13 @@ def deal_hands(game_data, **kwargs):
 
 
 @game_interaction
+def handle_joker_selection(game_data, **kwargs):
+    module = importlib.import_module('app.games.{}'.format(game_data['type']))
+    game = module.handle_joker_selection(game_data, **kwargs)
+    return game
+
+
+@game_interaction
 def discard(game_data, **kwargs):
     module = importlib.import_module('app.games.{}'.format(game_data['type']))
     game = module.discard(game_data, **kwargs)

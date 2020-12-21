@@ -9,6 +9,7 @@ import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
+import { JokerModal } from "./JokerModal/JokerModal";
 
 export const Game = ()  => {
   const [id, setId] = useState('');

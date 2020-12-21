@@ -5,52 +5,35 @@ import useSound from "use-sound";
 
 import { Dialog, DialogContent, DialogTitle, Fab } from "@material-ui/core";
 
-import GameSettings from "./GameSettings";
 
-
-export const StartMenu = () => {
+export const JokerModal = () => {
   const game = sessionStorage.getItem('game');
   const name = sessionStorage.getItem('name');
   const [startable, setStartable] = useState(true);
-  const [buttonText, setButtonText] = useState('Start')
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
-  const { socket } = useSocket("setup_started", msg => {
-    if (msg.players.includes(name)) {
-      setStartable(true);
-    } else {
-      setStartable(false);
-      setButtonText(`Waiting for ${msg.players}`)
-    }
-  });
+  const { socket } = useSocket("setup_started");
 
-  const handleAction = (e) => {
+  const handleJokerSelection = (e) => {
     boop();
-    socket.emit('setup', { game: game, player: name });
-    showModal();
+    socket.emit('joker_chosen', { game: game, player: name });
     document.activeElement.blur();
   };
 
   const [showModal, hideModal] = useModal(({in: open, onExited}) => (
+    <>
       <Dialog className="cards-modal" open={open} onExited={hideModal} onClose={hideModal}>
         <DialogTitle>
           Game settings
         </DialogTitle>
         <DialogContent>
-          <GameSettings />
+          You got a joker!
         </DialogContent>
       </Dialog>
+    </>
   ));
 
   return (
-    <>
-      <Fab variant="extended"
-        className="action-button"
-        color="primary"
-        onClick={handleAction}
-        disabled={!startable}>
-        {buttonText}
-      </Fab>
-    </>
+    <></>
   );
 }
