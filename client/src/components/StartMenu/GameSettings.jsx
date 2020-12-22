@@ -71,7 +71,7 @@ export default function GameSettings() {
                   color="primary"
                 />
               }
-              label="Jokers"
+              label="Play with Jokers"
             />
             <br /><br />
             <FormControl>
