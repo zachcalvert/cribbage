@@ -88,10 +88,11 @@ def deal(msg):
 
 @socketio.on('joker_selected')
 def joker_selection(msg):
-    controller.handle_joker_selection(msg)
+    game = controller.handle_joker_selection(msg)
     message = '{} has a joker! They have made it the {} of {}'.format(msg['player'], msg['rank'], msg['suit'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'big'},
          room=msg['game'])
+    emit('cards', {'cards': game['hands']}, room=msg['game'])
 
 
 @socketio.on('discard')

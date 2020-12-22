@@ -18,10 +18,9 @@ export const Player = (props) => {
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
 
-  const [jokerOne, setJokerOne] = useState(false);
-  const [jokerTwo, setJokerTwo] = useState(false);
-  const [jokerSuit, setJokerSuit] = useState('______');
-  const [jokerRank, setJokerRank] = useState('______');
+  const [jokerSuit, setJokerSuit] = useState(null);
+  const [jokerRank, setJokerRank] = useState(null);
+
 
   // dealt card animation
   const config = { mass: 5, tension: 2000, friction: 100 }
@@ -55,17 +54,8 @@ export const Player = (props) => {
     if (props.name in msg.cards) {
       setPlayableCards(msg.cards[props.name]);
       setPlayedCards([]);
-      if (msg.cards[props.name].includes('joker1')) {
+      if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
         showJokerModal();
-        setJokerOne(true);
-      } else {
-        setJokerOne(false);
-      }
-      if (msg.cards[props.name].includes('joker2')) {
-        showJokerModal();
-        setJokerTwo(true);
-      } else {
-        setJokerTwo(false);
       }
     }
   });
@@ -161,8 +151,8 @@ export const Player = (props) => {
     for (var i = 0; i < suits.length; i++) {
       suits[i].classList.remove('selected-suit')
     }
-    setJokerSuit(e.target.getAttribute('data-value'));
     e.target.classList.add('selected-suit');
+    setJokerSuit(e.target.getAttribute('data-value'));
   };
 
   const handleRankSelection = (e) => {
@@ -170,20 +160,13 @@ export const Player = (props) => {
     for (var i = 0; i < ranks.length; i++) {
       ranks[i].classList.remove('selected-rank')
     }
-    setJokerRank(e.target.getAttribute('data-value'));
     e.target.classList.add('selected-rank');
+    setJokerRank(e.target.getAttribute('data-value'));
   };
 
   const handleJokerSelection = (e) => {
-    if (jokerOne) {
-      socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit, joker_id: 'joker1' });
-      hideJokerModal();
-      setJokerOne(false);
-    } else if (jokerTwo) {
-      socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit, joker_id: 'joker2' });
-      hideJokerModal();
-      setJokerTwo(false);
-    }
+    socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit });
+    hideJokerModal();
   };
 
   const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (

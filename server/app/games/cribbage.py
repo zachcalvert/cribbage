@@ -102,6 +102,18 @@ def card_text_from_id(card_id):
         return 'the {} of {}'.format(card['name'], card['suit'])
 
 
+def card_object_from_text(rank, suit):
+    """
+    Expects text in the form: 'Ace of diamonds', 'Ten of clubs', 'Queen of spades'
+
+    :return: card_dict of the corresponding card
+    """
+    suits_of_that_rank = {k: v for k, v in jokers_deck.items() if v['name'] == rank}
+    card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
+    print(card_dict)
+    return card_dict
+
+
 def start_game(game_data, **kwargs):
     crib_size = kwargs.get('crib_size', 4)
     jokers = kwargs.get('jokers', False)
@@ -207,8 +219,9 @@ def deal_hands(game_data, **kwargs):
 
     hands = {}
     for player in game_data['players'].keys():
-        dealt_cards = [game_data['deck'].pop() for card in range(5)]
+        dealt_cards = [game_data['deck'].pop() for card in range(4)]
         dealt_cards.append('joker1')
+        dealt_cards.append('joker2')
         hands[player] = _sort_cards(game_data, dealt_cards)
 
     game_data['hands'] = hands
@@ -219,13 +232,20 @@ def deal_hands(game_data, **kwargs):
 
 
 def handle_joker_selection(game_data, **kwargs):
-    rank = TEXT_TO_RANK_MAP[kwargs['rank']]
+    rank = kwargs['rank']
     suit = kwargs['suit']
-    joker_id = kwargs['joker_id']
-    game_data[joker_id]['suit'] = suit
-    game_data[joker_id]['rank'] = rank
-    game_data[joker_id]['value'] = rank if rank < 10 else 10
+    player = kwargs['player']
 
+    hand = game_data['hands'][player]
+    if 'joker1' in hand:
+        hand.remove('joker1')
+    else:
+        hand.remove('joker2')
+
+    new_card = card_object_from_text(rank, suit)
+    card_id = list(new_card.keys())[0]
+    hand.append(card_id)
+    game_data['hands'][player] = _sort_cards(game_data, hand)
     return game_data
 
 

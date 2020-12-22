@@ -312,9 +312,15 @@ deck = {
     "suit": "diamonds"
   },
   "joker1": {
-    "rank": 98
+    "rank": 98,
+    "name": "joker1",
+    "value": 98,
+    "suit": "diamonds"
   },
   "joker2": {
-    "rank": 99
+    "rank": 99,
+    "name": "joker2",
+    "value": 99,
+    "suit": "diamonds"
   }
 }
