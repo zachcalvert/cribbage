@@ -246,6 +246,7 @@ def handle_joker_selection(game_data, **kwargs):
     card_id = list(new_card.keys())[0]
     hand.append(card_id)
     game_data['hands'][player] = _sort_cards(game_data, hand)
+
     return game_data
 
 

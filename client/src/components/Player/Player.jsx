@@ -146,20 +146,28 @@ export const Player = (props) => {
     );
   };
 
-  const handleSuitSelection = (e) => {
+  const clearSuits = () => {
     var suits = document.querySelectorAll('.selected-suit');
     for (var i = 0; i < suits.length; i++) {
       suits[i].classList.remove('selected-suit')
     }
+  };
+
+  const clearRanks = () => {
+    var ranks = document.querySelectorAll('.selected-rank');
+    for (var i = 0; i < ranks.length; i++) {
+      ranks[i].classList.remove('selected-rank')
+    }
+  };
+
+  const handleSuitSelection = (e) => {
+    clearSuits();
     e.target.classList.add('selected-suit');
     setJokerSuit(e.target.getAttribute('data-value'));
   };
 
   const handleRankSelection = (e) => {
-    var ranks = document.querySelectorAll('.selected-rank');
-    for (var i = 0; i < ranks.length; i++) {
-      ranks[i].classList.remove('selected-rank')
-    }
+    clearRanks();
     e.target.classList.add('selected-rank');
     setJokerRank(e.target.getAttribute('data-value'));
   };
@@ -167,6 +175,10 @@ export const Player = (props) => {
   const handleJokerSelection = (e) => {
     socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit });
     hideJokerModal();
+    setJokerSuit(null);
+    setJokerRank(null);
+    clearRanks();
+    clearSuits();
   };
 
   const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (
@@ -178,20 +190,20 @@ export const Player = (props) => {
         <DialogContent>
           <span>You can turn it into any card you like.</span>
           <br />
-          <div style={{height: '65px', fontSize: '32px'}}>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="ace">A</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="two">2</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="three">3</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="four">4</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="five">5</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="six">6</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="seven">7</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="eight">8</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="nine">9</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="ten">10</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="jack">J</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="queen">Q</span>
-            <span style={{padding: '5px 10px'}} onClick={handleRankSelection} data-value="king">K</span>
+          <div className='joker-rank-row'>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ace">A</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="two">2</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="three">3</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="four">4</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="five">5</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="six">6</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="seven">7</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="eight">8</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="nine">9</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ten">10</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="jack">J</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="queen">Q</span>
+            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="king">K</span>
           </div>
           <div className="joker-suit-selection-row">
             <img style={{width: '25%'}} data-value="hearts" onClick={handleSuitSelection} src="/cards/hearts"/>
@@ -200,7 +212,7 @@ export const Player = (props) => {
             <img style={{width: '25%'}} data-value="clubs" onClick={handleSuitSelection} src="/cards/clubs"/>
           </div>
           <span></span>
-          <button id="select-joker" className="btn btn-default btn-primary btn-block" onClick={handleJokerSelection}>
+          <button id="select-joker" disabled={!jokerSuit || !jokerRank} className="joker-submit-button btn btn-default btn-primary btn-block" onClick={handleJokerSelection}>
             Make my joker the {jokerRank} of {jokerSuit}
           </button>
         </DialogContent>

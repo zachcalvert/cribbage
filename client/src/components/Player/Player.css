@@ -90,3 +90,17 @@
 .joker-suit-selection-row {
   padding: 0 0 20px 0;
 }
+
+.joker-rank-row {
+  height: auto;
+  font-size: 30px;
+  overflow-wrap: break-word;
+
+}
+.joker-rank-selection {
+  padding: 5px 10px;
+}
+
+.joker-submit-button {
+  margin-bottom: 10px;
+}
