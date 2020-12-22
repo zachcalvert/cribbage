@@ -6,7 +6,6 @@ import useSound from "use-sound";
 import { Dialog, DialogContent, DialogTitle, Fab } from "@material-ui/core";
 
 import GameSettings from "./GameSettings";
-import {Game} from "../Game";
 
 
 export const StartMenu = () => {
