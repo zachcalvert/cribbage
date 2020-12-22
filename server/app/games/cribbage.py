@@ -168,7 +168,10 @@ def start_game(game_data, **kwargs):
             'c_crib': 0
         }
 
-    game_data['opening_message'] = 'First to {} wins! {} cribs. Draw to see who gets first crib.'.format(game_data['winning_score'], CRIB_SIZE_MAP[game_data['crib_size']])
+    game_data['opening_message'] = 'First to {} wins! {} cribs.'.format(game_data['winning_score'], CRIB_SIZE_MAP[game_data['crib_size']])
+    if game_data['jokers']:
+        game_data['opening_message'] += ' We\'re playing with jokers!'
+    game_data['opening_message'] += ' Draw to see who gets first crib.'
     return game_data
 
 
@@ -179,6 +182,10 @@ def draw(game_data, **kwargs):
 
     random.shuffle(game_data['deck'])
     game_data['hands'][player] = [game_data['deck'].pop()]
+
+    while game_data['hands'][player][0] in ['joker1', 'joker2']:
+        game_data['cut_card'] = game_data['deck'].pop()
+
     game_data['current_turn'].remove(player)
 
     all_have_drawn = all(len(game_data['hands'][player]) == 1 for player in game_data['players'].keys())
@@ -219,9 +226,8 @@ def deal_hands(game_data, **kwargs):
 
     hands = {}
     for player in game_data['players'].keys():
-        dealt_cards = [game_data['deck'].pop() for card in range(4)]
-        dealt_cards.append('joker1')
-        dealt_cards.append('joker2')
+        hands[player] = []
+        dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(game_data, dealt_cards)
 
     game_data['hands'] = hands
@@ -263,7 +269,10 @@ def discard(game_data, **kwargs):
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
     if all_done:
         while len(game_data['crib']) < game_data['crib_size']:
-            game_data['crib'].append(game_data['deck'].pop())
+            card = game_data['deck'].pop()
+            while card in ['joker1', 'joker2']:
+                card = game_data['deck'].pop()
+            game_data['crib'].append(card)
 
         game_data['current_action'] = 'cut'
         game_data['current_turn'] = game_data['cutter']
@@ -273,6 +282,8 @@ def discard(game_data, **kwargs):
 
 def cut_deck(game_data, **kwargs):
     game_data['cut_card'] = game_data['deck'].pop()
+    while game_data['cut_card'] in ['joker1', 'joker2']:
+        game_data['cut_card'] = game_data['deck'].pop()
 
     if game_data['cut_card'] in ['110e6e5b19', '56594b3880', '95f92b2f0c', '1d5eb77128']:
         game_data['previous_turn'] = {

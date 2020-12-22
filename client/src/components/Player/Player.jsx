@@ -183,7 +183,7 @@ export const Player = (props) => {
 
   const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (
     <>
-      <Dialog className="cards-modal" open={open} onExited={hideJokerModal} onClose={hideJokerModal}>
+      <Dialog className="cards-modal" open={open} onExited={hideJokerModal} onClose={false}>
         <DialogTitle>
           You got a joker!
         </DialogTitle>
