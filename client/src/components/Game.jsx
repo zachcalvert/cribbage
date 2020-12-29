@@ -44,7 +44,7 @@ export const Game = ()  => {
       <div className="jumbotron">
         <h4 className="display-4">Welcome!</h4>
         <hr className="my-4"></hr>
-        <p className="lead">Share this link with your friends so they can join your game:</p>
+        <p className="lead">Share the below link with your friends so they can join your game</p>
         <a href={encoded}>{encoded}</a>
       </div>
     ) : ( <span /> )
