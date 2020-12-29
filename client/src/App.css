@@ -80,6 +80,14 @@ html, body {
   padding: 20px;
 }
 
+.jumbotron {
+  padding: 1rem 1rem;
+  margin: 0 2rem;
+  background-color: #e9ecef;
+  border-radius: .3rem;
+  height: 215px;
+}
+
 @media only screen and (max-width: 960px) {
   .game {
     height: 100%;

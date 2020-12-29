@@ -38,6 +38,18 @@ export const Game = ()  => {
 
   }, [room]);
 
+  const InviteLink = () => {
+    const encoded = encodeURI(`https://cribbage.live/?game=${room}`)
+    return id ? (
+      <div className="jumbotron">
+        <h4 className="display-4">Welcome!</h4>
+        <hr className="my-4"></hr>
+        <p className="lead">Share this link with your friends so they can join your game:</p>
+        <a href={encoded}>{encoded}</a>
+      </div>
+    ) : ( <span /> )
+  }
+
   const handleJoin = e => {
     e.preventDefault();
     if ((!name) || (!room)) {
@@ -68,7 +80,7 @@ export const Game = ()  => {
         ))}
       </>
     ) : (
-      <span />
+      <InviteLink />
     );
   };
 
