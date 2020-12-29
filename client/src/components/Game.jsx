@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSocket } from "use-socketio";
-import { Fab, IconButton, TextField } from "@material-ui/core";
+import {Dialog, DialogContent, DialogTitle, Fab, IconButton, TextField} from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
 import { Chat } from "./Chat/Chat";
@@ -9,6 +9,7 @@ import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
+import {useModal} from "react-modal-hook";
 
 export const Game = ()  => {
   const [id, setId] = useState('');
@@ -24,6 +25,18 @@ export const Game = ()  => {
   useSocket("game_begun", msg => {
     setInProgress(true);
   });
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const gameName = urlParams.get('game');
+    if (gameName && !name) {
+      console.log(gameName);
+      setRoom(gameName);
+      setId('a');
+      showModal();
+    }
+
+  }, [room]);
 
   const handleJoin = e => {
     e.preventDefault();
@@ -58,6 +71,37 @@ export const Game = ()  => {
       <span />
     );
   };
+
+  const handleNicknameSubmit = (e) => {
+    sessionStorage.setItem('name', name);
+    sessionStorage.setItem('game', room);
+    socket.emit("player_join", {name: name, game: room});
+    setId(name);
+    hideModal();
+  };
+
+  const [showModal, hideModal] = useModal(({in: open, onExited}) => (
+    <>
+      <Dialog className="enter-nickname-modal" open={open} onExited={hideModal} onClose={false}>
+        <DialogTitle>
+          Welcome!
+        </DialogTitle>
+        <DialogContent>
+          <span>You've been invited you to join a game. Enter your nickname below to play!</span>
+          <br /><br />
+          <TextField
+            id="name"
+            label="nickname"
+            onChange={e => setName(e.target.value.trim())}  />
+            <br /><br />
+          <button id="enter-nickname" disabled={!name} style={{"margin-bottom": "10px"}}
+                  className="btn btn-default btn-primary btn-block" onClick={handleNicknameSubmit}>
+            Play
+          </button>
+        </DialogContent>
+      </Dialog>
+    </>
+  ), [name]);
 
   return id ? (
       <div className="container-xl">
