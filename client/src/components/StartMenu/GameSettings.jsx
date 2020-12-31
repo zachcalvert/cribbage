@@ -62,18 +62,6 @@ export default function GameSettings() {
               label="Winning score"
             />
             <br /><br />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={jokers}
-                  onChange={e => setJokers(e.target.checked)}
-                  name="checkedB"
-                  color="primary"
-                />
-              }
-              label="Play with Jokers"
-            />
-            <br /><br />
             <FormControl>
               <InputLabel>
                 Cribs
@@ -87,6 +75,18 @@ export default function GameSettings() {
                 <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
               </Select>
             </FormControl>
+            <br /><br />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={jokers}
+                  onChange={e => setJokers(e.target.checked)}
+                  name="checkedB"
+                  color="primary"
+                />
+              }
+              label="Play with Jokers"
+            />
           </>
         <div className={classes.actions}>
           <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
