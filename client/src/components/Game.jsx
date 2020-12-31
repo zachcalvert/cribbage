@@ -43,9 +43,10 @@ export const Game = ()  => {
     return id ? (
       <div className="jumbotron">
         <p className="display-4">Welcome!</p>
-        <hr></hr>
         <p>Invite others to this game by sharing the below link:</p>
         <a href={encoded}>{encoded}</a>
+        <hr></hr>
+        <p>Or, click the Start button to play against the computer.</p>
       </div>
     ) : ( <span /> )
   };
