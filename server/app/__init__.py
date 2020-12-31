@@ -111,7 +111,6 @@ def discard(msg):
     game = controller.discard(msg)
     emit('cards', {'cards': game['hands']}, room=msg['game'])
 
-    print(f'current turn: {game["current_turn"]}')
     if game['current_turn'] == game['bot']:
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         time.sleep(2)
@@ -130,8 +129,8 @@ def discard(msg):
                  room=msg['game'])
 
         if game['current_turn'] == game['bot']:
-            time.sleep(random.choice([1, 2, 3]))
             emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+            time.sleep(random.choice([2, 3]))
             card = bot.play_card(game['hands'][game['bot']], game['pegging'])
             game = controller.play_card({'game': msg['game'], 'player': game['bot'], 'card': card})
             emit('card_played', {'player': game['bot'], 'card': card, 'pegging_total': game['pegging']['total']}, room=msg['game'])
@@ -219,6 +218,7 @@ def play_card(msg):
                 emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
             else:
+                time.sleep(random.choice([1, 2, 3]))
                 game = controller.score_hand({'game': msg['game'], 'player': game['bot']})
                 message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], game['bot'])
                 emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
@@ -272,6 +272,7 @@ def record_pass(msg):
 
             emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         else:
+            time.sleep(random.choice([1, 2, 3]))
             game = controller.score_hand({'game': msg['game'], 'player': game['bot']})
             message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], game['bot'])
             emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
