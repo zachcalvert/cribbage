@@ -121,8 +121,15 @@ def start_game(game_data, **kwargs):
     deck = jokers_deck if jokers else standard_deck
 
     players = list(game_data['players'].keys())
+    if len(players) == 1:
+        bot = random.choice(['Bryan', 'Libby', 'Bev'])
+        players.append(bot)
+        game_data['players'][bot] = 0
+    else:
+        bot = False
 
     game_data.update({
+        'bot': bot,
         'crib': [],
         'crib_size': crib_size,
         'current_action': 'draw',
@@ -188,6 +195,13 @@ def draw(game_data, **kwargs):
 
     game_data['current_turn'].remove(player)
 
+    if game_data['bot']:
+        bot = game_data['bot']
+        game_data['hands'][bot] = [game_data['deck'].pop()]
+        while game_data['hands'][bot][0] in ['joker1', 'joker2']:
+            game_data['hands'][bot] = [game_data['deck'].pop()]
+        game_data['current_turn'].remove(bot)
+
     all_have_drawn = all(len(game_data['hands'][player]) == 1 for player in game_data['players'].keys())
     if all_have_drawn:
         # determine dealer based on the respective cut cards
@@ -222,6 +236,7 @@ def _sort_cards(g, cards):
 
 
 def deal_hands(game_data, **kwargs):
+    print(game_data['hands'])
     random.shuffle(game_data['deck'])
 
     hands = {}
@@ -233,6 +248,7 @@ def deal_hands(game_data, **kwargs):
     game_data['hands'] = hands
     game_data['current_action'] = 'discard'
     game_data['current_turn'] = list(game_data['players'].keys())
+    print(game_data['hands'])
 
     return game_data
 
@@ -265,6 +281,12 @@ def discard(game_data, **kwargs):
     player_done = len(game_data['hands'][player]) == 4
     if player_done:
         game_data['current_turn'].remove(player)
+
+        if game_data['bot']:
+            bot = game_data['bot']
+            while len(game_data['hands'][bot]) > 4:
+                game_data['hands'][bot].pop()
+            game_data['current_turn'].remove(bot)
 
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
     if all_done:
@@ -539,6 +561,9 @@ def next_round(game_data, **kwargs):
     player = kwargs['player']
     game_data['ok_with_next_round'].append(player)
 
+    if game_data['bot']:
+        game_data['ok_with_next_round'].append(game_data['bot'])
+
     all_have_nexted = set(game_data['ok_with_next_round']) == set(list(game_data['players'].keys()))
     if all_have_nexted:
         next_to_deal = rotate_turn(game_data['dealer'], list(game_data['players'].keys()))
@@ -584,6 +609,9 @@ def grant_victory(game_data, **kwargs):
 def rematch(game_data, **kwargs):
     player = kwargs['player']
     game_data['play_again'].append(player)
+
+    if game_data['bot']:
+        game_data['play_again'].append(game_data['bot'])
 
     if set(game_data['play_again']) == set(game_data['players'].keys()):
         game_data = refresh_game_dict(game_data)
