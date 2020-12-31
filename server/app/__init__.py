@@ -246,41 +246,47 @@ def record_pass(msg):
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
     if game['current_turn'] == game['bot']:
-        if len(game['hands'][game['bot']]) > 0:
-            time.sleep(random.choice([1,2,3]))
-            card = bot.play_card(game['hands'][game['bot']], game['pegging'])
+        while game['current_turn'] == game['bot']:
+            if len(game['hands'][game['bot']]) > 0:
+                time.sleep(random.choice([1, 2, 3]))
+                card = bot.play_card(game['hands'][game['bot']], game['pegging'])
+                if card:
+                    game = controller.play_card({'game': msg['game'], 'player': game['bot'], 'card': card})
+                    emit('card_played',
+                         {'player': game['bot'], 'card': card, 'pegging_total': game['pegging']['total']},
+                         room=msg['game'])
+                    message = '{} played {}'.format(game['bot'], game['previous_turn']['action'])
+                    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message},
+                         room=msg['game'])
 
-            if card:
-                game = controller.play_card({'game': msg['game'], 'player': game['bot'], 'card': card})
-                emit('card_played', {'player': game['bot'], 'card': card, 'pegging_total': game['pegging']['total']}, room=msg['game'])
-                message = '{} played {}'.format(game['bot'], game['previous_turn']['action'])
-                emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message}, room=msg['game'])
+                else:
+                    game = controller.record_pass({'game': msg['game'], 'player': game['bot']})
+                    emit('chat_message',
+                         {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} passed.'.format(game['bot'])},
+                         room=msg['game'])
+
+                if game['previous_turn']['points'] > 0:
+                    scorer = game['previous_turn']['player']
+                    reason = game['previous_turn']['reason']
+                    emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
+
+                    message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
+                    emit('chat_message',
+                         {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'},
+                         room=msg['game'])
+
+                emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
             else:
-                game = controller.record_pass({'game': msg['game'], 'player': game['bot']})
+                time.sleep(random.choice([1, 2, 3]))
+                game = controller.score_hand({'game': msg['game'], 'player': game['bot']})
+                message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], game['bot'])
+                emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
                 emit('chat_message',
-                     {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} passed.'.format(game['bot'])},
+                     {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'},
                      room=msg['game'])
-
-            if game['previous_turn']['points'] > 0:
-                scorer = game['previous_turn']['player']
-                reason = game['previous_turn']['reason']
-                emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
-
-                message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
-                emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'},
-                     room=msg['game'])
-
-            emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
-        else:
-            time.sleep(random.choice([1, 2, 3]))
-            game = controller.score_hand({'game': msg['game'], 'player': game['bot']})
-            message = '+{} for {} (from hand)'.format(game['previous_turn']['points'], game['bot'])
-            emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
-            emit('chat_message',
-                 {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'},
-                 room=msg['game'])
-            emit('points', {'player': game['bot'], 'amount': game['players'][game['bot']]}, room=msg['game'])
-            emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+                emit('points', {'player': game['bot'], 'amount': game['players'][game['bot']]}, room=msg['game'])
+                emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 
 @socketio.on('score')

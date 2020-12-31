@@ -10,6 +10,7 @@ import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
 import {useModal} from "react-modal-hook";
+import Typography from "@material-ui/core/Typography";
 
 export const Game = ()  => {
   const [id, setId] = useState('');
@@ -159,7 +160,10 @@ export const Game = ()  => {
         <TextField
             id="room"
             label="game name"
-            onChange={e => setRoom(e.target.value.trim())} /><br />
+            onChange={e => setRoom(e.target.value.trim())} /><br/><br/>
+            <Typography variant="caption" display="block" gutterBottom>
+              Starting a new game? Call it whatever you like 😎
+            </Typography>
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}
             color="primary"
