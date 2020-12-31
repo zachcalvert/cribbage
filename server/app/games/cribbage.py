@@ -1,5 +1,5 @@
 import random
-from itertools import chain, combinations
+from itertools import chain, combinations, permutations
 import more_itertools as mit
 
 from app.decks.jokers import deck as jokers_deck
@@ -273,6 +273,8 @@ def handle_joker_selection(game_data, **kwargs):
 
 
 def discard(game_data, **kwargs):
+    deck = jokers_deck if game_data['jokers'] else standard_deck
+
     player = kwargs['player']
     card = kwargs['card']
     game_data['hands'][player].remove(card)
@@ -284,8 +286,23 @@ def discard(game_data, **kwargs):
 
         if game_data['bot']:
             bot = game_data['bot']
-            while len(game_data['hands'][bot]) > 4:
-                game_data['hands'][bot].pop()
+            cut_card = {
+                "value": 0,
+                "suit": "none",
+                "rank": 0,
+                "name": "none"
+            }
+            max_points = -1
+            card_ids = []
+            for set_of_four in permutations(game_data['hands'][game_data['bot']], 4):
+                cards = [deck.get(c) for c in set_of_four]
+                hand = Hand(cards, cut_card)
+                hand_points = hand.calculate_points()
+                if hand_points > max_points:
+                    max_points = hand_points
+                    card_ids = set_of_four
+
+            game_data['hands'][bot] = card_ids
             game_data['current_turn'].remove(bot)
 
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
@@ -784,10 +801,11 @@ class Hand:
 
     def calculate_points(self):
         points = 0
+        message = ''
 
         if self._has_fifteens():
             for fifteen, cards in self.fifteens.items():
-                print('Fifteen {} ({})'.format(fifteen, cards))
+                message += 'Fifteen {} ({})'.format(fifteen, cards)
                 points += 2
 
         if self._has_pairs():
@@ -795,29 +813,29 @@ class Hand:
                 count = self.pairs.get(pair)
                 if count == 4:
                     points += 12
-                    print('four {}s for {}'.format(pair, points))
+                    message += 'four {}s for {}'.format(pair, points)
                 elif count == 3:
                     points += 6
-                    print('three {}s for {}'.format(pair, points))
+                    message += 'three {}s for {}'.format(pair, points)
                 else:
                     points += 2
-                    print('a pair of {}s for {}'.format(pair, points))
+                    message += 'a pair of {}s for {}'.format(pair, points)
 
         if self._has_runs():
             for run in self.runs:
                 points += len(run)
-                print('a run of {} for {} ({})'.format(len(run), points, run))
+                message += 'a run of {} for {} ({})'.format(len(run), points, run)
 
         if self._has_flush():
             points += self.flush_points
-            print('four {} for {}'.format(self.cards[0]['suit'], points))
+            message += 'four {} for {}'.format(self.cards[0]['suit'], points)
 
         if self._has_nobs():
             points += 1
             if points > 1:
-                print('And nobs for {}'.format(points))
+                message += 'And nobs for {}'.format(points)
             else:
-                print('Nobs for one')
+                message += 'Nobs for one'
 
         self.points = points
         return points
