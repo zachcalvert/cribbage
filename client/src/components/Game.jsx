@@ -42,13 +42,13 @@ export const Game = ()  => {
     const encoded = encodeURI(`https://cribbage.live/?game=${room}`)
     return id ? (
       <div className="jumbotron">
-        <h4 className="display-4">Welcome!</h4>
-        <hr className="my-4"></hr>
-        <p className="lead">Share the below link with your friends so they can join your game</p>
+        <p className="display-4">Welcome!</p>
+        <hr></hr>
+        <p>Invite others to this game by sharing the below link:</p>
         <a href={encoded}>{encoded}</a>
       </div>
     ) : ( <span /> )
-  }
+  };
 
   const handleJoin = e => {
     e.preventDefault();
@@ -71,7 +71,7 @@ export const Game = ()  => {
   };
 
   const renderOpponents = () => {
-    return opponents.length ? (
+    return inProgress ? (
       <>
         {opponents.map(name => (
           <div key={name} className={`opponent opponent-${name}`}>
