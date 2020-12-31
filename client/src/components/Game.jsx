@@ -71,7 +71,7 @@ export const Game = ()  => {
   };
 
   const renderOpponents = () => {
-    return inProgress ? (
+    return inProgress || opponents.length ? (
       <>
         {opponents.map(name => (
           <div key={name} className={`opponent opponent-${name}`}>

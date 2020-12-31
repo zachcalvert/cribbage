@@ -82,10 +82,10 @@ html, body {
 
 .jumbotron {
   padding: 1rem 1rem;
-  margin: 0 2rem;
+  margin: auto;
   background-color: #e9ecef;
   border-radius: .3rem;
-  height: 215px;
+  height: auto;
 }
 
 @media only screen and (max-width: 960px) {
@@ -119,6 +119,13 @@ html, body {
   .top-row, .middle-row {
     margin: 0;
   }
+
+  .jumbotron {
+    font-size: 14px;
+    padding: 14px;
+    margin: 10px 10px;
+  }
+
   .middle-row-spacer {
     display: none;
   }
