@@ -110,7 +110,6 @@ def card_object_from_text(rank, suit):
     """
     suits_of_that_rank = {k: v for k, v in jokers_deck.items() if v['name'] == rank}
     card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
-    print(card_dict)
     return card_dict
 
 
@@ -127,6 +126,8 @@ def start_game(game_data, **kwargs):
         game_data['players'][bot] = 0
     else:
         bot = False
+
+    print(f'New game! Players are {players}.')
 
     game_data.update({
         'bot': bot,
@@ -236,7 +237,6 @@ def _sort_cards(g, cards):
 
 
 def deal_hands(game_data, **kwargs):
-    print(game_data['hands'])
     random.shuffle(game_data['deck'])
 
     hands = {}
@@ -248,7 +248,6 @@ def deal_hands(game_data, **kwargs):
     game_data['hands'] = hands
     game_data['current_action'] = 'discard'
     game_data['current_turn'] = list(game_data['players'].keys())
-    print(game_data['hands'])
 
     return game_data
 
@@ -348,7 +347,6 @@ def play_card(game_data, **kwargs):
         'points': 0,
         'reason': ''
     }
-    print('card was was just played, {} has {} points'.format(player, game_data['players'][player]))
 
     def _one_for_go(player):
         game_data['players'][player] += 1
@@ -418,7 +416,6 @@ def play_card(game_data, **kwargs):
         'points': points_scored,
         'reason': source
     })
-    print('in cribbage, {} now has {} points'.format(player, game_data['players'][player]))
 
     # record play
     game_data['hands'][player].remove(card_id)
@@ -567,12 +564,10 @@ def score_crib(game_data, **kwargs):
 
     game_data['current_action'] = 'next'
     game_data['current_turn'] = list(game_data['players'].keys())
-    print('after crib, {} has {} points'.format(player, game_data['players'][player]))
     return game_data
 
 
 def next_round(game_data, **kwargs):
-    print('in next round')
     deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
@@ -607,16 +602,14 @@ def next_round(game_data, **kwargs):
         })
         for player in list(game_data['players'].keys()):
             game_data['played_cards'][player] = []
-
-        print('after updating the game dict for next round, game data is: {}'.format(game_data))
     else:
         game_data['current_turn'].remove(player)
 
-    print('after next round, {} has {} points'.format(player, game_data['players'][player]))
     return game_data
 
 
 def grant_victory(game_data, **kwargs):
+    print(f'{kwargs["player"]} wins!')
     game_data['winner'] = kwargs['player']
     game_data['current_turn'] = list(game_data['players'].keys())
     game_data['current_action'] = 'rematch'

@@ -15,6 +15,7 @@ def play_card(hand, pegging_data):
     },
     """
     cards_in_hand = [{card: deck.get(card)} for card in hand]
+    cards_in_hand.reverse()
     cards_on_table = [deck.get(c) for c in pegging_data['cards']]
 
     try:

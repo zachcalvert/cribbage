@@ -65,6 +65,7 @@ export const Game = ()  => {
 
   const handleLeave = e => {
     e.preventDefault();
+    hideLeaveGameModal();
     sessionStorage.removeItem('name');
     sessionStorage.removeItem('game');
     socket.emit("player_leave", {name: name, game: room});
@@ -117,6 +118,24 @@ export const Game = ()  => {
     </>
   ), [name]);
 
+  const [showLeaveGameModal, hideLeaveGameModal] = useModal(({in: open, onExited}) => (
+    <>
+      <Dialog className="enter-nickname-modal" open={open} onExited={hideLeaveGameModal} onClose={hideLeaveGameModal}>
+        <DialogTitle>
+          Are you sure you want to leave?
+        </DialogTitle>
+        <DialogContent>
+          <button id="stay" style={{"margin": "10px"}} className="btn btn-default btn-primary"
+                  onClick={hideLeaveGameModal}>Stay
+          </button>
+          <button id="confirm-leave" style={{"background-color": "red", "color": "white", "margin": "10px"}}
+                  className="btn btn-default" onClick={handleLeave}>Leave
+          </button>
+        </DialogContent>
+      </Dialog>
+    </>
+  ), []);
+
   return id ? (
       <div className="container-xl">
         <div className="game row">
@@ -124,7 +143,7 @@ export const Game = ()  => {
             <Chat />
           </div>
           <div className="game-table col-xl-8 row">
-            <IconButton className="leave-game" onClick={handleLeave} aria-label="leave">
+            <IconButton className="leave-game" onClick={showLeaveGameModal} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>
 
@@ -160,9 +179,9 @@ export const Game = ()  => {
         <TextField
             id="room"
             label="game name"
-            onChange={e => setRoom(e.target.value.trim())} /><br/><br/>
-            <Typography variant="caption" display="block" gutterBottom>
-              Starting a new game? Call it whatever you like 😎
+            onChange={e => setRoom(e.target.value.trim())} /><br/>
+            <Typography variant="caption" display="block" style={{"padding-top": "6px", "color": "#8C8C8C"}} gutterBottom>
+              Starting a game? Call it whatever you like :)
             </Typography>
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}

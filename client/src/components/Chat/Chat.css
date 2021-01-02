@@ -86,3 +86,20 @@
 .big-message {
   font-weight: bold;
 }
+
+.send-message-form {
+  padding: 0!important;
+}
+
+.send-message-button {
+  font-size: 2rem;
+}
+
+.getEmojiButton {
+  border: none;
+  margin: auto;
+  cursor: pointer;
+  padding: 0 10px 0 0;
+  font-size: 42px;
+  color: #787878;
+}

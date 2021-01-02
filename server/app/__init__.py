@@ -121,8 +121,6 @@ def discard(msg):
             scorer = game['previous_turn']['player']
             action = game['previous_turn']['action']
             message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
-
-            print('sending {} points to {}'.format(game['players'][scorer], scorer))
             emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
             emit('chat_message',
                  {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'},
@@ -149,8 +147,6 @@ def cut_deck(msg):
         scorer = game['previous_turn']['player']
         action = game['previous_turn']['action']
         message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, action)
-
-        print('sending {} points to {}'.format(game['players'][scorer], scorer))
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
@@ -181,9 +177,7 @@ def play_card(msg):
     if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
         reason = game['previous_turn']['reason']
-        print('sending {} points to {}'.format(game['players'][scorer], scorer))
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
-
         message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
@@ -237,9 +231,7 @@ def record_pass(msg):
     if game['previous_turn']['points'] > 0:
         scorer = game['previous_turn']['player']
         reason = game['previous_turn']['reason']
-        print('sending {} points to {}'.format(game['players'][scorer], scorer))
         emit('points', {'player': scorer, 'amount': game['players'][scorer]}, room=msg['game'])
-
         message = '+{} for {} ({})'.format(game['previous_turn']['points'], scorer, reason)
         emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
 
@@ -326,7 +318,6 @@ def score_crib(msg):
     game = controller.score_crib(msg)
     message = '+{} for {} (from crib)'.format(game['previous_turn']['points'], msg['player'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': 'points'}, room=msg['game'])
-    print('sending {} points to {}'.format(game['players'][msg['player']], msg['player']))
     emit('points', {'player': game['dealer'], 'amount': game['players'][msg['player']]}, room=msg['game'])
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
     emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])

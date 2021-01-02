@@ -4,6 +4,7 @@ import useSound from "use-sound";
 
 import { Divider, IconButton, makeStyles } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
+import SendIcon from '@material-ui/icons/Send';
 
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker } from 'emoji-mart'
@@ -55,13 +56,6 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     flex: 1,
     fontSize: 16
-  },
-  getEmojiButton: {
-    border: "none",
-    margin: 0,
-    cursor: "pointer",
-    padding: "0 10px 0 0",
-    fontSize: "26px"
   }
 }));
 
@@ -171,8 +165,7 @@ export const Chat = ()  => {
       <div className="game-name">Game: { game }</div>
       <Divider variant="middle"/>
       { renderChat() }
-      <div className={`newMessageForm ${classes.container}`}>
-
+      <div className={`send-message-form ${classes.container}`}>
         {showEmojis ? (
           <span className='emoji-picker'>
             <IconButton className="close-emoji-menu" onClick={closeEmojiMenu} aria-label="leave">
@@ -186,9 +179,7 @@ export const Chat = ()  => {
             />
           </span>
         ) : (
-          <p className={classes.getEmojiButton} onClick={displayEmojiMenu}>
-            {String.fromCodePoint(0x1f600)}
-          </p>
+          <p className='getEmojiButton' onClick={displayEmojiMenu}>☺</p>
         )}
         <form className={classes.form} onSubmit={handleSubmit}>
           <input
@@ -198,6 +189,9 @@ export const Chat = ()  => {
             value={message}
             onChange={handleChange}
           />
+          <IconButton style={{"outline": "none", "box-shadow": "none"}} className='send-message-button' onClick={handleSubmit}>
+            <SendIcon fontSize="inherit" />
+          </IconButton>
         </form>
       </div>
     </>

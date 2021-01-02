@@ -54,6 +54,11 @@ html, body {
   color: red!important;
 }
 
+.leave-game:focus {
+  outline: none;
+  box-shadow: none;
+}
+
 .game-table {
   margin: 0!important;
   padding: 0!important;
@@ -97,13 +102,24 @@ html, body {
     max-height: 33%;
   }
   .chat-log {
-    height: calc(66% - 30px);
+    height: calc(66% - 20px);
   }
   .emoji-picker {
     margin-bottom: 0;
+    top: 0;
+    z-index: 10;
+  }
+  .emoji-mart {
+    width: 100%!important;
   }
   .emoji-mart-scroll {
-    height: 100px;
+    height: 175px;
+  }
+  .getEmojiButton {
+    font-size: 56px;
+  }
+  .send-message-button {
+    font-size: 2.5rem!important;
   }
 
   .player-cards {
@@ -132,6 +148,7 @@ html, body {
 
   .animated-card {
     background-size: 65px auto;
+    width: 13vh;
   }
 
   .available-card {
@@ -156,5 +173,13 @@ html, body {
   .game-name {
     padding: 10px;
   }
-
+  .chat-log {
+    height: calc(66% - 10px);
+  }
+  .getEmojiButton {
+    font-size: 28px;
+  }
+  .send-message-button {
+    font-size: 1.5rem!important;
+  }
 }

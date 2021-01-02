@@ -83,7 +83,6 @@ def _sort_cards(cards):
 
 
 def _lowest_card_belongs_to(hands):
-    print(hands)
     low_card = None
     low_rank = 52
     starter = None
