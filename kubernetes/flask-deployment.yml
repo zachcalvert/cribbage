@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: flask
-          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards:backend-8dcbaf88b5877b53dc5a1a2ee6d6741f8902995f"
+          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards-backend:latest"
           env:
             - name: "REDISHOST"
               value: "localhost"

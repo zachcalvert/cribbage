@@ -19,6 +19,8 @@ export const Game = ()  => {
   const [opponents, setOpponents] = useState([]);
   const [inProgress, setInProgress] = useState(false);
 
+  const randomWords = require('random-words');
+
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
   });
@@ -174,15 +176,16 @@ export const Game = ()  => {
       <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
         <TextField
             id="name"
-            label="nickname"
-            onChange={e => setName(e.target.value.trim())}  /><br />
+            label="your name"
+            autoFocus={true}
+            style={{'width': '185px'}}
+            onChange={e => setName(e.target.value.trim())}  /><br /><br />
         <TextField
             id="room"
-            label="game name"
-            onChange={e => setRoom(e.target.value.trim())} /><br/>
-            <Typography variant="caption" display="block" style={{"padding-top": "6px", "color": "#8C8C8C"}} gutterBottom>
-              Starting a game? Call it whatever you like :)
-            </Typography>
+            onChange={e => setRoom(e.target.value.trim())}
+            helperText="game name, feel free to change"
+            style={{'width': '185px'}}
+            defaultValue={randomWords({ exactly: 3, join: '-' })}/><br/>
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}
             color="primary"
