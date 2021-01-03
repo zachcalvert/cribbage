@@ -119,9 +119,7 @@ html, body {
   .emoji-mart-scroll {
     height: 175px;
   }
-  .getEmojiButton {
-    font-size: 56px;
-  }
+
   .send-message-button {
     font-size: 2.5rem!important;
   }

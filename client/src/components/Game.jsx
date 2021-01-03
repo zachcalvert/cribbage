@@ -12,14 +12,16 @@ import { StartMenu } from "./StartMenu/StartMenu";
 import {useModal} from "react-modal-hook";
 import Typography from "@material-ui/core/Typography";
 
+const randomWords = require('random-words');
+
+
 export const Game = ()  => {
   const [id, setId] = useState('');
   const [name, setName] = useState('');
-  const [room, setRoom] = useState('');
+  const [room, setRoom] = useState(randomWords({ exactly: 3, join: '-' }));
   const [opponents, setOpponents] = useState([]);
   const [inProgress, setInProgress] = useState(false);
 
-  const randomWords = require('random-words');
 
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
@@ -33,7 +35,6 @@ export const Game = ()  => {
     const urlParams = new URLSearchParams(window.location.search);
     const gameName = urlParams.get('game');
     if (gameName && !name) {
-      console.log(gameName);
       setRoom(gameName);
       setId('a');
       showModal();
@@ -176,7 +177,7 @@ export const Game = ()  => {
       <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
         <TextField
             id="name"
-            label="your name"
+            helperText="your name"
             autoFocus={true}
             style={{'width': '185px'}}
             onChange={e => setName(e.target.value.trim())}  /><br /><br />
@@ -185,7 +186,7 @@ export const Game = ()  => {
             onChange={e => setRoom(e.target.value.trim())}
             helperText="game name, feel free to change"
             style={{'width': '185px'}}
-            defaultValue={randomWords({ exactly: 3, join: '-' })}/><br/>
+            defaultValue={room}/><br/>
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}
             color="primary"
