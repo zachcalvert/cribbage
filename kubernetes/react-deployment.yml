@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: react
-          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards-client:latest"
+          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards-client:fcf2d30f72fdb4ec44fa8f6fcfc1c4f90e41f286"
           ports:
             - containerPort: 80
