@@ -180,7 +180,7 @@ export const Game = ()  => {
             helperText="your name"
             autoFocus={true}
             style={{'width': '185px'}}
-            onChange={e => setName(e.target.value.trim())}  /><br /><br />
+            onChange={e => setName(e.target.value.trim())}  /><br />
         <TextField
             id="room"
             onChange={e => setRoom(e.target.value.trim())}
