@@ -324,11 +324,13 @@ def cut_deck(game_data, **kwargs):
         game_data['cut_card'] = game_data['deck'].pop()
 
     if game_data['cut_card'] in ['110e6e5b19', '56594b3880', '95f92b2f0c', '1d5eb77128']:
+        dealer = game_data['dealer']
         game_data['previous_turn'] = {
             'action': 'cutting a jack',
             'points': 2,
-            'player': game_data['dealer']
+            'player': dealer
         }
+        game_data['players'][dealer] += 2
 
     game_data['current_action'] = 'play'
     game_data['current_turn'] = game_data['first_to_score']
