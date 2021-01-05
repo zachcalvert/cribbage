@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "use-socketio";
-import {Dialog, DialogContent, DialogTitle, Fab, IconButton, TextField} from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, Fab, IconButton, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import RefreshIcon from '@material-ui/icons/Refresh';
 
 import { Chat } from "./Chat/Chat";
 import { Deck } from "./Deck/Deck";
@@ -10,7 +11,6 @@ import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
 import {useModal} from "react-modal-hook";
-import Typography from "@material-ui/core/Typography";
 
 const randomWords = require('random-words');
 
@@ -21,7 +21,6 @@ export const Game = ()  => {
   const [room, setRoom] = useState(randomWords({ exactly: 3, join: '-' }));
   const [opponents, setOpponents] = useState([]);
   const [inProgress, setInProgress] = useState(false);
-
 
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
@@ -74,6 +73,7 @@ export const Game = ()  => {
     socket.emit("player_leave", {name: name, game: room});
     setId('');
     setInProgress(false);
+    setRoom(randomWords({ exactly: 3, join: '-' }));
   };
 
   const renderOpponents = () => {
@@ -98,6 +98,8 @@ export const Game = ()  => {
     hideModal();
   };
 
+  const handleGameNameRefresh = useCallback((event) => setRoom(randomWords({ exactly: 3, join: '-' })), []);
+
   const [showModal, hideModal] = useModal(({in: open, onExited}) => (
     <>
       <Dialog className="enter-nickname-modal" open={open} onExited={hideModal} onClose={false}>
@@ -109,12 +111,11 @@ export const Game = ()  => {
           <br /><br />
           <TextField
             id="name"
-            label="nickname"
+            label="your name"
             onChange={e => setName(e.target.value.trim())}  />
-            <br /><br />
+          <br /><br />
           <button id="enter-nickname" disabled={!name} style={{"margin-bottom": "10px"}}
-                  className="btn btn-default btn-primary btn-block" onClick={handleNicknameSubmit}>
-            Play
+                  className="btn btn-default btn-primary btn-block" onClick={handleNicknameSubmit}>Play
           </button>
         </DialogContent>
       </Dialog>
@@ -179,14 +180,18 @@ export const Game = ()  => {
             id="name"
             helperText="your name"
             autoFocus={true}
-            style={{'width': '185px'}}
+            style={{'width': '185px', 'margin-bottom': '10px'}}
             onChange={e => setName(e.target.value.trim())}  /><br />
         <TextField
             id="room"
             onChange={e => setRoom(e.target.value.trim())}
-            helperText="game name, feel free to change"
-            style={{'width': '185px'}}
-            defaultValue={room}/><br/>
+            helperText="game name"
+            style={{'width': '185px', 'margin-left': '42px'}}
+            value={room}
+            />
+         <IconButton className="refresh-game-name" style={{"margin-top": "-7px", "outline": "none"}} onClick={e => handleGameNameRefresh(e)}>
+           <RefreshIcon fontSize="30px"/>
+         </IconButton><br/>
          <Fab variant="extended"
             style={{ padding: '20px', margin: '20px' }}
             color="primary"

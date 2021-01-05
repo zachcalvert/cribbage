@@ -41,7 +41,6 @@ def player_leave(msg):
     leave_room(msg['game'])
 
     game = controller.remove_player(msg['game'], msg['name'])
-
     emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
     emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} left'.format(msg['name'])}, room=msg['game'])
 
@@ -302,7 +301,7 @@ def score_hand(msg):
             emit('points', {'player': game['bot'], 'amount': game['players'][game['bot']]}, room=msg['game'])
 
         if game['bot'] == game['dealer']:
-            time.sleep(random.choice([2, 3]))
+            time.sleep(3)
             game = controller.score_crib({'game': msg['game'], 'player': game['bot']})
             message = '+{} for {} (from crib)'.format(game['previous_turn']['points'], game['bot'])
             emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
@@ -342,7 +341,7 @@ def next_round(msg):
 def winner(msg):
     game = controller.grant_victory(msg)
     emit('winner', {'player': game['winner']})
-    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'}, room=msg['game'])
+    emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']), 'type': 'big'})
     emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
 

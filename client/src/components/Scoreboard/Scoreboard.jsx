@@ -9,10 +9,11 @@ const colorClassMap = {
   1: 'scoreboard-player-progress player-two',
   2: 'scoreboard-player-progress player-three',
   3: 'scoreboard-player-progress player-four'
-}
+};
 
 export const Scoreboard = () => {
   const game = sessionStorage.getItem('game');
+  const name = sessionStorage.getItem('name');
   const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
   const [winnerBell] = useSound('/sounds/winner.wav', { volume: 0.5 });
@@ -39,9 +40,11 @@ export const Scoreboard = () => {
   }
 
   const renderProgressBars = () => {
-    return players ? (
+    const { [name]: playerScore, ...opponents } = players;
+
+    return opponents ? (
       <>
-        {Object.entries(players).map( ([player, score], index) => (
+        {Object.entries(opponents).map( ([player, score], index) => (
           <div key={index} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-10'>{player}</span>
             <div className="progress col-10">
@@ -55,6 +58,18 @@ export const Scoreboard = () => {
             <div className="scoreboard-player-score col-2">{score}</div>
           </div>
         ))}
+        <div key={Object.keys(players).length} className='scoreboard-player row'>
+          <span className='scoreboard-player-name col-10'>{name}</span>
+          <div className="progress col-10">
+            <div
+              className={`${colorClassMap[Object.keys(opponents).length]} progress-bar`}
+              role="progressbar"
+              aria-valuemin="0" aria-valuenow={playerScore} aria-valuemax={winningScore}
+              style={{"width": `${playerScore/winningScore * 100}%`}}>
+            </div>
+          </div>
+          <div className="scoreboard-player-score col-2">{playerScore}</div>
+        </div>
       </>
     ) : (
       <span />
