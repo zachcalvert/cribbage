@@ -159,7 +159,8 @@ def start_game(game_data, **kwargs):
         'previous_turn': {
             'action': '',
             'player': '',
-            'points': 0
+            'points': 0,
+            'reason': None
         },
         'rematch': False,
         'scored_hands': [],
@@ -328,7 +329,8 @@ def cut_deck(game_data, **kwargs):
         game_data['previous_turn'] = {
             'action': 'cutting a jack',
             'points': 2,
-            'player': dealer
+            'player': dealer,
+            'reason': None
         }
         game_data['players'][dealer] += 2
 
@@ -347,13 +349,13 @@ def play_card(game_data, **kwargs):
         'action': card_text_from_id(card_id),
         'player': player,
         'points': 0,
-        'reason': ''
+        'reason': None
     }
 
     def _one_for_go(player):
         game_data['players'][player] += 1
         game_data['previous_turn']['points'] += 1
-        if game_data['previous_turn']['reason'] == '':
+        if game_data['previous_turn']['reason'] is None:
             game_data['previous_turn']['reason'] = 'go'
         else:
             game_data['previous_turn']['reason'] += ', go'
@@ -453,6 +455,7 @@ def play_card(game_data, **kwargs):
     else:
         game_data['current_action'] = 'score'
         game_data['current_turn'] = game_data['first_to_score']
+        game_data['previous_turn']['reason'] = 'last card'
 
     return game_data
 
@@ -529,9 +532,10 @@ def score_hand(game_data, **kwargs):
     game_data['players'][player] += hand_points
     game_data['scored_hands'].append(player)
     game_data['previous_turn'] = {
-        'action': 'hand_score',
+        'action': 'from hand',
         'points': hand_points,
-        'player': player
+        'player': player,
+        'reason': None
     }
 
     if set(game_data['scored_hands']) == set(game_data['players'].keys()):
@@ -559,7 +563,8 @@ def score_crib(game_data, **kwargs):
     game_data['previous_turn'] = {
         'action': 'from crib',
         'points': crib_points,
-        'player': player
+        'player': player,
+        'reason': None
     }
     game_data['hands'] = game_data['hands'].fromkeys(game_data['hands'], [])
     game_data['hands'][game_data['dealer']] = game_data['crib']
@@ -598,7 +603,8 @@ def next_round(game_data, **kwargs):
             'previous_turn': {
                 'action': '',
                 'player': '',
-                'points': 0
+                'points': 0,
+                'reason': None
             },
             'scored_hands': []
         })
@@ -659,7 +665,8 @@ def refresh_game_dict(game_data):
         'previous_turn': {
             'action': '',
             'player': '',
-            'points': 0
+            'points': 0,
+            'reason': None
         },
         'rematch': True,
         'scored_hands': [],
