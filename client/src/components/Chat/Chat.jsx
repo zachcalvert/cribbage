@@ -77,7 +77,7 @@ export const Chat = ()  => {
   };
   useEffect(scrollToBottom, [chats]);
 
-  const { socket } = useSocket("chat_message", newChat => {
+  const { socket } = useSocket("chat", newChat => {
     if (newChat.name === 'game-updater') {
       let cn;
       if (newChat.type === 'points') {
@@ -97,7 +97,7 @@ export const Chat = ()  => {
   useSocket("animation", animation => {
     let newChat = {name: animation.name, message: <div className='animation' style={{backgroundImage: `url(${animation.imageUrl})` }} />};
     setChat([...chats, newChat]);
-    boop()
+    boop();
     closeEmojiMenu();
   });
 
