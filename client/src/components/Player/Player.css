@@ -40,6 +40,10 @@
   padding: 0 20px;
 }
 
+.crib-help-text {
+  margin: 5px 0!important;
+}
+
 .player-cards {
   min-height: 210px;
   display: inline-flex;

@@ -7,6 +7,7 @@ import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/cor
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { useModal } from "react-modal-hook";
+import Typography from "@material-ui/core/Typography";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
@@ -17,10 +18,10 @@ export const Player = (props) => {
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
+  const [cribHelpText, setCribHelpText] = useState(null);
 
   const [jokerSuit, setJokerSuit] = useState(null);
   const [jokerRank, setJokerRank] = useState(null);
-
 
   // dealt card animation
   const config = { mass: 5, tension: 2000, friction: 100 }
@@ -47,6 +48,15 @@ export const Player = (props) => {
       setShowPeggingTotal(true);
     } else {
       setShowPeggingTotal(false);
+    }
+    if (msg.action === 'discard') {
+      {
+        msg.crib === props.name ? (
+            setCribHelpText('It\'s your crib')
+        ) : (setCribHelpText(`It\'s ${msg.crib}\'s crib`))
+      }
+    } else if (msg.action === 'cut') {
+        setCribHelpText(null);
     }
   });
 
@@ -244,6 +254,11 @@ export const Player = (props) => {
         </div>
       </div>
       <Divider variant="middle" />
+      {cribHelpText ?
+        <Typography className='crib-help-text' variant="subtitle2" display="block">
+        {cribHelpText}
+        </Typography> : <span/>
+       }
       <div className="player-cards">
         { renderPlayableCards() }
       </div>

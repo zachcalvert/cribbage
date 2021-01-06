@@ -73,7 +73,7 @@ def add_player(game, player):
 
 def remove_player(game, player):
     g = json.loads(cache.get(game))
-    g['players'].pop(player)
+    g['players'].pop(player, None)
     if not g['players']:
         cache.delete(game)
     else:
@@ -250,7 +250,8 @@ def discard(game_data, **kwargs):
         game_data['current_turn'].remove(player)
 
         if game_data['bot']:
-            game_data['hands'][game_data['bot']] = bot.discard(game_data['hands'][game_data['bot']])
+            hand =  bot.discard(game_data['hands'][game_data['bot']])
+            game_data['hands'][game_data['bot']] = hand
             game_data['current_turn'].remove(game_data['bot'])
 
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())

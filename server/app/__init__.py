@@ -53,7 +53,6 @@ class CribbageNamespace(Namespace):
         if action == 'deal':
             game = controller.deal_hands({'game': game['name'], 'player': player})
             emit('cards', {'cards': game['hands']}, room=game['name'])
-            emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=game['name'])
 
         elif action == 'cut':
             game = controller.cut_deck({'game': game['name'], 'player': player})
@@ -100,7 +99,7 @@ class CribbageNamespace(Namespace):
 
     def on_chat_message(self, msg):
         room = None if msg.get('private') else msg['game']
-        emit('chat_message', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=room)
+        emit('chat', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=room)
 
     def on_animation(self, msg):
         emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])
@@ -122,12 +121,16 @@ class CribbageNamespace(Namespace):
         emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         self.announce(game['opening_message'], room=msg['game'])
-        self.bot_move(game) if game['current_turn'] == game['bot'] else None
+        if game['current_turn'] == game['bot']:
+            game = self.bot_move(game)
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']},
+             room=msg['game'])
 
     def on_deal(self, msg):
         game = controller.deal_hands(msg)
         emit('cards', {'cards': game['hands']}, room=msg['game'])
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']},
+             room=msg['game'])
 
     def on_joker_selected(self, msg):
         game = controller.handle_joker_selection(msg)
@@ -142,21 +145,23 @@ class CribbageNamespace(Namespace):
         while game['current_turn'] == game['bot']:
             game = self.bot_move(game)
 
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']}, room=msg['game'])
 
     def on_cut(self, msg):
         game = controller.cut_deck(msg)
         emit('cut_card', {'card': game['cut_card']}, room=msg['game'])
         self.dispatch_points(game)
-        self.bot_move(game) if game['current_turn'] == game['bot'] else None
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
+        if game['current_turn'] == game['bot']:
+            game = self.bot_move(game)
+
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
     def on_play(self, msg):
         valid_play, message = controller.is_valid_play(msg['game'], msg['player'], msg['card'])
         if not valid_play:
             emit('invalid_card')
-            emit('chat_message', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message})
+            emit('chat', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message})
             return
 
         game = controller.play_card(msg)
@@ -204,14 +209,13 @@ class CribbageNamespace(Namespace):
         if game['current_turn'] == game['bot']:
             game = self.bot_move(game)
 
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'],
+                           'crib': game['dealer']}, room=game['name'])
 
     def on_winner(self, msg):
         game = controller.grant_victory(msg)
         emit('winner', {'player': game['winner']})
-        emit('chat_message',
-             {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': '{} wins!'.format(msg['player']),
-              'type': 'big'})
+        self.announce('{} wins!'.format(msg['player']), room=None, type='big')
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
     def on_rematch(self, msg):

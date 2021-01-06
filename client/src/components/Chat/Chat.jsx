@@ -97,7 +97,7 @@ export const Chat = ()  => {
   useSocket("animation", animation => {
     let newChat = {name: animation.name, message: <div className='animation' style={{backgroundImage: `url(${animation.imageUrl})` }} />};
     setChat([...chats, newChat]);
-    boop()
+    boop();
     closeEmojiMenu();
   });
 
