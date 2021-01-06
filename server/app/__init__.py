@@ -129,7 +129,7 @@ class CribbageNamespace(Namespace):
         emit('cards', {'cards': game['hands']}, room=msg['game'])
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
-    def on_joker_selection(self, msg):
+    def on_joker_selected(self, msg):
         game = controller.handle_joker_selection(msg)
         emit('cards', {'cards': game['hands']}, room=msg['game'])
         message = '{} got a joker! They have made it the {} of {}'.format(msg['player'], msg['rank'], msg['suit'])
