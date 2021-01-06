@@ -73,7 +73,7 @@ def add_player(game, player):
 
 def remove_player(game, player):
     g = json.loads(cache.get(game))
-    g['players'].pop(player, None)
+    g['players'].pop(player)
     if not g['players']:
         cache.delete(game)
     else:

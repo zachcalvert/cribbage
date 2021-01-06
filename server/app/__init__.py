@@ -89,13 +89,12 @@ class CribbageNamespace(Namespace):
         controller.get_or_create_game(msg['game'])
         game = controller.add_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
-        self.announce('{} has joined'.format(msg['name']), room=msg['game'])
+        self.announce('{} joined'.format(msg['name']), room=msg['game'])
 
     def on_player_leave(self, msg):
-        leave_room(msg['game'])
         game = controller.remove_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
-        self.announce('{} has left'.format(msg['name']), room=msg['game'])
+        self.announce('{} left'.format(msg['name']), room=msg['game'])
 
     def on_chat_message(self, msg):
         room = None if msg.get('private') else msg['game']

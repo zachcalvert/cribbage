@@ -22,7 +22,13 @@ def discard(hand):
     for set_of_four in permutations(hand, 4):
         cards = [deck.get(c) for c in set_of_four]
         hand = Hand(cards, cut_card)
-        hand_points = hand.calculate_points()
+        try:
+            hand_points = hand.calculate_points()
+        except Exception as e:
+            print('Exception calculating bot points: {}'.format(e))
+            print('cards are: {}'.format(cards))
+            print('cut card is: {}'.format(cut_card))
+            continue
         if hand_points > max_points:
             max_points = hand_points
             card_ids = set_of_four

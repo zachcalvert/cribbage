@@ -68,9 +68,9 @@ export const Game = ()  => {
   const handleLeave = e => {
     e.preventDefault();
     hideLeaveGameModal();
+    socket.emit("player_leave", {name: sessionStorage.getItem('name'), game: sessionStorage.getItem('game')});
     sessionStorage.removeItem('name');
     sessionStorage.removeItem('game');
-    socket.emit("player_leave", {name: name, game: room});
     setId('');
     setInProgress(false);
     setRoom(randomWords({ exactly: 3, join: '-' }));
