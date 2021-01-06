@@ -1,13 +1,13 @@
-import importlib
 import json
 import logging
 import os
 import random
 import redis
 
-from itertools import chain, combinations, permutations
+from itertools import chain, combinations
 import more_itertools as mit
 
+from app import bot
 from app import utils
 from app.decks.jokers import deck as jokers_deck
 from app.decks.standard import deck as standard_deck
@@ -240,8 +240,6 @@ def handle_joker_selection(game_data, **kwargs):
 
 @game_interaction
 def discard(game_data, **kwargs):
-    deck = jokers_deck if game_data['jokers'] else standard_deck
-
     player = kwargs['player']
     card = kwargs['card']
     game_data['hands'][player].remove(card)
@@ -252,25 +250,8 @@ def discard(game_data, **kwargs):
         game_data['current_turn'].remove(player)
 
         if game_data['bot']:
-            bot = game_data['bot']
-            cut_card = {
-                "value": 0,
-                "suit": "none",
-                "rank": 0,
-                "name": "none"
-            }
-            max_points = -1
-            card_ids = []
-            for set_of_four in permutations(game_data['hands'][game_data['bot']], 4):
-                cards = [deck.get(c) for c in set_of_four]
-                hand = Hand(cards, cut_card)
-                hand_points = hand.calculate_points()
-                if hand_points > max_points:
-                    max_points = hand_points
-                    card_ids = set_of_four
-
-            game_data['hands'][bot] = card_ids
-            game_data['current_turn'].remove(bot)
+            game_data['hands'][game_data['bot']] = bot.discard(game_data['hands'][game_data['bot']])
+            game_data['current_turn'].remove(game_data['bot'])
 
     all_done = all(len(game_data['hands'][player]) == 4 for player in game_data['players'].keys())
     if all_done:
@@ -379,7 +360,7 @@ def play_card(game_data, **kwargs):
                 break
         points_source.append(pair_string) if pair_string else None
 
-        ps = ', '.join(points_source)
+        ps = ', '.join(points_source) if len(points_source) > 0 else None
         return points, ps
 
     points_scored, source = _score_play(card)
@@ -424,10 +405,8 @@ def play_card(game_data, **kwargs):
     else:
         game_data['current_action'] = 'score'
         game_data['current_turn'] = game_data['first_to_score']
-        if game_data['previous_turn']['reason'] is None:
-            game_data['previous_turn']['reason'] = 'last card'
-        else:
-            game_data['previous_turn']['reason'] += ', last card'
+        r = game_data['previous_turn']['reason']
+        game_data['previous_turn']['reason'] = r.replace('go', 'last card')
 
     return game_data
 

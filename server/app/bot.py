@@ -1,6 +1,33 @@
 import random
 
+from itertools import permutations
+
 from app.decks.standard import deck
+
+
+def discard(hand):
+    """
+    Given six cards, return the four to keep
+    """
+    from app.controller import Hand
+
+    cut_card = {
+        "value": 0,
+        "suit": "none",
+        "rank": 0,
+        "name": "none"
+    }
+    max_points = -1
+    card_ids = []
+    for set_of_four in permutations(hand, 4):
+        cards = [deck.get(c) for c in set_of_four]
+        hand = Hand(cards, cut_card)
+        hand_points = hand.calculate_points()
+        if hand_points > max_points:
+            max_points = hand_points
+            card_ids = set_of_four
+
+    return card_ids
 
 
 def play_card(hand, pegging_data):
