@@ -25,6 +25,7 @@ def discard(hand):
         try:
             hand_points = hand.calculate_points()
         except Exception as e:
+            # TODO: why does this happen??
             print('Exception calculating bot points: {}'.format(e))
             print('cards are: {}'.format(cards))
             print('cut card is: {}'.format(cut_card))
