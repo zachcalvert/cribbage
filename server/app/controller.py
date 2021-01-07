@@ -245,6 +245,11 @@ def discard(game_data, **kwargs):
     game_data['hands'][player].remove(card)
     game_data['crib'].append(card)
 
+    if 'second_card' in kwargs and kwargs['second_card']:
+        second_card = kwargs['second_card']
+        game_data['hands'][player].remove(second_card)
+        game_data['crib'].append(second_card)
+
     player_done = len(game_data['hands'][player]) == 4
     if player_done:
         game_data['current_turn'].remove(player)

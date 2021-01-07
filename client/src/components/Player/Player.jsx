@@ -14,6 +14,7 @@ export const Player = (props) => {
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
   const [activeCard, setActiveCard] = useState('');
+  const [activeSecondCard, setActiveSecondCard] = useState(null);
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
@@ -37,6 +38,7 @@ export const Player = (props) => {
 
   const { socket } = useSocket("send_turn", msg => {
     setActiveCard('');
+    setActiveSecondCard('');
     if (msg.players.includes(props.name)) {
       setTurn(true);
       setAction(msg.action);
@@ -91,6 +93,10 @@ export const Player = (props) => {
 
   const handleAction = (e) => {
     boop();
+    if (action === 'discard' && activeSecondCard && playableCards.length <= 5) {
+      socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
+      return;
+    }
     if ((action === 'play' || action ==='discard') && !(activeCard)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
       return;
@@ -98,18 +104,28 @@ export const Player = (props) => {
     if (action === 'next') {
       setPlayableCards([])
     }
-
-    socket.emit(action, { game: game, player: props.name, card: activeCard });
+    socket.emit(action, { game: game, player: props.name, card: activeCard, second_card: activeSecondCard});
     document.activeElement.blur();
   };
 
   const handleCardClick = (e) => {
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
-    card === activeCard ? (
-      setActiveCard('')
-    ) : (
-      setActiveCard(card)
-    )
+    if (activeCard && action === 'discard') {
+      card === activeCard ? (
+        setActiveCard('')
+      ) : (
+        setActiveSecondCard(card)
+      )
+      card === activeSecondCard ? (
+        setActiveSecondCard(null)
+      ) : (console.log('dsf'))
+    } else {
+      card === activeCard ? (
+          setActiveCard('')
+      ) : (
+          setActiveCard(card)
+      )
+    }
   };
 
   const renderPlayedCards = () => {
@@ -141,7 +157,7 @@ export const Player = (props) => {
             <animated.div style={{ height }}>
               <ReactSVG
                 id={playableCards[index]}
-                className={activeCard === playableCards[index] ? 'active-card available-card': 'available-card' }
+                className={activeCard === playableCards[index] || activeSecondCard === playableCards[index] ? 'active-card available-card': 'available-card' }
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
