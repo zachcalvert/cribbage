@@ -7,7 +7,10 @@ import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/cor
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { useModal } from "react-modal-hook";
+import ViewColumnIcon from '@material-ui/icons/ViewColumn';
 import Typography from "@material-ui/core/Typography";
+import {ViewColumn} from "@material-ui/icons";
+import Chip from "@material-ui/core/Chip";
 
 export const Player = (props) => {
   const game = sessionStorage.getItem('game');
@@ -54,8 +57,8 @@ export const Player = (props) => {
     if (msg.action === 'discard') {
       {
         msg.crib === props.name ? (
-            setCribHelpText('It\'s your crib')
-        ) : (setCribHelpText(`It\'s ${msg.crib}\'s crib`))
+            setCribHelpText('yours')
+        ) : (setCribHelpText(`${msg.crib}\'s`))
       }
     } else if (msg.action === 'cut') {
         setCribHelpText(null);
@@ -267,14 +270,18 @@ export const Player = (props) => {
           ) : (
             <span />
           )}
+          {cribHelpText ?
+            <Chip
+              className='crib-help-chip'
+              icon={<ViewColumn />}
+              label={cribHelpText}
+              color={cribHelpText.includes('your') ? 'primary' : 'secondary'}
+              variant="sharp"
+            /> : <span/>
+           }
         </div>
       </div>
       <Divider variant="middle" />
-      {cribHelpText ?
-        <Typography className='crib-help-text' variant="subtitle2" display="block">
-        {cribHelpText}
-        </Typography> : <span/>
-       }
       <div className="player-cards">
         { renderPlayableCards() }
       </div>

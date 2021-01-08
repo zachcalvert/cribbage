@@ -166,6 +166,11 @@ html, body {
     padding: 0;
   }
 
+  .crib-help-chip {
+    margin-left: -32px;
+    font-size: 11px!important;
+  }
+
   .played-cards {
     margin-top: -10px;
   }
