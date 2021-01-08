@@ -7,8 +7,6 @@ import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/cor
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { useModal } from "react-modal-hook";
-import ViewColumnIcon from '@material-ui/icons/ViewColumn';
-import Typography from "@material-ui/core/Typography";
 import {ViewColumn} from "@material-ui/icons";
 import Chip from "@material-ui/core/Chip";
 
@@ -16,13 +14,13 @@ export const Player = (props) => {
   const game = sessionStorage.getItem('game');
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
-  const [activeCard, setActiveCard] = useState('');
-  const [activeSecondCard, setActiveSecondCard] = useState(null);
+  const [activeCards, setActiveCards] = useState([]);
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [peggingTotal, setPeggingTotal] = useState(0);
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [cribHelpText, setCribHelpText] = useState(null);
+  const [scoring, setScoring] = useState(false);
 
   const [jokerSuit, setJokerSuit] = useState(null);
   const [jokerRank, setJokerRank] = useState(null);
@@ -40,8 +38,8 @@ export const Player = (props) => {
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
   const { socket } = useSocket("send_turn", msg => {
-    setActiveCard('');
-    setActiveSecondCard('');
+    setScoring(false);
+    setActiveCards([]);
     if (msg.players.includes(props.name)) {
       setTurn(true);
       setAction(msg.action);
@@ -57,8 +55,8 @@ export const Player = (props) => {
     if (msg.action === 'discard') {
       {
         msg.crib === props.name ? (
-            setCribHelpText('yours')
-        ) : (setCribHelpText(`${msg.crib}\'s`))
+            setCribHelpText('your crib')
+        ) : (setCribHelpText(`${msg.crib}\'s crib`))
       }
     } else if (msg.action === 'cut') {
         setCribHelpText(null);
@@ -90,43 +88,48 @@ export const Player = (props) => {
     }
   });
 
+  useSocket("display_score", msg =>{
+    if (props.name === msg.player) {
+      setScoring(true);
+      setAction(msg.text);
+      setActiveCards(msg.cards);
+    }
+  });
+
   useSocket('invalid_card', msg => {
-    setActiveCard('');
+    setActiveCards([]);
   });
 
   const handleAction = (e) => {
     boop();
-    if (action === 'discard' && activeSecondCard && playableCards.length <= 5) {
+    if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
       return;
     }
-    if ((action === 'play' || action ==='discard') && !(activeCard)) {
+    if ((action === 'play' || action ==='discard') && !(activeCards)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
       return;
     }
     if (action === 'next') {
       setPlayableCards([])
     }
-    socket.emit(action, { game: game, player: props.name, card: activeCard, second_card: activeSecondCard});
+    socket.emit(action, { game: game, player: props.name, card: activeCards[0], second_card: activeCards[1]});
     document.activeElement.blur();
   };
 
   const handleCardClick = (e) => {
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
-    if (activeCard && action === 'discard') {
-      card === activeCard ? (
-        setActiveCard('')
+    if (action === 'discard') {
+      activeCards.includes(card) ? (
+        setActiveCards(activeCards.filter(item => item !== card))
       ) : (
-        setActiveSecondCard(card)
+        setActiveCards([...activeCards, card])
       )
-      card === activeSecondCard ? (
-        setActiveSecondCard(null)
-      ) : (console.log('dsf'))
     } else {
-      card === activeCard ? (
-          setActiveCard('')
+      card === activeCards[0] ? (
+          setActiveCards([])
       ) : (
-          setActiveCard(card)
+          setActiveCards([card])
       )
     }
   };
@@ -160,7 +163,7 @@ export const Player = (props) => {
             <animated.div style={{ height }}>
               <ReactSVG
                 id={playableCards[index]}
-                className={activeCard === playableCards[index] || activeSecondCard === playableCards[index] ? 'active-card available-card': 'available-card' }
+                className={activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
@@ -257,7 +260,7 @@ export const Player = (props) => {
         </div>
         {action ? <div className='col-6'>
           <Fab variant="extended"
-            className="action-button"
+            className={scoring ? "scoring-button action-button" : "action-button"}
             color="primary"
             onClick={handleAction}
             disabled={!turn}>

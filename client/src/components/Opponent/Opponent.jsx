@@ -3,11 +3,14 @@ import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
 import { Divider } from "@material-ui/core";
 import './Opponent.css'
+import Tooltip from "@material-ui/core/Tooltip";
 
 export const Opponent = (props) => {
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);
+  const [scoringCards, setScoringCards] = useState([]);
+  const [scoreDisplay, setScoreDisplay] = useState('');
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
@@ -24,18 +27,26 @@ export const Opponent = (props) => {
     }
   });
 
+  useSocket("display_score", msg =>{
+    if (props.name === msg.player) {
+      setScoreDisplay(msg.text);
+      setScoringCards(msg.cards);
+    }
+  });
+
+
   const renderCards = () => {
     return playableCards.length ? (
-      <span>
-        {playableCards.map((card, index) => (
-          <ReactSVG
-            key={index}
-            wrapper='span'
-            className={playableCards.length > 6 ? 'opponent-card opponent-overlap' : 'opponent-card' }
-            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
-          />
-        ))}
-      </span>
+        <span>
+          {playableCards.map((card, index) => (
+            <ReactSVG
+              key={index}
+              wrapper='span'
+              className={scoringCards.includes(playableCards[index]) ? 'opponent-card active-card': 'opponent-card' }
+              src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+            />
+          ))}
+        </span>
     ) : (
       <span />
     );

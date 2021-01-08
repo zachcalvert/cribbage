@@ -23,3 +23,8 @@
 .opponent-overlap {
   margin: 0 -5px;
 }
+
+.opponent-card {
+  margin-top: 10px;
+  transition: margin 300ms;
+}
