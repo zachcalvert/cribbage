@@ -12,7 +12,8 @@
 
 .opponent svg {
   height: auto;
-  width: 30%;
+  width: 150%;
+  max-width: 90px;
   padding: 0;
   border-radius: 5px;
   border: 1px solid #E0E0E0;
@@ -25,6 +26,16 @@
 }
 
 .opponent-card {
-  margin-top: 10px;
+  height: 100%;
+}
+
+.active-opponent-card svg {
+  margin-top: 15px;
   transition: margin 300ms;
+  box-shadow: 0 8px 6px -6px black;
+  border: 1px solid green;
+}
+
+.opponent-action-button {
+  padding-top: 10px;
 }

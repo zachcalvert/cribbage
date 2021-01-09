@@ -29,12 +29,10 @@
   margin-top: 15px;
 }
 
-.active-card {
-  margin-top: -10px;
-  box-shadow: 0 8px 6px -6px black;
-  height: fit-content;
-}
-
 .overlap {
   margin: 0 -40px;
+}
+
+.scoring-cut {
+  bottom: 0px;
 }

@@ -81,6 +81,12 @@
   transition: margin 300ms;
 }
 
+.active-card {
+  margin-top: -15px;
+  box-shadow: 0 8px 6px -6px black;
+  height: fit-content;
+}
+
 .ReactModal__Content {
   text-align: center;
 }

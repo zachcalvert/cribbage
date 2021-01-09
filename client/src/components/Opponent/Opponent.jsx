@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
-import { Divider } from "@material-ui/core";
+import {Divider, Fab} from "@material-ui/core";
 import './Opponent.css'
-import Tooltip from "@material-ui/core/Tooltip";
+import {animated, useTrail} from "react-spring";
 
 export const Opponent = (props) => {
   const [playableCards, setPlayableCards] = useState([]);
@@ -11,6 +11,16 @@ export const Opponent = (props) => {
   const [showCards, setShowCards] = useState(false);
   const [scoringCards, setScoringCards] = useState([]);
   const [scoreDisplay, setScoreDisplay] = useState('');
+
+  // dealt card animation
+  const config = { mass: 5, tension: 2000, friction: 100 }
+  const trail = useTrail(playableCards.length, {
+    config,
+    opacity: playableCards ? 1 : 1,
+    x: playableCards ? 0 : 20,
+    height: playableCards ? 20 : 0,
+    from: { opacity: 1, x: 20, height: 0 },
+  });
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
@@ -27,26 +37,37 @@ export const Opponent = (props) => {
     }
   });
 
-  useSocket("display_score", msg =>{
+  useSocket("display_score", msg => {
     if (props.name === msg.player) {
       setScoreDisplay(msg.text);
       setScoringCards(msg.cards);
     }
   });
 
+  useSocket('send_turn', msg => {
+    // setScoringCards([]);
+  });
 
   const renderCards = () => {
     return playableCards.length ? (
-        <span>
-          {playableCards.map((card, index) => (
-            <ReactSVG
-              key={index}
-              wrapper='span'
-              className={scoringCards.includes(playableCards[index]) ? 'opponent-card active-card': 'opponent-card' }
-              src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
-            />
-          ))}
-        </span>
+      <div style={{'display': 'inline-flex'}}>
+        {trail.map(({ x, height, ...rest }, index) => (
+          <animated.div
+            key={playableCards[index]}
+            className="trails-text"
+            style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
+            <animated.div style={{ height }}>
+              <ReactSVG
+                id={playableCards[index]}
+                className={scoringCards.includes(playableCards[index]) ? 'active-opponent-card opponent-card': 'opponent-card' }
+                key={index}
+                wrapper='span'
+                src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+              />
+            </animated.div>
+          </animated.div>
+        ))}
+      </div>
     ) : (
       <span />
     );
@@ -76,6 +97,16 @@ export const Opponent = (props) => {
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }
+      {scoringCards ?
+        (
+          <>
+          <br />
+          <Fab variant="extended" className="opponent-action-button">
+            { scoreDisplay }
+          </Fab>
+          </>
+        ) : (<span/>)
+      }
     </>
   );
 }
