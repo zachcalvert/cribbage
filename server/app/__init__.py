@@ -67,6 +67,18 @@ class CribbageNamespace(Namespace):
             emit('display_score', {'player': player, 'text': four, 'cards': card_ids}, room=game['name'])
             time.sleep(1.5)
 
+        for run in game['breakdown']['runs']:
+            emit('display_score', {'player': player, 'text': f'run of {len(run)}', 'cards': run}, room=game['name'])
+            time.sleep(1.5)
+
+        for flush in game['breakdown']['flush']:
+            emit('display_score', {'player': player, 'text': f'{len(flush)} card flush', 'cards': flush}, room=game['name'])
+            time.sleep(1.5)
+
+        if game['breakdown']['nobs']:
+            emit('display_score', {'player': player, 'text': f'nobs', 'cards': game['breakdown']['nobs']}, room=game['name'])
+            time.sleep(1.5)
+
         self.dispatch_points(game)
 
     def bot_move(self, game):

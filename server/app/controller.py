@@ -665,7 +665,10 @@ class Hand:
             'fifteens': {},
             'pairs': {},
             'threes': {},
-            'fours': {}
+            'fours': {},
+            'runs': [],
+            'flush': [],
+            'nobs': []
         }
 
     def __str__(self):
@@ -720,11 +723,12 @@ class Hand:
 
         self.pairs = [{name: ids} for name, ids in counts.items() if len(ids) == 2]
         self.threes = [{name: ids} for name, ids in counts.items() if len(ids) == 3]
-        self.fours = [{name: ids} for name, ids in counts.items() if len(ids) == 3]
+        self.fours = [{name: ids} for name, ids in counts.items() if len(ids) == 4]
         return self.pairs != [] or self.threes != [] or self.fours != []
 
     def _has_runs(self):
-        ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
+        cards = self.cards + [self.cut_card]
+        ranks = sorted([card["rank"] for card in cards])
         distinct_ranks = sorted(list(set(ranks)))
 
         groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
@@ -735,11 +739,13 @@ class Hand:
                     if ranks.count(card) > 1:
                         multiples = True
                         for i in range(0,ranks.count(card)):
-                            self.runs.append(group)
+                            card_ids = [next(card for card in cards if card["rank"] == rank) for rank in group]
+                            self.runs.append(card_ids)
                 if not multiples:
-                    self.runs.append(group)
-                return True
-        return False
+                    card_ids = [next(card for card in cards if card["rank"] == rank) for rank in group]
+                    self.runs.append(card_ids)
+
+        return self.runs != []
 
     def _has_flush(self):
 
@@ -762,10 +768,9 @@ class Hand:
 
     def _has_nobs(self):
         jacks = [card for card in self.cards if card["name"] == 'jack']
-        if jacks:
-            potential_nobs = [jack["suit"] for jack in jacks]
-            if self.cut_card["suit"] in potential_nobs:
-                self.nobs = True
+        for jack in jacks:
+            if self.cut_card['suit'] == jack['suit']:
+                self.nobs = [jack['id'], self.cut_card['id']]
                 return True
         return False
 
@@ -783,7 +788,7 @@ class Hand:
             for pair in self.pairs:
                 rank = list(pair.keys())[0]
                 ids = list(pair.values())[0]
-                self.breakdown['pairs'][f'a pair of {rank}s'] = ids
+                self.breakdown['pairs'][f'pair of {rank}s'] = ids
 
                 points += 2
                 self.messages.append('a pair of {}s for {}'.format(pair, points))
@@ -807,11 +812,18 @@ class Hand:
                 points += len(run)
                 message += 'a run of {} for {} ({})'.format(len(run), points, run)
                 self.messages.append('a run of {} for {}'.format(len(run), points))
+                self.breakdown['runs'].append([card['id'] for card in run])
+                print(run)
 
         if self._has_flush():
             points += self.flush_points
             message += 'four {} for {}'.format(self.cards[0]['suit'], points)
             self.messages.append('{} {} for {}'.format(self.flush_points, self.cards[0]['suit'], points))
+
+            if self.flush_points == 4:
+                self.breakdown['flush'] = [card['id'] for card in self.cards]
+            else:
+                self.breakdown['flush'] = [card['id'] for card in self.cards] + [self.cut_card['id']]
 
         if self._has_nobs():
             points += 1
@@ -819,13 +831,13 @@ class Hand:
             message += msg
             self.messages.append(msg)
 
+            self.breakdown['nobs'] = self.nobs
+
         self.points = points
         if points == 2 and self._has_fifteens():
             self.messages = ['Fifteen for 2 and the rest won\'t do!']
         # else:
         #     message = ', '.join(self.messages[:-1]) + ' and ' + self.messages[-1]
-        print(f'messages: {self.messages}')
-        print(f'breakdown: {self.breakdown}')
         return points, self.breakdown
 
 
@@ -842,7 +854,7 @@ class Hand:
 #     },
 #     'threes': {},
 #     'fours': {},
-#     'runs': {['card_id', 'card_id', 'card_id'], ['card_id', 'card_id', 'card_id']},
+#     'runs': [['card_id', 'card_id', 'card_id'], ['card_id', 'card_id', 'card_id']],
 #     'flush': [],
 #     'nobs': []
 # }
