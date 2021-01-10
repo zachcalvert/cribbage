@@ -4,7 +4,6 @@ import os
 import random
 import redis
 
-from collections import Counter
 from itertools import chain, combinations
 import more_itertools as mit
 
@@ -278,6 +277,7 @@ def discard(game_data, **kwargs):
 @game_interaction
 def cut_deck(game_data, **kwargs):
     game_data['cut_card'] = game_data['deck'].pop()
+
     while game_data['cut_card'] in ['joker1', 'joker2']:
         game_data['cut_card'] = game_data['deck'].pop()
 
@@ -728,24 +728,14 @@ class Hand:
 
     def _has_runs(self):
         cards = self.cards + [self.cut_card]
-        ranks = sorted([card["rank"] for card in cards])
-        distinct_ranks = sorted(list(set(ranks)))
-
-        groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
-        for group in groups:
-            if len(group) > 2:
-                multiples = False
-                for card in group:
-                    if ranks.count(card) > 1:
-                        multiples = True
-                        dupes = [c['id'] for c in cards if c['rank'] == card]
-                        for i in range(0,ranks.count(card)):
-                            card_ids = [c['id'] for c in cards if c['rank'] in group and c['rank'] != card]
-                            card_ids.append(dupes.pop())
-                            self.runs.append(card_ids)
-                if not multiples:
-                    card_ids = [next(card['id'] for card in cards if card["rank"] == rank) for rank in group]
-                    self.runs.append(card_ids)
+        for vector_len in [5, 4, 3]:
+            for vec in combinations(self.cards + [self.cut_card], vector_len):
+                vals = [card['rank'] for card in vec]
+                run = [n + min(vals) for n in range(vector_len)]
+                if sorted(vals) == run:
+                    run = [card['id'] for card in vec]
+                    self.runs.append(run)
+                    self.points += vector_len
 
         return self.runs != []
 
