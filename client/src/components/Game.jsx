@@ -11,6 +11,7 @@ import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
 import {useModal} from "react-modal-hook";
+import Typography from "@material-ui/core/Typography";
 
 const randomWords = require('random-words');
 
@@ -198,6 +199,9 @@ export const Game = ()  => {
             type="submit">
             Play
          </Fab>
+        <Typography className='webmaster-info' variant='caption'>
+          Suggestions welcome, zach@cribbage.live
+        </Typography>
       </form>
     </div>
   );

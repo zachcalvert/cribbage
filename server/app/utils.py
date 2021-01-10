@@ -63,10 +63,10 @@ def play_or_pass(card_values, pegging_total):
 
 
 SUIT_MAP = {
-    'clubs': '♣',
-    'diamonds': "\u2666",
-    'hearts': "\u2665",
-    'spades': '♠',
+    'clubs': '♣️',
+    'diamonds': "♦️",
+    'hearts': "♥️",
+    'spades': '♠️',
 }
 
 

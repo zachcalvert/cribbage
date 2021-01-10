@@ -57,7 +57,7 @@ class CribbageNamespace(Namespace):
         emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=game['name'])
         player = game["previous_turn"]["player"]
         hand = 'crib' if 'crib' in game['previous_turn']['action'] else 'hand'
-        short_hand = ' '.join([utils.card_short_text_from_id(card_id) for card_id in game['hands'][player]])
+        short_hand = ' '.join([utils.card_short_text_from_id(card_id) for card_id in game['hands'][player] + [game['cut_card']]])
         message = f'Scoring {game["previous_turn"]["player"]}\'s {hand} ({short_hand})'
         self.announce(message, room=game['name'])
 
@@ -84,7 +84,7 @@ class CribbageNamespace(Namespace):
             self.announce_hand_score(game['name'], player, game['breakdown']['nobs'], 'nobs')
 
         if game['previous_turn']['points'] == 0:
-            self.award_points(player, hand, 0, game['players'][player], game['name'])
+            self.award_points(player, f'from {hand}', 0, game['players'][player], game['name'])
         self.dispatch_points(game)
 
     def bot_move(self, game):
@@ -119,7 +119,7 @@ class CribbageNamespace(Namespace):
             self.score_hand(game)
 
         elif action == 'crib':
-            time.sleep(2)
+            time.sleep(1)
             game = controller.score_crib({'game': game['name'], 'player': player})
             self.score_hand(game)
 

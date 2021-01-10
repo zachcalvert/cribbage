@@ -50,24 +50,17 @@ export const Opponent = (props) => {
 
   const renderCards = () => {
     return playableCards.length ? (
-      <div style={{'display': 'inline-flex'}}>
-        {trail.map(({ x, height, ...rest }, index) => (
-          <animated.div
-            key={playableCards[index]}
-            className="trails-text"
-            style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
-            <animated.div style={{ height }}>
-              <ReactSVG
-                id={playableCards[index]}
-                className={scoringCards.includes(playableCards[index]) ? 'active-opponent-card opponent-card': 'opponent-card' }
-                key={index}
-                wrapper='span'
-                src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
-              />
-            </animated.div>
-          </animated.div>
+      <span>
+        {playableCards.map((card, index) => (
+          <ReactSVG
+            key={index}
+            wrapper='span'
+            className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
+            ${showCards ? "spaced-opponent-card" : ""}`}
+            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+          />
         ))}
-      </div>
+      </span>
     ) : (
       <span />
     );
@@ -93,22 +86,12 @@ export const Opponent = (props) => {
 
   return (
     <>
-      <span>{ props.name }</span>
+      {scoringCards.length ? (
+          <span className="opponent-score-display">{ scoreDisplay }</span>
+          ) : <span>{props.name}</span> }
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }
-      <br />
-      {scoringCards.length ?
-        (
-          <>
-          <br />
-          <Divider className='opponent-divider' variant="middle" />
-          <Fab variant="extended" className="opponent-action-button">
-            { scoreDisplay }
-          </Fab>
-          </>
-        ) : (<span/>)
-      }
     </>
   );
 }

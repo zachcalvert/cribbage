@@ -93,6 +93,14 @@ html, body {
   height: auto;
 }
 
+.webmaster-info {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  -webkit-transform: translateX(-50%);
+  transform: translateX(-50%)
+}
+
 @media only screen and (max-width: 960px) {
   .game {
     height: 100%;

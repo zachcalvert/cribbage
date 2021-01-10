@@ -12,13 +12,11 @@
 
 .opponent svg {
   height: auto;
-  width: 150%;
-  max-width: 90px;
+  width: 30%;
   padding: 0;
   border-radius: 5px;
   border: 1px solid #E0E0E0;
   margin: 0 -10%;
-  transition: margin 300ms;
   pointer-events: none;
 }
 
@@ -26,18 +24,17 @@
   margin: 0 -5px;
 }
 
-.opponent-card {
-  height: 100%;
+.spaced-opponent-card svg {
+  margin: 0;
+  width: 25%;
 }
 
 .active-opponent-card svg {
-  margin-top: 15px;
-  box-shadow: 0 8px 6px -6px black;
+  /*margin-bottom: -20px;*/
+  /*transition: margin 700ms;*/
   border: 1px solid green;
 }
 
-.opponent-action-button {
-  color: white!important;
-  background-color: green!important;
-  margin-top: 50px!important;
+.opponent-score-display {
+  color: green!important;
 }

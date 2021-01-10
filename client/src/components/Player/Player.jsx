@@ -104,6 +104,7 @@ export const Player = (props) => {
     boop();
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
+      setActiveCards([]);
       return;
     }
     if ((action === 'play' || action ==='discard') && !(activeCards)) {
@@ -163,7 +164,7 @@ export const Player = (props) => {
             <animated.div style={{ height }}>
               <ReactSVG
                 id={playableCards[index]}
-                className={activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }
+                className={`${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }`}
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
