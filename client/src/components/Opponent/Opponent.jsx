@@ -45,7 +45,7 @@ export const Opponent = (props) => {
   });
 
   useSocket('send_turn', msg => {
-    // setScoringCards([]);
+    setScoringCards([]);
   });
 
   const renderCards = () => {
@@ -97,10 +97,12 @@ export const Opponent = (props) => {
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }
-      {scoringCards ?
+      <br />
+      {scoringCards.length ?
         (
           <>
           <br />
+          <Divider className='opponent-divider' variant="middle" />
           <Fab variant="extended" className="opponent-action-button">
             { scoreDisplay }
           </Fab>

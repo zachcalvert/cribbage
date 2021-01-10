@@ -18,6 +18,7 @@
   border-radius: 5px;
   border: 1px solid #E0E0E0;
   margin: 0 -10%;
+  transition: margin 300ms;
   pointer-events: none;
 }
 
@@ -31,11 +32,12 @@
 
 .active-opponent-card svg {
   margin-top: 15px;
-  transition: margin 300ms;
   box-shadow: 0 8px 6px -6px black;
   border: 1px solid green;
 }
 
 .opponent-action-button {
-  padding-top: 10px;
+  color: white!important;
+  background-color: green!important;
+  margin-top: 50px!important;
 }

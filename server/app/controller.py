@@ -738,11 +738,13 @@ class Hand:
                 for card in group:
                     if ranks.count(card) > 1:
                         multiples = True
+                        dupes = [c['id'] for c in cards if c['rank'] == card]
                         for i in range(0,ranks.count(card)):
-                            card_ids = [next(card for card in cards if card["rank"] == rank) for rank in group]
+                            card_ids = [c['id'] for c in cards if c['rank'] in group and c['rank'] != card]
+                            card_ids.append(dupes.pop())
                             self.runs.append(card_ids)
                 if not multiples:
-                    card_ids = [next(card for card in cards if card["rank"] == rank) for rank in group]
+                    card_ids = [next(card['id'] for card in cards if card["rank"] == rank) for rank in group]
                     self.runs.append(card_ids)
 
         return self.runs != []
@@ -776,11 +778,9 @@ class Hand:
 
     def calculate_points(self):
         points = 0
-        message = ''
 
         if self._has_fifteens():
             for fifteen, cards in self.fifteens.items():
-                message += 'Fifteen {} ({})\n'.format(fifteen, cards)
                 points += 2
                 self.breakdown['fifteens'][f'fifteen {fifteen}'] = cards
 
@@ -789,36 +789,27 @@ class Hand:
                 rank = list(pair.keys())[0]
                 ids = list(pair.values())[0]
                 self.breakdown['pairs'][f'pair of {rank}s'] = ids
-
                 points += 2
-                self.messages.append('a pair of {}s for {}'.format(pair, points))
 
             for three in self.threes:
                 rank = list(three.keys())[0]
                 ids = list(three.values())[0]
                 self.breakdown['threes'][f'three {rank}s'] = ids
-                points += 3
-                self.messages.append('three {}s for {}'.format(three, points))
+                points += 6
 
             for four in self.fours:
                 rank = list(four.keys())[0]
                 ids = list(four.values())[0]
                 self.breakdown['fours'][f'four {rank}s'] = ids
-                points += 4
-                self.messages.append('four {}s for {}'.format(four, points))
+                points += 12
 
         if self._has_runs():
             for run in self.runs:
                 points += len(run)
-                message += 'a run of {} for {} ({})'.format(len(run), points, run)
-                self.messages.append('a run of {} for {}'.format(len(run), points))
-                self.breakdown['runs'].append([card['id'] for card in run])
-                print(run)
+                self.breakdown['runs'].append(run)
 
         if self._has_flush():
             points += self.flush_points
-            message += 'four {} for {}'.format(self.cards[0]['suit'], points)
-            self.messages.append('{} {} for {}'.format(self.flush_points, self.cards[0]['suit'], points))
 
             if self.flush_points == 4:
                 self.breakdown['flush'] = [card['id'] for card in self.cards]
@@ -827,17 +818,9 @@ class Hand:
 
         if self._has_nobs():
             points += 1
-            msg = 'Nobs for {}'.format(points)
-            message += msg
-            self.messages.append(msg)
-
             self.breakdown['nobs'] = self.nobs
 
         self.points = points
-        if points == 2 and self._has_fifteens():
-            self.messages = ['Fifteen for 2 and the rest won\'t do!']
-        # else:
-        #     message = ', '.join(self.messages[:-1]) + ' and ' + self.messages[-1]
         return points, self.breakdown
 
 

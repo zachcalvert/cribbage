@@ -34,5 +34,6 @@
 }
 
 .scoring-cut {
-  bottom: 0px;
+  bottom: -10px;
+  transform: translateY(10px);
 }
