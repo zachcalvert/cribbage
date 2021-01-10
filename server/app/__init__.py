@@ -77,9 +77,9 @@ class CribbageNamespace(Namespace):
         for run in game['breakdown']['runs']:
             self.announce_hand_score(game['name'], player, run, f'run of {len(run)}')
 
-        for flush in game['breakdown']['flush']:
-            flush_text = f'{len(flush)}'
-            self.announce_hand_score(game['name'], player, flush, flush_text)
+        if game['breakdown']['flush']:
+            flush_text = f'{len(game["breakdown"]["flush"])} card flush'
+            self.announce_hand_score(game['name'], player, game['breakdown']['flush'], flush_text)
 
         if game['breakdown']['nobs']:
             self.announce_hand_score(game['name'], player, game['breakdown']['nobs'], 'nobs')

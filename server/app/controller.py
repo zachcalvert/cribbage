@@ -727,15 +727,19 @@ class Hand:
         return self.pairs != [] or self.threes != [] or self.fours != []
 
     def _has_runs(self):
-        cards = self.cards + [self.cut_card]
         for vector_len in [5, 4, 3]:
             for vec in combinations(self.cards + [self.cut_card], vector_len):
                 vals = [card['rank'] for card in vec]
                 run = [n + min(vals) for n in range(vector_len)]
                 if sorted(vals) == run:
                     run = [card['id'] for card in vec]
-                    self.runs.append(run)
-                    self.points += vector_len
+                    add = True
+                    for r in self.runs:
+                        if all(card in r for card in run):
+                            add = False
+                    if add:
+                        self.runs.append(run)
+                        self.points += vector_len
 
         return self.runs != []
 
