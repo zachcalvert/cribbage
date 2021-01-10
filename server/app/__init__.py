@@ -58,7 +58,7 @@ class CribbageNamespace(Namespace):
         player = game["previous_turn"]["player"]
         hand = 'crib' if 'crib' in game['previous_turn']['action'] else 'hand'
         short_hand = ' '.join([utils.card_short_text_from_id(card_id) for card_id in game['hands'][player] + [game['cut_card']]])
-        message = f'Scoring {game["previous_turn"]["player"]}\'s {hand} ({short_hand})'
+        message = f'Scoring {game["previous_turn"]["player"]}\'s {hand}: {short_hand}'
         time.sleep(1)
         self.announce(message, room=game['name'])
 
