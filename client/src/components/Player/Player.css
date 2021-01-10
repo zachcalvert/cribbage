@@ -2,6 +2,10 @@
   margin-bottom: 10px!important;
 }
 
+.scoring-button {
+  background-color: green!important;
+}
+
 .player {
   display: inline-block;
   width: 100%;
@@ -74,12 +78,18 @@
   height: 100%;
   display: inline-block;
   max-width: 120px;
+  transition: margin 300ms;
+}
+
+.active-card {
+  margin-top: -15px;
+  box-shadow: 0 8px 6px -6px black;
+  height: fit-content;
 }
 
 .ReactModal__Content {
   text-align: center;
 }
-
 
 .selected-rank {
   border: 2px solid blue;

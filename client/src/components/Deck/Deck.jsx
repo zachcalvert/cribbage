@@ -35,6 +35,8 @@ const defaultDeck = [
 
 export const Deck = () => {
   const [cards, setCards] = useState(defaultDeck);
+  const [cutCard, setCutCard] = useState(null);
+  const [scoring, setScoring] = useState(false);
 
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
   const [props, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
@@ -56,11 +58,21 @@ export const Deck = () => {
 
   useSocket("cut_card", msg => {
     setCards([...cards, '/cards/' + msg.card + '.svg']);
+    setCutCard(msg.card);
   });
 
   useSocket("send_turn", msg => {
+    setScoring(false);
     if (msg.action === 'deal') {
       setCards(defaultDeck);
+    }
+  });
+
+  useSocket('display_score', msg => {
+    if ( msg.cards.includes(cutCard)) {
+      setScoring(true);
+    } else {
+      setScoring(false);
     }
   });
 
@@ -68,7 +80,7 @@ export const Deck = () => {
   return props.map(({ x, y, rot, scale }, i) => (
     <animated.div className="animated-cards-container" key={i} style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
-      <animated.div className="animated-card" {...bind(i)} style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }} />
+      <animated.div className={scoring && i === cards.length-1 ? "scoring-cut animated-card" : "animated-card"} {...bind(i)} style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }} />
     </animated.div>
   ))
 }

@@ -4,6 +4,7 @@ import os
 import random
 import redis
 
+from collections import Counter
 from itertools import chain, combinations
 import more_itertools as mit
 
@@ -138,6 +139,7 @@ def start_game(game_data, **kwargs):
         },
         'rematch': False,
         'scored_hands': [],
+        'scoring_summary': [],
         'scoring_stats': { player: {'a_play': 0, 'b_play': 0, 'c_play': 0} for player in players },
         'winning_score': int(winning_score)
     })
@@ -488,10 +490,11 @@ def score_hand(game_data, **kwargs):
     cards = [deck.get(c) for c in player_cards]
     cut_card = deck.get(game_data['cut_card'])
     hand = Hand(cards, cut_card)
-    hand_points = hand.calculate_points()
+    hand_points, breakdown = hand.calculate_points()
 
     game_data['players'][player] += hand_points
     game_data['scored_hands'].append(player)
+    game_data['breakdown'] = breakdown
     game_data['previous_turn'] = {
         'action': 'from hand',
         'points': hand_points,
@@ -514,19 +517,19 @@ def score_crib(game_data, **kwargs):
     deck = jokers_deck if game_data['jokers'] else standard_deck
 
     player = kwargs['player']
-    crib_card_ids = game_data['crib']
-    cards = [deck.get(c) for c in crib_card_ids]
+    crib = [deck.get(c) for c in game_data['crib']]
     cut_card = deck.get(game_data['cut_card'])
-    crib = Hand(cards, cut_card, is_crib=True)
-    crib_points = crib.calculate_points()
+    crib = Hand(crib, cut_card, is_crib=True)
+    crib_points, breakdown = crib.calculate_points()
 
     game_data['crib'] = _sort_cards(game_data, game_data['crib'])
     game_data['players'][player] += crib_points
+    game_data['breakdown'] = breakdown
     game_data['previous_turn'] = {
         'action': 'from crib',
         'points': crib_points,
         'player': player,
-        'reason': 'from crib'
+        'reason': None
     }
     game_data['hands'] = game_data['hands'].fromkeys(game_data['hands'], [])
     game_data['hands'][game_data['dealer']] = game_data['crib']
@@ -657,6 +660,16 @@ class Hand:
         self.flush_points = 0
         self.nobs = False
         self.points = 0
+        self.messages = []
+        self.breakdown = {
+            'fifteens': {},
+            'pairs': {},
+            'threes': {},
+            'fours': {},
+            'runs': [],
+            'flush': [],
+            'nobs': []
+        }
 
     def __str__(self):
         s = ''
@@ -693,25 +706,29 @@ class Hand:
         Returns the number of points from 15s.
         """
         counter = 2
-        values = sorted([card["value"] for card in self.cards] + [self.cut_card["value"]])
-        all_combos = self._power_hand(values)
+        cards = self.cards + [self.cut_card]
+        all_combos = self._power_hand(cards)
         for combo in all_combos:
-            if self._sum_cards(combo) == 15:
-                self.fifteens[counter] = combo
+            if sum([card['value'] for card in combo]) == 15:
+                self.fifteens[counter] = [card['id'] for card in combo]
                 counter += 2
 
         return self.fifteens != {}
 
     def _has_pairs(self):
-        ranks = [card["rank"] for card in self.cards] + [self.cut_card["rank"]]
-        pairs = {rank: ranks.count(rank) for rank in ranks if ranks.count(rank) > 1}
-        if pairs:
-            self.pairs = pairs
-            return True
-        return False
+        cards = self.cards + [self.cut_card]
+        counts = {card['name']: [] for card in cards}
+        for card in cards:
+            counts[card['name']].append(card['id'])
+
+        self.pairs = [{name: ids} for name, ids in counts.items() if len(ids) == 2]
+        self.threes = [{name: ids} for name, ids in counts.items() if len(ids) == 3]
+        self.fours = [{name: ids} for name, ids in counts.items() if len(ids) == 4]
+        return self.pairs != [] or self.threes != [] or self.fours != []
 
     def _has_runs(self):
-        ranks = sorted([card["rank"] for card in self.cards] + [self.cut_card["rank"]])
+        cards = self.cards + [self.cut_card]
+        ranks = sorted([card["rank"] for card in cards])
         distinct_ranks = sorted(list(set(ranks)))
 
         groups = [list(group) for group in mit.consecutive_groups(distinct_ranks)]
@@ -721,12 +738,16 @@ class Hand:
                 for card in group:
                     if ranks.count(card) > 1:
                         multiples = True
+                        dupes = [c['id'] for c in cards if c['rank'] == card]
                         for i in range(0,ranks.count(card)):
-                            self.runs.append(group)
+                            card_ids = [c['id'] for c in cards if c['rank'] in group and c['rank'] != card]
+                            card_ids.append(dupes.pop())
+                            self.runs.append(card_ids)
                 if not multiples:
-                    self.runs.append(group)
-                return True
-        return False
+                    card_ids = [next(card['id'] for card in cards if card["rank"] == rank) for rank in group]
+                    self.runs.append(card_ids)
+
+        return self.runs != []
 
     def _has_flush(self):
 
@@ -749,50 +770,74 @@ class Hand:
 
     def _has_nobs(self):
         jacks = [card for card in self.cards if card["name"] == 'jack']
-        if jacks:
-            potential_nobs = [jack["suit"] for jack in jacks]
-            if self.cut_card["suit"] in potential_nobs:
-                self.nobs = True
+        for jack in jacks:
+            if self.cut_card['suit'] == jack['suit']:
+                self.nobs = [jack['id'], self.cut_card['id']]
                 return True
         return False
 
     def calculate_points(self):
         points = 0
-        message = ''
 
         if self._has_fifteens():
             for fifteen, cards in self.fifteens.items():
-                message += 'Fifteen {} ({})'.format(fifteen, cards)
                 points += 2
+                self.breakdown['fifteens'][f'fifteen {fifteen}'] = cards
 
         if self._has_pairs():
             for pair in self.pairs:
-                count = self.pairs.get(pair)
-                if count == 4:
-                    points += 12
-                    message += 'four {}s for {}'.format(pair, points)
-                elif count == 3:
-                    points += 6
-                    message += 'three {}s for {}'.format(pair, points)
-                else:
-                    points += 2
-                    message += 'a pair of {}s for {}'.format(pair, points)
+                rank = list(pair.keys())[0]
+                ids = list(pair.values())[0]
+                self.breakdown['pairs'][f'pair of {rank}s'] = ids
+                points += 2
+
+            for three in self.threes:
+                rank = list(three.keys())[0]
+                ids = list(three.values())[0]
+                self.breakdown['threes'][f'three {rank}s'] = ids
+                points += 6
+
+            for four in self.fours:
+                rank = list(four.keys())[0]
+                ids = list(four.values())[0]
+                self.breakdown['fours'][f'four {rank}s'] = ids
+                points += 12
 
         if self._has_runs():
             for run in self.runs:
                 points += len(run)
-                message += 'a run of {} for {} ({})'.format(len(run), points, run)
+                self.breakdown['runs'].append(run)
 
         if self._has_flush():
             points += self.flush_points
-            message += 'four {} for {}'.format(self.cards[0]['suit'], points)
+
+            if self.flush_points == 4:
+                self.breakdown['flush'] = [card['id'] for card in self.cards]
+            else:
+                self.breakdown['flush'] = [card['id'] for card in self.cards] + [self.cut_card['id']]
 
         if self._has_nobs():
             points += 1
-            if points > 1:
-                message += 'And nobs for {}'.format(points)
-            else:
-                message += 'Nobs for one'
+            self.breakdown['nobs'] = self.nobs
 
         self.points = points
-        return points
+        return points, self.breakdown
+
+
+# {
+#     'fifteens': {
+#         'two': ['card_id', 'card_id'],
+#         'four': ['card_id', 'card_id'],
+#         'six': ['card_id', 'card_id'],
+#         'eight': ['card_id', 'card_id'],
+#     },
+#     'pairs': {
+#         'sevens': ['card_id', 'card_id'],
+#         'eights': ['card_id', 'card_id'],
+#     },
+#     'threes': {},
+#     'fours': {},
+#     'runs': [['card_id', 'card_id', 'card_id'], ['card_id', 'card_id', 'card_id']],
+#     'flush': [],
+#     'nobs': []
+# }

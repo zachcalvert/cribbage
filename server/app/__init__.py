@@ -11,6 +11,7 @@ from threading import Lock
 
 from . import controller
 from . import bot
+from . import utils
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live'])
@@ -41,8 +42,51 @@ class CribbageNamespace(Namespace):
             p = game['previous_turn']['player']
             self.award_points(t['player'], t['reason'] or t['action'], t['points'], game['players'][p], game['name'])
 
+    def announce_hand_score(self, game, player, card_ids, text):
+        msg = f'{text} ('
+        msg += " ".join([utils.card_short_text_from_id(card_id) for card_id in card_ids])
+        msg += ')'
+        emit('display_score', {'player': player, 'text': text, 'cards': card_ids}, room=game)
+        self.announce(msg, room=game)
+        time.sleep(1.5)
+
     def play_card(self, player, card, game, total=None):
         emit('card_played', {'player': player, 'card': card, 'pegging_total': total}, room=game)
+
+    def score_hand(self, game):
+        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=game['name'])
+        player = game["previous_turn"]["player"]
+        hand = 'crib' if 'crib' in game['previous_turn']['action'] else 'hand'
+        short_hand = ' '.join([utils.card_short_text_from_id(card_id) for card_id in game['hands'][player] + [game['cut_card']]])
+        message = f'Scoring {game["previous_turn"]["player"]}\'s {hand} ({short_hand})'
+        time.sleep(1)
+        self.announce(message, room=game['name'])
+
+        for fifteen, card_ids in game['breakdown']['fifteens'].items():
+            self.announce_hand_score(game['name'], player, card_ids, fifteen)
+
+        for pair, card_ids in game['breakdown']['pairs'].items():
+            self.announce_hand_score(game['name'], player, card_ids, pair)
+
+        for three, card_ids in game['breakdown']['threes'].items():
+            self.announce_hand_score(game['name'], player, card_ids, three)
+
+        for four, card_ids in game['breakdown']['fours'].items():
+            self.announce_hand_score(game['name'], player, card_ids, four)
+
+        for run in game['breakdown']['runs']:
+            self.announce_hand_score(game['name'], player, run, f'run of {len(run)}')
+
+        for flush in game['breakdown']['flush']:
+            flush_text = f'{len(flush)}'
+            self.announce_hand_score(game['name'], player, flush, flush_text)
+
+        if game['breakdown']['nobs']:
+            self.announce_hand_score(game['name'], player, game['breakdown']['nobs'], 'nobs')
+
+        if game['previous_turn']['points'] == 0:
+            self.award_points(player, f'from {hand}', 0, game['players'][player], game['name'])
+        self.dispatch_points(game)
 
     def bot_move(self, game):
         action = game['current_action']
@@ -73,14 +117,12 @@ class CribbageNamespace(Namespace):
 
         elif action == 'score':
             game = controller.score_hand({'game': game['name'], 'player': player})
-            emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=game['name'])
-            self.dispatch_points(game)
+            self.score_hand(game)
 
         elif action == 'crib':
-            time.sleep(2)
+            time.sleep(1)
             game = controller.score_crib({'game': game['name'], 'player': player})
-            emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=game['name'])
-            self.dispatch_points(game)
+            self.score_hand(game)
 
         return game
 
@@ -185,8 +227,7 @@ class CribbageNamespace(Namespace):
 
     def on_score(self, msg):
         game = controller.score_hand(msg)
-        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=game['name'])
-        self.dispatch_points(game)
+        self.score_hand(game)
 
         while game['current_turn'] == game['bot']:
             game = self.bot_move(game)
@@ -195,8 +236,7 @@ class CribbageNamespace(Namespace):
 
     def on_crib(self, msg):
         game = controller.score_crib(msg)
-        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
-        self.dispatch_points(game)
+        self.score_hand(game)
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
     def on_next(self, msg):

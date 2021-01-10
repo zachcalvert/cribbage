@@ -23,3 +23,18 @@
 .opponent-overlap {
   margin: 0 -5px;
 }
+
+.spaced-opponent-card svg {
+  margin: 0;
+  width: 25%;
+}
+
+.active-opponent-card svg {
+  /*margin-bottom: -20px;*/
+  /*transition: margin 700ms;*/
+  border: 1px solid green;
+}
+
+.opponent-score-display {
+  color: green!important;
+}
