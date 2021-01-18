@@ -33,6 +33,7 @@ class CribbageNamespace(Namespace):
     def award_points(self, player, reason, amount, total, game):
         message = '+{} for {} ({})'.format(amount, player, reason)
         self.announce(message, room=game, type='points')
+        time.sleep(1)
         emit('points', {'player': player, 'amount': total}, room=game)
 
     def dispatch_points(self, game):
@@ -43,11 +44,10 @@ class CribbageNamespace(Namespace):
             self.award_points(t['player'], t['reason'] or t['action'], t['points'], game['players'][p], game['name'])
 
     def announce_hand_score(self, game, player, card_ids, text):
-        msg = f'{text} ('
-        msg += " ".join([utils.card_short_text_from_id(card_id) for card_id in card_ids])
-        msg += ')'
+        msg = "  ".join([utils.card_short_text_from_id(card_id) for card_id in card_ids])
+        msg += f'  {text}'
         emit('display_score', {'player': player, 'text': text, 'cards': card_ids}, room=game)
-        self.announce(msg, room=game)
+        # self.announce(msg, room=game)
         time.sleep(1.5)
 
     def play_card(self, player, card, game, total=None):
@@ -58,34 +58,17 @@ class CribbageNamespace(Namespace):
         player = game["previous_turn"]["player"]
         hand = 'crib' if 'crib' in game['previous_turn']['action'] else 'hand'
         short_hand = ' '.join([utils.card_short_text_from_id(card_id) for card_id in game['hands'][player] + [game['cut_card']]])
-        message = f'Scoring {game["previous_turn"]["player"]}\'s {hand}: {short_hand}'
-        time.sleep(1)
+        message = f'{game["previous_turn"]["player"]}\'s {hand}: {short_hand}'
         self.announce(message, room=game['name'])
+        time.sleep(1)
 
-        for fifteen, card_ids in game['breakdown']['fifteens'].items():
-            self.announce_hand_score(game['name'], player, card_ids, fifteen)
-
-        for pair, card_ids in game['breakdown']['pairs'].items():
-            self.announce_hand_score(game['name'], player, card_ids, pair)
-
-        for three, card_ids in game['breakdown']['threes'].items():
-            self.announce_hand_score(game['name'], player, card_ids, three)
-
-        for four, card_ids in game['breakdown']['fours'].items():
-            self.announce_hand_score(game['name'], player, card_ids, four)
-
-        for run in game['breakdown']['runs']:
-            self.announce_hand_score(game['name'], player, run, f'run of {len(run)}')
-
-        if game['breakdown']['flush']:
-            flush_text = f'{len(game["breakdown"]["flush"])} card flush'
-            self.announce_hand_score(game['name'], player, game['breakdown']['flush'], flush_text)
-
-        if game['breakdown']['nobs']:
-            self.announce_hand_score(game['name'], player, game['breakdown']['nobs'], 'nobs')
+        for score_type in ['fifteens', 'fours', 'threes', 'pairs', 'runs', 'flush', 'nobs']:
+            for score, card_ids in game['breakdown'][score_type].items():
+                self.announce_hand_score(game['name'], player, card_ids, score)
 
         if game['previous_turn']['points'] == 0:
             self.award_points(player, f'from {hand}', 0, game['players'][player], game['name'])
+
         self.dispatch_points(game)
 
     def bot_move(self, game):

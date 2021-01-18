@@ -81,7 +81,7 @@ export const Chat = ()  => {
     if (newChat.name === 'game-updater') {
       let cn;
       if (newChat.type === 'points') {
-        cn = 'points-message update'
+        cn = 'points-message big-message update'
       } else if (newChat.type === 'big') {
         cn = 'big-message update'
       } else {

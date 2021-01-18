@@ -1,4 +1,4 @@
-from app.cards import CARDS
+from app.decks.standard import deck
 from app.hand import Hand
 
 
@@ -6,10 +6,13 @@ class TestHand:
     """
     Test that various hand combinations are scored correctly
     """
+
+    pytest_plugins = ["docker_compose"]
+
     def test_no_points(self):
         card_ids = ['f6571e162f', '5c6bdd4fee', 'ace1293f8a', '110e6e5b19']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, four of spades, two of hearts, jack of clubs, seven of spades'
@@ -17,8 +20,8 @@ class TestHand:
 
     def test_fifteen_two(self):
         card_ids = ['f6571e162f', '30e1ddb610', 'ace1293f8a', '4dfe41e461']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card =  CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, five of spades, two of hearts, nine of clubs, seven of spades'
@@ -27,8 +30,8 @@ class TestHand:
 
     def test_fifteen_four(self):
         card_ids = ['f6571e162f', '30e1ddb610', 'c88523b677', '4dfe41e461']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('ace1293f8a')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('ace1293f8a')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, five of spades, six of hearts, nine of clubs, two of hearts'
@@ -37,8 +40,8 @@ class TestHand:
 
     def test_fifteen_six(self):
         card_ids = ['f6571e162f', '30e1ddb610', 'c88523b677', 'ae2caea4bb']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('56594b3880')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('56594b3880')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, five of spades, six of hearts, king of clubs, jack of hearts'
@@ -47,8 +50,8 @@ class TestHand:
 
     def test_fifteen_eight(self):
         card_ids = ['4f99bf15e5', '32f7615119', '4de6b73ab8', '4c8519af34']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('56594b3880')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('56594b3880')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'seven of diamonds, seven of spades, eight of hearts, eight of clubs, jack of hearts'
@@ -58,8 +61,8 @@ class TestHand:
 
     def test_one_pair(self):
         card_ids = ['f6571e162f', 'd3a2460e93', 'ace1293f8a', '4dfe41e461']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, ten of spades, two of hearts, nine of clubs, seven of spades'
@@ -68,8 +71,8 @@ class TestHand:
 
     def test_two_pairs(self):
         card_ids = ['f6571e162f', 'd3a2460e93', 'ace1293f8a', 'd1c9fde8ef']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'ten of diamonds, ten of spades, two of hearts, two of clubs, seven of spades'
@@ -78,8 +81,8 @@ class TestHand:
 
     def test_one_run(self):
         card_ids = ['def8effef6', '4dfe41e461', '4c8519af34', 'ace1293f8a']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('110e6e5b19')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('110e6e5b19')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'seven of hearts, nine of clubs, eight of clubs, two of hearts, jack of clubs'
@@ -88,8 +91,8 @@ class TestHand:
 
     def test_double_run(self):
         card_ids = ['def8effef6', '4dfe41e461', '4c8519af34', '597e4519ac']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('110e6e5b19')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('110e6e5b19')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'seven of hearts, nine of clubs, eight of clubs, nine of hearts, jack of clubs'
@@ -98,8 +101,8 @@ class TestHand:
 
     def test_double_run_of_four(self):
         card_ids = ['def8effef6', '4c8519af34', '597e4519ac', '4dfe41e461']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('276f33cf69')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('276f33cf69')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'seven of hearts, eight of clubs, nine of hearts, nine of clubs, ten of clubs'
@@ -108,8 +111,8 @@ class TestHand:
 
     def test_four_runs(self):
         card_ids = ['def8effef6', '4dfe41e461', '4c8519af34', '597e4519ac']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('ce46b344a3')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('ce46b344a3')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'seven of hearts, nine of clubs, eight of clubs, nine of hearts, eight of spades'
@@ -118,8 +121,8 @@ class TestHand:
 
     def test_hand_flush_without_cut_card(self):
         card_ids = ['c88623fa16', '04f17d1351', '5c6bdd4fee', 'd3a2460e93']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('60575e1068')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('60575e1068')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'six of spades, three of spades, four of spades, ten of spades, king of diamonds'
@@ -128,8 +131,8 @@ class TestHand:
 
     def test_hand_flush_with_cut_card(self):
         card_ids = ['c88623fa16', '04f17d1351', '5c6bdd4fee', 'd3a2460e93']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'six of spades, three of spades, four of spades, ten of spades, seven of spades'
@@ -141,8 +144,8 @@ class TestHand:
         A crib only has a flush if the cut card matches as well
         """
         card_ids = ['c88623fa16', '04f17d1351', '5c6bdd4fee', 'd3a2460e93']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('60575e1068')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('60575e1068')
         crib = Hand(cards, cut_card, is_crib=True)
         crib.calculate_points()
         assert str(crib) == 'six of spades, three of spades, four of spades, ten of spades, king of diamonds'
@@ -151,8 +154,8 @@ class TestHand:
 
     def test_crib_flush_with_cut_card(self):
         card_ids = ['c88623fa16', '04f17d1351', '5c6bdd4fee', 'd3a2460e93']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('32f7615119')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('32f7615119')
         crib = Hand(cards, cut_card, is_crib=True)
         crib.calculate_points()
         assert str(crib) == 'six of spades, three of spades, four of spades, ten of spades, seven of spades'
@@ -161,8 +164,8 @@ class TestHand:
 
     def test_perfect_hand(self):
         card_ids = ['a6a3e792b4', '30e1ddb610', 'fa0873dd7d', '1d5eb77128']
-        cards = [CARDS.get(card_id) for card_id in card_ids]
-        cut_card = CARDS.get('d7ca85cf5e')
+        cards = [deck.get(card_id) for card_id in card_ids]
+        cut_card = deck.get('d7ca85cf5e')
         hand = Hand(cards, cut_card)
         hand.calculate_points()
         assert str(hand) == 'five of clubs, five of spades, five of hearts, jack of diamonds, five of diamonds'

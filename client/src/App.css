@@ -142,8 +142,17 @@ html, body {
 }
 
 @media only screen and (max-width: 500px) {
+  #root {
+    height: 100vh; /* Fallback for browsers that do not support Custom Properties */
+    height: calc(var(--vh, 1vh) * 100);
+  }
   .top-row, .middle-row {
     margin: 0;
+  }
+
+  .leave-game {
+    top: 0;
+    right: 0;
   }
 
   .jumbotron {

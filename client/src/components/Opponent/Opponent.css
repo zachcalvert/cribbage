@@ -30,11 +30,10 @@
 }
 
 .active-opponent-card svg {
-  /*margin-bottom: -20px;*/
-  /*transition: margin 700ms;*/
-  border: 1px solid green;
+  border: 2px solid green;
 }
 
 .opponent-score-display {
   color: green!important;
+  font-weight: bold;
 }

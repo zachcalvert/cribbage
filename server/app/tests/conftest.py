@@ -1,7 +1,5 @@
 import pytest
 
-from app.cards import CARDS
-
 
 @pytest.fixture(scope="module")
 def two_player_game_unstarted():
@@ -23,7 +21,6 @@ def three_player_game_unstarted():
 @pytest.fixture(scope="module")
 def two_player_game_fully_dealt():
     return {
-        'cards': CARDS,
         'crib': ['04a70825ff', '5c6bdd4fee', '9aa045dd99', 'bd4b01946d'],
         'cutter': 'brendon',
         'dealer': 'jason',

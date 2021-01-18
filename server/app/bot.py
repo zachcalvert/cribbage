@@ -23,9 +23,8 @@ def discard(hand):
     for set_of_four in permutations(hand, 4):
         cards = [deck.get(c) for c in set_of_four]
         hand = Hand(cards, cut_card)
-        hand_points, _ = hand.calculate_points()
         try:
-            hand_points, _ = hand.calculate_points()
+            hand_points = hand.calculate_points()
         except Exception as e:
             # TODO: why does this happen??
             print('Exception calculating bot points: {}'.format(e))
