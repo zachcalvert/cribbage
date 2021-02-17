@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
-import {Divider, Fab} from "@material-ui/core";
+import { Divider } from "@material-ui/core";
 import './Opponent.css'
-import {animated, useTrail} from "react-spring";
 
 export const Opponent = (props) => {
   const [playableCards, setPlayableCards] = useState([]);
@@ -11,16 +10,6 @@ export const Opponent = (props) => {
   const [showCards, setShowCards] = useState(false);
   const [scoringCards, setScoringCards] = useState([]);
   const [scoreDisplay, setScoreDisplay] = useState('');
-
-  // dealt card animation
-  const config = { mass: 5, tension: 2000, friction: 100 }
-  const trail = useTrail(playableCards.length, {
-    config,
-    opacity: playableCards ? 1 : 1,
-    x: playableCards ? 0 : 20,
-    height: playableCards ? 20 : 0,
-    from: { opacity: 1, x: 20, height: 0 },
-  });
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {

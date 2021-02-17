@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "use-socketio";
-import { Dialog, DialogContent, DialogTitle, Fab, IconButton, TextField } from "@material-ui/core";
+import { Dialog, DialogContent, DialogTitle, Fab, IconButton, Link, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import RefreshIcon from '@material-ui/icons/Refresh';
 
@@ -175,7 +175,7 @@ export const Game = ()  => {
       </div>
   ) : (
     <div style={{ textAlign: 'center', height: '100%', width: '100%', display: 'inline-block' }}>
-      <img style={{ marginTop: '20px' }} src="logo.png" />
+      <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
       <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
         <TextField
             id="name"
@@ -200,7 +200,7 @@ export const Game = ()  => {
             Play
          </Fab>
         <Typography className='webmaster-info' variant='caption'>
-          Suggestions welcome, zach@cribbage.live
+          Source: <Link href="https://github.com/zachcalvert/cribbage">https://github.com/zachcalvert/cribbage</Link>
         </Typography>
       </form>
     </div>

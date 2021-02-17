@@ -32,7 +32,6 @@ export default function GameSettings() {
   const gameType = 'cribbage';
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
-  const [deck, setDeck] = useState('standard');
   const [jokers, setJokers] = useState(false);
 
   const { socket } = useSocket("setup_started");
@@ -45,7 +44,6 @@ export default function GameSettings() {
         type: gameType,
         winning_score: winningScore,
         crib_size: cribSize,
-        deck: deck,
         jokers: jokers
       });
     }
@@ -53,41 +51,42 @@ export default function GameSettings() {
 
   return (
     <div className={classes.root}>
-        <div className={classes.instructions}>
-          <>
-            <TextField
-              defaultValue="121"
-              id="name"
-              onChange={e => setWinningScore(e.target.value)}
-              label="Winning score"
-            />
-            <br /><br />
-            <FormControl>
-              <InputLabel>
-                Cribs
-              </InputLabel>
-              <Select
-                defaultValue="4"
-                onChange={e => setCribSize(e.target.value)}
-              >
-                <MenuItem value={4}>Standard (4 cards)</MenuItem>
-                <MenuItem value={5}>Spicy (5 cards)</MenuItem>
-                <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
-              </Select>
-            </FormControl>
-            <br /><br />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={jokers}
-                  onChange={e => setJokers(e.target.checked)}
-                  name="checkedB"
-                  color="primary"
-                />
-              }
-              label="Play with Jokers"
-            />
-          </>
+      <div className={classes.instructions}>
+        <>
+          <TextField
+            defaultValue="121"
+            id="name"
+            onChange={e => setWinningScore(e.target.value)}
+            label="Winning score"
+          />
+          <br /><br />
+          <FormControl>
+            <InputLabel>
+              Cribs
+            </InputLabel>
+            <Select
+              defaultValue="4"
+              onChange={e => setCribSize(e.target.value)}
+            >
+              <MenuItem value={4}>Standard (4 cards)</MenuItem>
+              <MenuItem value={5}>Spicy (5 cards)</MenuItem>
+              <MenuItem value={6}>Chaotic (6 cards)</MenuItem>
+            </Select>
+          </FormControl>
+          <br /><br />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={jokers}
+                onChange={e => setJokers(e.target.checked)}
+                name="checkedB"
+                color="primary"
+                disabled={true}
+              />
+            }
+            label="Play with Jokers"
+          />
+        </>
         <div className={classes.actions}>
           <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
         </div>

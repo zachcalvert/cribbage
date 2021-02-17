@@ -53,13 +53,11 @@ export const Player = (props) => {
       setShowPeggingTotal(false);
     }
     if (msg.action === 'discard') {
-      {
-        msg.crib === props.name ? (
-            setCribHelpText('your crib')
-        ) : (setCribHelpText(`${msg.crib}\'s crib`))
-      }
+      msg.crib === props.name
+      ? (setCribHelpText('your crib'))
+      : (setCribHelpText(`${msg.crib}'s crib`))
     } else if (msg.action === 'cut') {
-        setCribHelpText(null);
+      setCribHelpText(null);
     }
   });
 
@@ -239,10 +237,10 @@ export const Player = (props) => {
             <span className='joker-rank-selection' onClick={handleRankSelection} data-value="king">K</span>
           </div>
           <div className="joker-suit-selection-row">
-            <img style={{width: '25%'}} data-value="hearts" onClick={handleSuitSelection} src="/cards/hearts"/>
-            <img style={{width: '25%'}} data-value="spades" onClick={handleSuitSelection} src="/cards/spades"/>
-            <img style={{width: '25%'}} data-value="diamonds" onClick={handleSuitSelection} src="/cards/diamonds"/>
-            <img style={{width: '25%'}} data-value="clubs" onClick={handleSuitSelection} src="/cards/clubs"/>
+            <img style={{width: '25%'}} data-value="hearts" alt='hearts' onClick={handleSuitSelection} src="/cards/hearts"/>
+            <img style={{width: '25%'}} data-value="spades" alt='spades' onClick={handleSuitSelection} src="/cards/spades"/>
+            <img style={{width: '25%'}} data-value="diamonds" alt='diamonds' onClick={handleSuitSelection} src="/cards/diamonds"/>
+            <img style={{width: '25%'}} data-value="clubs" alt='clubs' onClick={handleSuitSelection} src="/cards/clubs"/>
           </div>
           <span></span>
           <button id="select-joker" disabled={!jokerSuit || !jokerRank} className="joker-submit-button btn btn-default btn-primary btn-block" onClick={handleJokerSelection}>
