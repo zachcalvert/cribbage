@@ -116,6 +116,23 @@ class CribbageNamespace(Namespace):
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce('{} joined'.format(msg['name']), room=msg['game'])
 
+    def on_player_refresh(self, msg):
+        join_room(msg['game'])
+        game = controller.get_or_create_game(msg['game'])
+        emit('players', {'players': list(game['players'].keys())})
+        emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
+        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']})
+        self.announce('{} refreshed'.format(msg['name']), room=msg['game'])
+
+        if game['hands']:
+            emit('cards', {'cards': game['hands']})
+
+        if game['cut_card']:
+            emit('cut_card', {'card': game['cut_card']})
+
+        for player, points in game['players'].items():
+            emit('points', {'player': player, 'amount': points})
+
     def on_player_leave(self, msg):
         game = controller.remove_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
