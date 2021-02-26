@@ -38,6 +38,12 @@ export const Game = ()  => {
       setRoom(gameName);
       setId('a');
       showModal();
+    } else if (sessionStorage.getItem('game') && sessionStorage.getItem('name')) {
+      setId(sessionStorage.getItem('name'));
+      setName(sessionStorage.getItem('name'));
+      setRoom(sessionStorage.getItem('game'));
+      setInProgress(true);
+      socket.emit("player_refresh", {name: name, game: room});
     }
 
   }, [room]);
