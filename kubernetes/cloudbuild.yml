@@ -1,0 +1,17 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/optimum-pier-280005/cribbage-client:latest', '../client']
+  timeout: 500s
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/optimum-pier-280005/cribbage-client:latest']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['set', 'image', 'deployment/frontend-deployment', 'react=gcr.io/optimum-pier-280005/cribbage-client:latest']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/optimum-pier-280005/cribbage-server:latest', '../server']
+  timeout: 500s
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/optimum-pier-280005/cribbage-server:latest']
+- name: 'gcr.io/cloud-builders/kubectl'
+  args: ['set', 'image', 'deployment/backend-deployment', 'flask=gcr.io/optimum-pier-280005/cribbage-server:latest']
+
+images: ['gcr.io/optimum-pier-280005/cribbage-client:latest', 'gcr.io/optimum-pier-280005/cribbage-server:latest']

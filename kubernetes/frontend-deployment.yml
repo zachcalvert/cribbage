@@ -6,11 +6,11 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cards-frontend
+      app: cribbage-frontend
   template:
     metadata:
       labels:
-        app: cards-frontend
+        app: cribbage-frontend
     spec:
       containers:
         - name: react

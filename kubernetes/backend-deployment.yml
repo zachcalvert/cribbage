@@ -6,15 +6,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cards-backend
+      app: cribbage-backend
   template:
     metadata:
       labels:
-        app: cards-backend
+        app: cribbage-backend
     spec:
       containers:
         - name: flask
-          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards:backend-72943204af09346c0e84a8359e920833fdc41f58"
+          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cribbage-server:d0cf2d61dd9da0bc51e26121d419a0b71a425fe8"
           env:
             - name: "REDISHOST"
               value: "localhost"
