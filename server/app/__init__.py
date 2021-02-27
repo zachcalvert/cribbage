@@ -124,8 +124,7 @@ class CribbageNamespace(Namespace):
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']})
         self.announce('{} refreshed'.format(msg['name']), room=msg['game'])
 
-        if game['hands']:
-            emit('cards', {'cards': game['hands']})
+        emit('send_cards', {'cards': game['hands'], 'played_cards': game['played_cards']})
 
         if game['cut_card']:
             emit('cut_card', {'card': game['cut_card']})
@@ -177,6 +176,11 @@ class CribbageNamespace(Namespace):
              room=msg['game'])
 
     def on_joker_selected(self, msg):
+        is_valid = controller.is_valid_joker_selection(msg['game'], msg['player'], msg['rank'], msg['suit'])
+        if not is_valid:
+            emit('invalid_joker')
+            return
+
         game = controller.handle_joker_selection(msg)
         emit('cards', {'cards': game['hands']}, room=msg['game'])
         message = '{} got a joker! They have made it the {} of {}'.format(msg['player'], msg['rank'], msg['suit'])

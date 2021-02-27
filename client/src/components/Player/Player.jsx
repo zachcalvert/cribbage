@@ -110,6 +110,10 @@ export const Player = (props) => {
     setActiveCards([]);
   });
 
+  useSocket('invalid_joker', msg => {
+    showJokerModal(true);
+  });
+
   useSocket('pegging_total', msg => {
     setPeggingTotal(msg.pegging_total);
   })
@@ -235,7 +239,7 @@ export const Player = (props) => {
           You got a joker!
         </DialogTitle>
         <DialogContent>
-          <span>You can turn it into any card you like.</span>
+          <span>You can turn it into any card that's not already in your hand.</span>
           <br />
           <div className='joker-rank-row'>
             <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ace">A</span>

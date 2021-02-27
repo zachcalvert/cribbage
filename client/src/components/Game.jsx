@@ -173,11 +173,9 @@ export const Game = ()  => {
                 <Deck />
               </div>
             </div>
-
             <footer className="bottom-row">
               <Player name={ name }/>
             </footer>
-
           </div>
         </div>
       </div>
@@ -208,7 +206,7 @@ export const Game = ()  => {
             Play
          </Fab>
         <Typography className='webmaster-info' variant='caption'>
-          <Link href="https://github.com/zachcalvert/cribbage">Source code</Link>
+          <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
         </Typography>
       </form>
     </div>

@@ -1,17 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSocket } from "use-socketio";
-import { AppBar, Button, Dialog, Slide, Toolbar, Typography } from '@material-ui/core';
-import CloseIcon from "@material-ui/icons/Close";
-import RefreshIcon from '@material-ui/icons/Refresh';
+import { Button, Dialog, Slide } from '@material-ui/core';
+
 import useKeypress from "../../hooks/useKeyPress";
 
 import './GameData.css'
 
-
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
-
 
 export const GameData = () => {
   const [open, setOpen] = useState(false);
