@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
+import useAnimateNumber from 'use-animate-number';
 import { useTrail, animated } from 'react-spring'
 
 import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { useModal } from "react-modal-hook";
-import {ViewColumn} from "@material-ui/icons";
+import { ViewColumn } from "@material-ui/icons";
 import Chip from "@material-ui/core/Chip";
 
 export const Player = (props) => {
@@ -17,7 +18,8 @@ export const Player = (props) => {
   const [activeCards, setActiveCards] = useState([]);
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
-  const [peggingTotal, setPeggingTotal] = useState(0);
+
+  const [peggingTotal, setPeggingTotal] = useAnimateNumber(0, {decimals: 0});
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
   const [cribHelpText, setCribHelpText] = useState(null);
   const [scoring, setScoring] = useState(false);
@@ -119,6 +121,8 @@ export const Player = (props) => {
   })
 
   const handleAction = (e) => {
+    setTurn(false);
+
     boop();
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
