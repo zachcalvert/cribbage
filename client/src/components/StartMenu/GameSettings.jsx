@@ -81,7 +81,6 @@ export default function GameSettings() {
                 onChange={e => setJokers(e.target.checked)}
                 name="checkedB"
                 color="primary"
-                disabled={true}
               />
             }
             label="Play with Jokers"

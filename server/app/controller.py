@@ -137,10 +137,8 @@ def start_game(game_data, **kwargs):
             'points': 0,
             'reason': None
         },
-        'rematch': False,
         'scored_hands': [],
         'scoring_summary': [],
-        'scoring_stats': { player: {'a_play': 0, 'b_play': 0, 'c_play': 0} for player in players },
         'winning_score': int(winning_score)
     })
 
@@ -221,6 +219,18 @@ def deal_hands(game_data, **kwargs):
     game_data['current_turn'] = list(game_data['players'].keys())
 
     return game_data
+
+
+def is_valid_joker_selection(game, player, rank, suit):
+    game_data = json.loads(cache.get(game))
+    new_card = utils.card_object_from_text(rank, suit)
+    card_id = list(new_card.keys())[0]
+
+    if card_id in game_data['hands'][player]:
+        return False
+
+    return True
+
 
 @game_interaction
 def handle_joker_selection(game_data, **kwargs):
@@ -629,9 +639,7 @@ def refresh_game_dict(game_data):
             'points': 0,
             'reason': None
         },
-        'rematch': True,
         'scored_hands': [],
-        'scoring_stats': { player: {'a_play': 0, 'b_play': 0, 'c_play': 0} for player in players },
     })
 
     game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(

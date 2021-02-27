@@ -71,6 +71,18 @@ export const Player = (props) => {
     }
   });
 
+  useSocket("send_cards", msg => {
+    if (props.name in msg.cards) {
+      setPlayableCards(msg.cards[props.name]);
+      if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
+        showJokerModal();
+      }
+    }
+    if (props.name in msg.played_cards) {
+      setPlayedCards(msg.played_cards[props.name]);
+    }
+  });
+
   useSocket("card_played", msg => {
     if (props.name === msg.player) {
       setPlayableCards(playableCards.filter(card => card !== msg.card));
@@ -97,6 +109,14 @@ export const Player = (props) => {
   useSocket('invalid_card', msg => {
     setActiveCards([]);
   });
+
+  useSocket('invalid_joker', msg => {
+    showJokerModal(true);
+  });
+
+  useSocket('pegging_total', msg => {
+    setPeggingTotal(msg.pegging_total);
+  })
 
   const handleAction = (e) => {
     boop();
@@ -219,7 +239,7 @@ export const Player = (props) => {
           You got a joker!
         </DialogTitle>
         <DialogContent>
-          <span>You can turn it into any card you like.</span>
+          <span>You can turn it into any card that's not already in your hand.</span>
           <br />
           <div className='joker-rank-row'>
             <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ace">A</span>

@@ -3,15 +3,16 @@ import { useSocket } from "use-socketio";
 import { Dialog, DialogContent, DialogTitle, Fab, IconButton, Link, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import RefreshIcon from '@material-ui/icons/Refresh';
+import Typography from "@material-ui/core/Typography";
 
 import { Chat } from "./Chat/Chat";
 import { Deck } from "./Deck/Deck";
+import { GameData } from "./GameData/GameData";
 import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
 import { StartMenu } from "./StartMenu/StartMenu";
-import {useModal} from "react-modal-hook";
-import Typography from "@material-ui/core/Typography";
+import { useModal } from "react-modal-hook";
 
 const randomWords = require('random-words');
 
@@ -157,6 +158,7 @@ export const Game = ()  => {
             <IconButton className="leave-game" onClick={showLeaveGameModal} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>
+            <GameData />
 
             <div className="top-row row">
               { renderOpponents() }
@@ -171,11 +173,9 @@ export const Game = ()  => {
                 <Deck />
               </div>
             </div>
-
             <footer className="bottom-row">
               <Player name={ name }/>
             </footer>
-
           </div>
         </div>
       </div>
@@ -206,7 +206,7 @@ export const Game = ()  => {
             Play
          </Fab>
         <Typography className='webmaster-info' variant='caption'>
-          Source: <Link href="https://github.com/zachcalvert/cribbage">https://github.com/zachcalvert/cribbage</Link>
+          <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
         </Typography>
       </form>
     </div>

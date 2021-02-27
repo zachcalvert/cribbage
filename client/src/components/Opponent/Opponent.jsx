@@ -19,6 +19,15 @@ export const Opponent = (props) => {
     msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
   });
 
+  useSocket("send_cards", msg => {
+    if (props.name in msg.cards) {
+      setPlayableCards(msg.cards[props.name]);
+    }
+    if (props.name in msg.played_cards) {
+      setPlayedCards(msg.played_cards[props.name]);
+    }
+  });
+
   useSocket("card_played", msg => {
     if (props.name === msg.player) {
       setPlayableCards(playableCards.filter(card => card !== msg.card));
