@@ -275,7 +275,7 @@ class CribbageNamespace(Namespace):
 
     def on_get_game_data(self, msg):
         game_data = controller.get_or_create_game(msg['game'])
-        stripped_keys = ['opening_message', 'scoring_summary']
+        stripped_keys = ['deck', 'opening_message', 'scoring_summary']
         [game_data.pop(key) for key in stripped_keys]
         emit('show_game_data', {'game_data': game_data})
 
