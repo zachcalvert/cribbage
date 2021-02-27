@@ -211,8 +211,7 @@ def deal_hands(game_data, **kwargs):
     hands = {}
     for player in game_data['players'].keys():
         hands[player] = []
-        dealt_cards = [game_data['deck'].pop() for card in range(5)]
-        dealt_cards.append('joker1')
+        dealt_cards = [game_data['deck'].pop() for card in range(game_data['hand_size'])]
         hands[player] = _sort_cards(game_data, dealt_cards)
 
     game_data['hands'] = hands
