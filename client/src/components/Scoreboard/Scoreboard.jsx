@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
+import Tooltip from '@material-ui/core/Tooltip';
 
 import './Scoreboard.css'
 
@@ -16,11 +17,13 @@ export const Scoreboard = () => {
   const name = sessionStorage.getItem('name');
   const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
+  const [skunkLine, setSkunkLine] = useState(0);
   const [winnerBell] = useSound('/sounds/winner.wav', { volume: 0.5 });
 
   const { socket } = useSocket("draw_board", msg => {
     setPlayers(msg.players);
     setWinningScore(msg.winning_score);
+    setSkunkLine(Math.floor(msg.winning_score * 0.75));
   });
 
   useSocket("points", msg => {
@@ -54,6 +57,7 @@ export const Scoreboard = () => {
                 aria-valuemin="0" aria-valuenow={score} aria-valuemax={winningScore}
                 style={{"width": `${score/winningScore * 100}%`}}>
               </div>
+              <Tooltip className="skunk-line" title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span>|</span></Tooltip>
             </div>
             <div className="scoreboard-player-score col-2">{score}</div>
           </div>
@@ -67,6 +71,7 @@ export const Scoreboard = () => {
               aria-valuemin="0" aria-valuenow={playerScore} aria-valuemax={winningScore}
               style={{"width": `${playerScore/winningScore * 100}%`}}>
             </div>
+            <Tooltip className="skunk-line" title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span >|</span></Tooltip>
           </div>
           <div className="scoreboard-player-score col-2">{playerScore}</div>
         </div>
