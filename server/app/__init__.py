@@ -133,6 +133,9 @@ class CribbageNamespace(Namespace):
         for player, points in game['players'].items():
             emit('points', {'player': player, 'amount': points})
 
+        if game['current_action'] in ['play', 'pass']:
+            emit('pegging_total', {'pegging_total': game['pegging']['total']})
+
     def on_player_leave(self, msg):
         game = controller.remove_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
@@ -259,12 +262,25 @@ class CribbageNamespace(Namespace):
 
     def on_rematch(self, msg):
         game = controller.rematch(msg)
-        if game['rematch']:
+        if set(game['players'].keys()) == set(game['play_again']):
             emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
             emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
             self.announce(game['opening_message'], room=game['name'], type='big')
 
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+
+    def on_get_game_data(self, msg):
+        game_data = controller.get_or_create_game(msg['game'])
+        stripped_keys = ['opening_message', 'scoring_summary']
+        [game_data.pop(key) for key in stripped_keys]
+        emit('show_game_data', {'game_data': game_data})
+
+    def on_send_cards(self, msg):
+        game = controller.get_or_create_game(msg['game'])
+        emit('send_cards', {
+            'cards': game['hands'],
+            'played_cards': game['played_cards']
+        }, room=msg['game'])
 
 
 socketio.on_namespace(CribbageNamespace('/'))

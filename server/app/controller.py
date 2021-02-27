@@ -137,10 +137,8 @@ def start_game(game_data, **kwargs):
             'points': 0,
             'reason': None
         },
-        'rematch': False,
         'scored_hands': [],
         'scoring_summary': [],
-        'scoring_stats': { player: {'a_play': 0, 'b_play': 0, 'c_play': 0} for player in players },
         'winning_score': int(winning_score)
     })
 
@@ -629,9 +627,7 @@ def refresh_game_dict(game_data):
             'points': 0,
             'reason': None
         },
-        'rematch': True,
         'scored_hands': [],
-        'scoring_stats': { player: {'a_play': 0, 'b_play': 0, 'c_play': 0} for player in players },
     })
 
     game_data['opening_message'] = 'First to {} wins! Cribs are {}. Lowest drawn card gets first crib.'.format(
