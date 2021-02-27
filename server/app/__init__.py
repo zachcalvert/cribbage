@@ -14,7 +14,7 @@ from . import bot
 from . import utils
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live'])
+socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live', 'https://istio.test.cribbage.live'])
 thread = None
 thread_lock = Lock()
 
