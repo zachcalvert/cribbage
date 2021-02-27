@@ -230,6 +230,7 @@ class CribbageNamespace(Namespace):
         while game['current_turn'] == game['bot']:
             game = self.bot_move(game)
 
+        emit('pegging_total', {'pegging_total': game['pegging']['total']})
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
 
     def on_score(self, msg):
