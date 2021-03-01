@@ -478,6 +478,20 @@ export const customEmojis = [
     customCategory: 'yoyos'
   },
   {
+    name: 'Among Us Killed',
+    short_names: ['among_us_killed'],
+    keywords: ['among', 'us', 'killed'],
+    imageUrl: 'emojis/misc/among-us-killed.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Among Us Party',
+    short_names: ['among_us_party'],
+    keywords: ['among', 'us', 'party'],
+    imageUrl: 'emojis/misc/among-us-party.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Angery',
     short_names: ['angery'],
     keywords: ['angry', 'angery'],
@@ -559,6 +573,13 @@ export const customEmojis = [
     short_names: ['cat_dance'],
     keywords: ['cat', 'dance'],
     imageUrl: 'emojis/misc/cat_dance.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Chunk come on',
+    short_names: ['chunk_come_on'],
+    keywords: ['what', 'cmon', 'come on'],
+    imageUrl: 'emojis/misc/chunk-come-on.gif',
     customCategory: 'misc'
   },
   {
@@ -687,6 +708,13 @@ export const customEmojis = [
     customCategory: 'misc'
   },
   {
+    name: 'Good Vibes Dog',
+    short_names: ['good_vibes_dog'],
+    keywords: ['pray', 'vibes', 'dog'],
+    imageUrl: 'emojis/misc/good-vibes-dog.gif',
+    customCategory: 'misc'
+  },
+  {
     name: 'Haha what boy',
     short_names: ['haha_what_boy'],
     keywords: ['haha', 'what', 'boy', 'lol'],
@@ -747,6 +775,13 @@ export const customEmojis = [
     short_names: ['raving_doge'],
     keywords: ['raving', 'doge', 'dancing', 'excited'],
     imageUrl: 'emojis/misc/raving_doge.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Rick Roll',
+    short_names: ['rick_roll'],
+    keywords: ['rick', 'roll', 'dance'],
+    imageUrl: 'emojis/misc/rickroll.gif',
     customCategory: 'misc'
   },
   {
@@ -824,6 +859,13 @@ export const customEmojis = [
     short_names: ['wfh_parrot'],
     keywords: ['wfh', 'parrot'],
     imageUrl: 'emojis/misc/wfh_parrot.gif',
+    customCategory: 'misc'
+  },
+  {
+    name: 'Wink wink',
+    short_names: ['wink_wink'],
+    keywords: ['wink'],
+    imageUrl: 'emojis/misc/wink-wink.gif',
     customCategory: 'misc'
   },
   {
