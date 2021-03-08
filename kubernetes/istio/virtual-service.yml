@@ -1,0 +1,27 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: cribbage-route
+  namespace: istio-system
+spec:
+  hosts:
+    - cribbage.live
+  gateways:
+  - public-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /socket.io
+    route:
+    - destination:
+        host: backend-service.cribbage.svc.cluster.local
+        port:
+          number: 5000
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: frontend-service.cribbage.svc.cluster.local
+        port:
+          number: 80
