@@ -5,10 +5,18 @@ metadata:
   namespace: istio-system
 spec:
   hosts:
-    - istio.test.cribbage.live
+    - cribbage.live
   gateways:
   - public-gateway
   http:
+  - match:
+    - uri:
+        prefix: /socket.io
+    route:
+    - destination:
+        host: backend-service.cribbage.svc.cluster.local
+        port:
+          number: 5000
   - match:
     - uri:
         prefix: /
