@@ -1,8 +1,8 @@
 import React, { useState } from "react";
+import { useTrail, animated } from 'react-spring';
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
-import { useTrail, animated } from 'react-spring'
 
 import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
