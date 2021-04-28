@@ -19,6 +19,14 @@ spec:
           number: 5000
   - match:
     - uri:
+        prefix: /all-games
+    route:
+    - destination:
+        host: backend-service.cribbage.svc.cluster.local
+        port:
+          number: 5000
+  - match:
+    - uri:
         prefix: /
     route:
     - destination:

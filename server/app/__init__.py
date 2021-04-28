@@ -19,6 +19,12 @@ thread = None
 thread_lock = Lock()
 
 
+@app.route('/all-games')
+def all_games():
+    games = controller.all_games()
+    return {'games': games}
+
+
 class CribbageNamespace(Namespace):
 
     def on_connect(self):

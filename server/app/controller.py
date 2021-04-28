@@ -41,6 +41,10 @@ TEXT_TO_RANK_MAP = {
 }
 
 
+def all_games():
+    return [k.decode() for k in cache.keys()]
+
+
 def get_value(game, value):
     g = json.loads(cache.get(game))
     return g[value]
