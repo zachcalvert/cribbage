@@ -13,7 +13,7 @@ from app import utils
 from app.decks.jokers import deck as jokers_deck
 from app.decks.standard import deck as standard_deck
 
-redis_host = os.environ.get('REDISHOST', 'localhost')
+redis_host = os.environ.get('REDISHOST', 'redis')
 cache = redis.StrictRedis(host=redis_host, port=6379)
 
 logger = logging.getLogger(__name__)
