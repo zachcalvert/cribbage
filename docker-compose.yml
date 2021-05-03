@@ -1,27 +1,37 @@
 version: '3.7'
 
 services:
-  flask:
-    build: ./server
-    volumes:
-      - ./server/:/code
-    ports:
-      - 5000:5000
-    env_file:
-      - server/env.dev
-    depends_on:
-      - redis
-    restart: "always"
-  react:
+  nginx:
+    restart: unless-stopped
     build:
-      context: ./client
-      dockerfile: Dockerfile-dev
-    volumes:
-      - ./client/:/code
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     ports:
-      - 3000:3000
+      - 80:80
+      - 443:443
+    volumes:
+      - ./docker/nginx/production:/etc/nginx/conf.d
+      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+      - ./docker/nginx/certbot/www:/var/www/certbot
     depends_on:
-      - flask
-    tty: true
+      - backend
+  certbot:
+    image: certbot/certbot
+    restart: unless-stopped
+    volumes:
+      - ./docker/nginx/certbot/conf:/etc/letsencrypt
+      - ./docker/nginx/certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+  backend:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/backend/Dockerfile
+    entrypoint: /app/docker/backend/wsgi-entrypoint.sh
+    expose:
+      - 5000
   redis:
     image: redis
+    restart: unless-stopped
+    expose:
+      - 6379

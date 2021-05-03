@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: react
-          image: "gcr.io/optimum-pier-280005/github.com/zachcalvert/cards-client:55ebbab97e640642dba47d418ba48dd6f79e5c9b"
+          image: "gcr.io/optimum-pier-280005/cribbage-client:latest"
           ports:
             - containerPort: 80
