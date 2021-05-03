@@ -32,6 +32,9 @@ services:
       - 5000
   redis:
     image: redis
+    command: redis-server --appendonly yes
+    volumes:
+      - ./redis:/data
     restart: unless-stopped
     expose:
       - 6379
