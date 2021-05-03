@@ -30,3 +30,8 @@ services:
     entrypoint: /app/docker/backend/wsgi-entrypoint.sh
     expose:
       - 5000
+  redis:
+    image: redis
+    restart: unless-stopped
+    expose:
+      - 6379
