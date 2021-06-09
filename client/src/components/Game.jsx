@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useSocket } from "use-socketio";
 import { Dialog, DialogContent, DialogTitle, Fab, IconButton, Link, TextField } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import HelpOutlineRoundedIcon from '@material-ui/icons/HelpOutlineRounded';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Typography from "@material-ui/core/Typography";
 
 import { Chat } from "./Chat/Chat";
 import { Deck } from "./Deck/Deck";
 import { GameData } from "./GameData/GameData";
+import { HelpScreen } from "./HelpScreen/HelpScreen";
 import { Opponent } from "./Opponent/Opponent";
 import { Player } from "./Player/Player";
 import { Scoreboard } from "./Scoreboard/Scoreboard";
@@ -148,6 +150,22 @@ export const Game = ()  => {
     </>
   ), []);
 
+  const [showHelpModal, hideHelpModal] = useModal(({in: open, onExited}) => (
+    <>
+      <Dialog className="help-modal" open={open} onExited={hideHelpModal} onClose={hideHelpModal}>
+        <DialogTitle>
+          Help
+        </DialogTitle>
+        <DialogContent>
+         <IconButton className="hide-help" onClick={hideHelpModal} aria-label="leave">
+            <CloseIcon fontSize="inherit" />
+          </IconButton>
+          <HelpScreen />
+        </DialogContent>
+      </Dialog>
+    </>
+  ), []);
+
   return id ? (
       <div className="container-xl">
         <div className="game row">
@@ -155,6 +173,9 @@ export const Game = ()  => {
             <Chat />
           </div>
           <div className="game-table col-xl-8 row">
+            <IconButton className="help" onClick={showHelpModal} aria-label="help">
+              <HelpOutlineRoundedIcon fontSize="inherit" />
+            </IconButton>
             <IconButton className="leave-game" onClick={showLeaveGameModal} aria-label="leave">
               <CloseIcon fontSize="inherit" />
             </IconButton>

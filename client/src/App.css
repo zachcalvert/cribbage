@@ -47,6 +47,19 @@ html, body {
   min-height: 230px;
 }
 
+.help {
+  position: absolute!important;
+  top: 10px;
+  right: 50px;
+}
+
+.hide-help {
+  position: absolute!important;
+  top: 0;
+  right: 0;
+  color: red!important;
+}
+
 .leave-game {
   position: absolute!important;
   top: 10px;
@@ -148,6 +161,11 @@ html, body {
   }
   .top-row, .middle-row {
     margin: 0;
+  }
+
+  .help {
+    top: 0;
+    right: 40px;
   }
 
   .leave-game {

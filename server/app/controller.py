@@ -52,7 +52,8 @@ def all_games():
             "players": g["players"],
             "jokers": g.get("jokers"),
             "crib_size": g.get("crib_size"),
-            "winning_score": g.get("winning_score")
+            "winning_score": g.get("winning_score"),
+            "winner": g.get("winner")
         })
 
     return games
@@ -603,7 +604,6 @@ def next_round(game_data, **kwargs):
 
 @game_interaction
 def grant_victory(game_data, **kwargs):
-    print(f'{kwargs["player"]} wins! {game_data["players"]}')
     game_data['current_action'] = 'rematch'
     game_data['current_turn'] = list(game_data['players'].keys())
     game_data['winner'] = kwargs['player']
