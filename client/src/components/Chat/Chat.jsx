@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
 
-import { Divider, IconButton, makeStyles } from "@material-ui/core";
+import { IconButton, makeStyles } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import SendIcon from '@material-ui/icons/Send';
 
@@ -59,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export const Chat = ()  => {
+export const Chat = (props)  => {
+  const prefersDarkMode = { props };
   const [chats, setChat] = useState([]);
   const [message, setMessage] = useState('');
   const [showEmojis, setShowEmojis] = useState(false);
@@ -162,8 +163,6 @@ export const Chat = ()  => {
 
   return (
     <>
-      <div className="game-name">Game: { game }</div>
-      <Divider variant="middle"/>
       { renderChat() }
       <div className={`send-message-form ${classes.container}`}>
         {showEmojis ? (

@@ -3,12 +3,12 @@
 }
 
 .chat-log {
-  height: calc(100% - 130px);
+  height: calc(100% - 90px);
   overflow-y: scroll;
   padding: 5px 0;
 }
 
-::-webkit-scrollbar {
+/* ::-webkit-scrollbar {
   background: white;
   z-index: -1;
 }
@@ -17,7 +17,7 @@
 }
 ::-webkit-scrollbar-corner {
   background: white;
-}
+} */
 
 .send-form {
   position: absolute;
