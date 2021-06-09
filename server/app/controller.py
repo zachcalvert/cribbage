@@ -1,3 +1,4 @@
+import datetime
 import json
 import logging
 import os
@@ -52,6 +53,7 @@ def all_games():
             "players": g["players"],
             "jokers": g.get("jokers"),
             "crib_size": g.get("crib_size"),
+            "started": g.get("started"),
             "winning_score": g.get("winning_score"),
             "winner": g.get("winner")
         })
@@ -118,7 +120,7 @@ def start_game(game_data, **kwargs):
 
     players = list(game_data['players'].keys())
     if len(players) == 1:
-        bot = random.choice(['Bryan', 'Libby', 'Bev'])
+        bot = random.choice(['Bryan', 'Sally', 'Bev'])
         players.append(bot)
         game_data['players'][bot] = 0
     else:
@@ -157,6 +159,7 @@ def start_game(game_data, **kwargs):
         },
         'scored_hands': [],
         'scoring_summary': [],
+        'started': str(datetime.datetime.now(datetime.timezone.utc).astimezone()),
         'winning_score': int(winning_score)
     })
 
