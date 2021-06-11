@@ -130,10 +130,11 @@ export const Game = ()  => {
     if (gameName && !name) {
       setRoom(gameName);
       setInviteOpen(true);
-    } else if (localStorage.getItem('game') && localStorage.getItem('name')) {
-      setName(localStorage.getItem('name'));
-      setRoom(localStorage.getItem('game'));
+    } else if (localStorage.getItem('cribbage-live-game') && localStorage.getItem('cribbage-live-name')) {
+      setName(localStorage.getItem('cribbage-live-name'));
+      setRoom(localStorage.getItem('cribbage-live-game'));
       setInProgress(true);
+      setGameOpen(true);
       socket.emit("player_refresh", {name: name, game: room});
     }
   }, [room]);
@@ -248,18 +249,22 @@ export const Game = ()  => {
                 </Grid>
               </Typography>
 
-              <IconButton color='inherit' style={{"outline": "none"}} onClick={e => setHelpOpen(true)} aria-label="help">
-                <HelpOutlineRoundedIcon fontSize="inherit" />
-              </IconButton>
+              <Hidden smDown>
+                <IconButton color='inherit' style={{"outline": "none"}} onClick={e => setHelpOpen(true)} aria-label="help">
+                  <HelpOutlineRoundedIcon fontSize="inherit" />
+                </IconButton>
+              </Hidden>
               <IconButton edge="end" color="inherit" onClick={e => setLeaveGameOpen(true)} aria-label="close">
                 <CloseIcon />
               </IconButton>
             </Toolbar>
           </AppBar>
           
-          {/* <Hidden smDown> */}
-          <ChatLog prefersDarkMode={prefersDarkMode} />
-          {/* </Hidden> */}
+          <ChatLog />
+          { renderOpponents() }
+          { inProgress ? (<Scoreboard />) : (<StartMenu />) }
+          <Player name={ name }/>
+
         </Dialog>
       </Grid>
     </ThemeProvider>

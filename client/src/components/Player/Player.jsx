@@ -24,6 +24,7 @@ export const Player = (props) => {
   const [cribHelpText, setCribHelpText] = useState(null);
   const [scoring, setScoring] = useState(false);
 
+  const [open, setOpen] = useState(false);
   const [jokerSuit, setJokerSuit] = useState(null);
   const [jokerRank, setJokerRank] = useState(null);
 
@@ -68,7 +69,7 @@ export const Player = (props) => {
       setPlayableCards(msg.cards[props.name]);
       setPlayedCards([]);
       if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
-        showJokerModal();
+        setOpen(true);
       }
     }
   });
@@ -77,7 +78,7 @@ export const Player = (props) => {
     if (props.name in msg.cards) {
       setPlayableCards(msg.cards[props.name]);
       if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
-        showJokerModal();
+        setOpen(true);
       }
     }
     if (props.name in msg.played_cards) {
@@ -113,7 +114,7 @@ export const Player = (props) => {
   });
 
   useSocket('invalid_joker', msg => {
-    showJokerModal(true);
+    setOpen(true);
   });
 
   useSocket('pegging_total', msg => {
@@ -229,16 +230,16 @@ export const Player = (props) => {
 
   const handleJokerSelection = (e) => {
     socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit });
-    hideJokerModal();
+    setOpen(false);
     setJokerSuit(null);
     setJokerRank(null);
     clearRanks();
     clearSuits();
   };
 
-  const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (
+  return (
     <>
-      <Dialog className="cards-modal" open={open} onExited={hideJokerModal} onClose={false}>
+      <Dialog className="cards-modal" open={open} onClose={false}>
         <DialogTitle>
           You got a joker!
         </DialogTitle>
@@ -272,11 +273,7 @@ export const Player = (props) => {
           </button>
         </DialogContent>
       </Dialog>
-    </>
-  ), [jokerRank, jokerSuit]);
 
-  return (
-    <>
       <div className='row player-header'>
         <div className='col-3 played-cards'>
           { renderPlayedCards() }

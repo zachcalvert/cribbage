@@ -2,7 +2,7 @@ import React from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
 
-import { IconButton, InputAdornment, makeStyles, Paper, Slide, Snackbar, TextField } from "@material-ui/core";
+import { IconButton, InputAdornment, makeStyles, Paper, TextField, useMediaQuery } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import SendIcon from '@material-ui/icons/Send';
@@ -17,12 +17,13 @@ const useStyles = makeStyles((theme) => ({
     width: 400,
     position: 'relative',
     padding: theme.spacing(2),
+    background: theme.palette.background.default,
     [theme.breakpoints.down('sm')]: {
       position: 'fixed',
       bottom: 0,
       height: '30%',
       width: '100%',
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
       paddingTop: 0
     },
   },
@@ -36,8 +37,6 @@ const useStyles = makeStyles((theme) => ({
     height: 'calc(100% - 60px)',
     padding: theme.spacing(1),
     overflowY: 'scroll',
-    borderTopLeftRadius: '10px',
-    borderTopRightRadius: '10px',
     marginBottom: theme.spacing(1)
   },
   chatMessage: {
@@ -85,14 +84,12 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   messageField: {
-    // position: 'absolute',
-    top: 'auto',
-    bottom: theme.spacing(1),
-    margin: theme.spacing(1),
-    marginLeft: 0,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
     background: theme.palette.background.paper,
     [theme.breakpoints.down('sm')]: {
-      bottom: theme.spacing(2),
+      bottom: 0
     },
   }
 }));
@@ -104,6 +101,7 @@ export const ChatLog = ()  => {
   const [newMessage, setNewMessage] = React.useState('');
   const [showEmojis, setShowEmojis] = React.useState(false);
   const messagesEndRef = React.useRef(null);
+  const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("xs"));
   
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   
@@ -189,9 +187,13 @@ export const ChatLog = ()  => {
     );
   };
 
+  const paperProps = {
+    variant: isSmallScreen ? "outlined" : "elevation",
+  };
+
   return (
     <>
-      <Paper className={classes.root} elevation={3}>
+      <Paper className={classes.root} elevation={3} square {...paperProps}>
         { renderChat() }
         {showEmojis && (
           <span className={classes.emojiPicker}>
@@ -213,8 +215,6 @@ export const ChatLog = ()  => {
             fullWidth
             onChange={e => setNewMessage(e.target.value)}
             variant='outlined'
-            InputProps={{ 
-            }}
             InputProps={{ 
               startAdornment: 
               <InputAdornment position="start">
