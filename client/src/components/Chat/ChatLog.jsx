@@ -13,19 +13,14 @@ import 'emoji-mart/css/emoji-mart.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: '100%',
+    height: 'calc(100vh - 64px)',
     width: 400,
     position: 'relative',
     padding: theme.spacing(2),
-    background: theme.palette.background.default,
     [theme.breakpoints.down('sm')]: {
-      position: 'fixed',
-      bottom: 0,
-      height: '30%',
-      width: '100%',
-      padding: theme.spacing(1),
-      paddingTop: 0
-    },
+      height: 'calc(100vh - 57px)',
+      width: 'calc(100vw - 75px)',
+    }
   },
   animation: {
     backgroundRepeat: 'no-repeat',
@@ -46,15 +41,19 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'left',
     paddingLeft: theme.spacing(2)
   },
+  closeEmojiMenu: {
+    position: 'absolute',
+    top: '-10px',
+    right: '-10px',
+    color: 'red',
+    zIndex: 2
+  },
   emojiPicker: {
     position: 'absolute',
     bottom: theme.spacing(4),
     left: theme.spacing(2),
     zIndex: 1,
     textAlign: 'left',
-    [theme.breakpoints.down('sm')]: {
-      width: '90%'
-    }
   },
   playerChatMessage: {
     width: 'fit-content',
@@ -89,19 +88,17 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     background: theme.palette.background.paper,
     [theme.breakpoints.down('sm')]: {
-      bottom: 0
-    },
+      width: '100%'
+    }
   }
 }));
 
 export const ChatLog = ()  => {
   const classes = useStyles();
   const [messages, setMessages] = React.useState([]);
-  const [latestMessage, setLatestMessage] = React.useState('');
   const [newMessage, setNewMessage] = React.useState('');
   const [showEmojis, setShowEmojis] = React.useState(false);
   const messagesEndRef = React.useRef(null);
-  const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down("xs"));
   
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   
@@ -128,7 +125,6 @@ export const ChatLog = ()  => {
       let update = {name: newMessage.name, message: <div className={cn}>{newMessage.message}</div>};
       newMessage = update;
     }
-    setLatestMessage(newMessage.message);
     setMessages([...messages, newMessage]);
     boop()
   });
@@ -187,17 +183,13 @@ export const ChatLog = ()  => {
     );
   };
 
-  const paperProps = {
-    variant: isSmallScreen ? "outlined" : "elevation",
-  };
-
   return (
     <>
-      <Paper className={classes.root} elevation={3} square {...paperProps}>
+      <Paper className={classes.root} elevation={3} square>
         { renderChat() }
         {showEmojis && (
           <span className={classes.emojiPicker}>
-            <IconButton className="close-emoji-menu" onClick={handleEmojiMenu} aria-label="leave">
+            <IconButton className={classes.closeEmojiMenu} onClick={handleEmojiMenu} aria-label="leave">
               <CancelIcon fontSize="inherit" />
             </IconButton>
             <Picker

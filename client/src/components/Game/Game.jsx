@@ -2,7 +2,7 @@ import React from 'react';
 import { useSocket } from "use-socketio";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Hidden, ThemeProvider } from '@material-ui/core';
+import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, ThemeProvider } from '@material-ui/core';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -12,7 +12,9 @@ import Toolbar from '@material-ui/core/Toolbar';
 import HelpOutlineRoundedIcon from '@material-ui/icons/HelpOutlineRounded';
 import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
+
 import CloseIcon from '@material-ui/icons/Close';
+import ForumIcon from '@material-ui/icons/Forum';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import NightsStayRoundedIcon from '@material-ui/icons/NightsStayRounded';
 import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded';
@@ -33,12 +35,14 @@ const randomWords = require('random-words');
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    display: "flex",
     height: '100%',
     width: '100%'
   },
   appBar: {
     position: 'relative',
     background: '#4E78A0',
+    zIndex: theme.zIndex.drawer + 1,
   },
   closeModal: {
     position: 'absolute',
@@ -47,6 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
   darkModeToggle: {
     margin: theme.spacing(2)
+  },
+  drawer: {
+    width: 250,
+    flexShrink: 0,
+    [theme.breakpoints.down('sm')]: {
+      width: 'calc(100vw - 75px)',
+    }
+  },
+  drawerContainer: {
+    overflow: 'auto',
+  },
+  drawerButton: {
+    outline: 'none'
   },
   form: {
     margin: 'auto',
@@ -64,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
     textAlign: 'left',
   },
+  toolbar: theme.mixins.toolbar,
   toolbarButton: {
     outline: 'none'
   }
@@ -84,11 +102,24 @@ export const Game = ()  => {
   const [opponents, setOpponents] = React.useState([]);
   const [inProgress, setInProgress] = React.useState(false);
   const [prefersDarkMode, setPrefersDarkMode] = React.useState(localStorage.getItem('dark-mode') === 'true');
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+
   const theme = createMuiTheme({
     palette: {
       type: prefersDarkMode ? 'dark' : 'light',
     }
   });
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const drawer = (
+    <div>
+      <div className={classes.toolbar} />
+      <ChatLog />
+    </div>
+  );
 
   const handleDarkModeChange = () => {
     setPrefersDarkMode(!prefersDarkMode);
@@ -234,10 +265,21 @@ export const Game = ()  => {
         </Dialog>
 
         <Dialog className={classes.game} fullScreen open={gameOpen} TransitionComponent={Transition}>
-          <AppBar className={classes.appBar}>
+          <AppBar position='fixed' className={classes.appBar}>
             <Toolbar>
+              <Hidden mdUp>
+              <IconButton
+                color="inherit"
+                aria-label="open drawer"
+                edge="start"
+                onClick={handleDrawerToggle}
+                className={classes.drawerButton}
+              >
+                <ForumIcon />
+              </IconButton>
+              </Hidden>
               <Typography variant="h6" className={classes.title}>
-                { room }
+                cribbage.live
               </Typography>
               <Typography className={classes.darkModeToggle} component="div">
                 <Grid component="label" container alignItems="center" spacing={1}>
@@ -260,7 +302,33 @@ export const Game = ()  => {
             </Toolbar>
           </AppBar>
           
-          <ChatLog />
+          <nav className={classes.drawer}>
+            <Hidden mdDown implementation="css">
+              <Drawer
+                variant="temporary"
+                anchor='left'
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{
+                  keepMounted: true, // Better open performance on mobile.
+                }}
+              >
+                {drawer}
+              </Drawer>
+            </Hidden>
+            <Hidden smDown implementation="css">
+              <Drawer
+                classes={{
+                  paper: classes.drawerPaper,
+                }}
+                variant="permanent"
+                open
+              >
+                {drawer}
+              </Drawer>
+            </Hidden>
+          </nav>
+
           { renderOpponents() }
           { inProgress ? (<Scoreboard />) : (<StartMenu />) }
           <Player name={ name }/>
