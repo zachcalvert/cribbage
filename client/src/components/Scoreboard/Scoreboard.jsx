@@ -13,8 +13,9 @@ const colorClassMap = {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
+  scoreboard: {
     padding: theme.spacing(2),
+    paddingLeft: theme.spacing(3),
     height: '30%',
   },
   skunkLine: {
@@ -61,7 +62,7 @@ export const Scoreboard = () => {
     const { [name]: playerScore, ...opponents } = players;
 
     return opponents ? (
-      <div className={classes.root}>
+      <div className={classes.scoreboard}>
         {Object.entries(opponents).map( ([player, score], index) => (
           <div key={index} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-10'>{player}</span>

@@ -77,7 +77,6 @@ export const Opponent = (props) => {
         {playedCards.map((card, index) => (
           <ReactSVG
             id={card}
-            className='opponent-played-card'
             key={index}
             wrapper='span'
             src={`/cards/${card}.svg`}
