@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-      height: 'calc(100vh - 57px)',
+      height: 'calc(100vh - 84px)',
       width: 'calc(100vw - 75px)',
     }
   },
@@ -207,6 +207,7 @@ export const ChatLog = ()  => {
             fullWidth
             onChange={e => setNewMessage(e.target.value)}
             variant='outlined'
+            value={newMessage}
             InputProps={{ 
               startAdornment: 
               <InputAdornment position="start">
