@@ -4,14 +4,23 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
 
-import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/core";
+import { Chip, Dialog, DialogContent, DialogTitle, Divider, Fab, Grid, makeStyles } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
-import { useModal } from "react-modal-hook";
 import { ViewColumn } from "@material-ui/icons";
-import Chip from "@material-ui/core/Chip";
+
+const useStyles = makeStyles((theme) => ({
+  player: {
+    padding: theme.spacing(2),
+    height: '40%',
+    textAlign: 'center',
+    position: 'fixed',
+    bottom: 0
+  },
+}));
 
 export const Player = (props) => {
+  const classes = useStyles();
   const game = localStorage.getItem('cribbage-live-game');
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
@@ -274,7 +283,7 @@ export const Player = (props) => {
         </DialogContent>
       </Dialog>
 
-      <div className='row player-header'>
+      <Grid container className={classes.player}>
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
@@ -303,11 +312,12 @@ export const Player = (props) => {
             /> : <span/>
            }
         </div>
-      </div>
-      <Divider variant="middle" />
-      <div className="player-cards">
-        { renderPlayableCards() }
-      </div>
+        <Divider variant="middle" />
+        <div className="player-cards">
+          { renderPlayableCards() }
+        </div>
+      </Grid>
+
     </>
   );
 };

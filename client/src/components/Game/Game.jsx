@@ -25,7 +25,7 @@ import { AntSwitch } from "../AntSwitch/AntSwitch";
 import { HelpScreen } from "../HelpScreen/HelpScreen";
 import { ChatLog } from '../Chat/ChatLog';
 import { Deck } from "../Deck/Deck";
-import { InviteLink } from '../InviteMessage/InviteMessage';
+import { InviteMessage } from '../InviteMessage/InviteMessage';
 import { Opponent } from "../Opponent/Opponent";
 import { Player } from "../Player/Player";
 import { Scoreboard } from "../Scoreboard/Scoreboard";
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2)
   },
   drawer: {
-    width: 250,
+    width: 400,
     flexShrink: 0,
     [theme.breakpoints.down('sm')]: {
       width: 'calc(100vw - 75px)',
@@ -73,8 +73,27 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
     width: '35ch'
   },
-  game: {
-    height: '100%'
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    margin: 0,
+    position: 'relative',
+    left: '400px',
+    width: 'calc(100vw - 400px)',
+    [theme.breakpoints.down('sm')]: {
+      left: 0,
+      width: '100%'
+    }
+  },
+  deck: {
+    marginLeft: '-25px',
+    marginTop: '5px'
+  },
+  opponents: {
+    height: '25%',
+    display: 'inline-flex',
+    textAlign: 'center',
+    width: '100%'
   },
   title: {
     marginLeft: theme.spacing(2),
@@ -164,23 +183,23 @@ export const Game = ()  => {
     } else if (localStorage.getItem('cribbage-live-game') && localStorage.getItem('cribbage-live-name')) {
       setName(localStorage.getItem('cribbage-live-name'));
       setRoom(localStorage.getItem('cribbage-live-game'));
-      setInProgress(true);
       setGameOpen(true);
+      setInProgress(true);
       socket.emit("player_refresh", {name: name, game: room});
     }
   }, [room]);
 
   const renderOpponents = () => {
     return inProgress || opponents.length ? (
-      <>
+      <div className={classes.opponents}>
         {opponents.map(name => (
           <div key={name} className={`opponent opponent-${name}`}>
             <Opponent name={name} />
           </div>
         ))}
-      </>
+      </div>
     ) : (
-      <InviteLink />
+      <InviteMessage room={room} />
     );
   };
 
@@ -279,7 +298,7 @@ export const Game = ()  => {
               </IconButton>
               </Hidden>
               <Typography variant="h6" className={classes.title}>
-                cribbage.live
+                {room}
               </Typography>
               <Typography className={classes.darkModeToggle} component="div">
                 <Grid component="label" container alignItems="center" spacing={1}>
@@ -328,10 +347,20 @@ export const Game = ()  => {
               </Drawer>
             </Hidden>
           </nav>
-
-          { renderOpponents() }
-          { inProgress ? (<Scoreboard />) : (<StartMenu />) }
-          <Player name={ name }/>
+          <main className={classes.content}>
+            {/* <div className={classes.toolbar} /> */}
+            { renderOpponents() }
+            <div className='row'>
+              { inProgress ? (
+                <div className='col-9'>
+                  <Scoreboard />
+                </div>) : (<StartMenu />) }
+              <div className={`${classes.deck} col-3`}>
+                <Deck />
+              </div>
+            </div>
+            <Player name={ name }/>
+          </main>
 
         </Dialog>
       </Grid>

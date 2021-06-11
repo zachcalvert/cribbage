@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
-import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles, Tooltip } from '@material-ui/core';
 
 import './Scoreboard.css'
 
@@ -12,7 +12,22 @@ const colorClassMap = {
   3: 'scoreboard-player-progress player-four'
 };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: theme.spacing(2),
+    height: '30%',
+  },
+  skunkLine: {
+    position: 'absolute',
+    left: 'calc(75% - 4px)',
+    bottom: '-7px',
+    fontSize: '20px',
+    color: 'black'
+  }
+}));
+
 export const Scoreboard = () => {
+  const classes = useStyles();
   const game = localStorage.getItem('cribbage-live-game');
   const name = localStorage.getItem('cribbage-live-name');
   const [players, setPlayers] = useState({});
@@ -46,7 +61,7 @@ export const Scoreboard = () => {
     const { [name]: playerScore, ...opponents } = players;
 
     return opponents ? (
-      <>
+      <div className={classes.root}>
         {Object.entries(opponents).map( ([player, score], index) => (
           <div key={index} className='scoreboard-player row'>
             <span className='scoreboard-player-name col-10'>{player}</span>
@@ -57,7 +72,7 @@ export const Scoreboard = () => {
                 aria-valuemin="0" aria-valuenow={score} aria-valuemax={winningScore}
                 style={{"width": `${score/winningScore * 100}%`}}>
               </div>
-              <Tooltip className="skunk-line" title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span>|</span></Tooltip>
+              <Tooltip className={classes.skunkLine} title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span>|</span></Tooltip>
             </div>
             <div className="scoreboard-player-score col-2">{score}</div>
           </div>
@@ -71,11 +86,11 @@ export const Scoreboard = () => {
               aria-valuemin="0" aria-valuenow={playerScore} aria-valuemax={winningScore}
               style={{"width": `${playerScore/winningScore * 100}%`}}>
             </div>
-            <Tooltip className="skunk-line" title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span >|</span></Tooltip>
+            <Tooltip className={classes.skunkLine} title={`Skunk line is ${skunkLine}`} aria-label="skunk-line"><span >|</span></Tooltip>
           </div>
           <div className="scoreboard-player-score col-2">{playerScore}</div>
         </div>
-      </>
+      </div>
     ) : (
       <span />
     );

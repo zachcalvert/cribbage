@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import { useSocket } from "use-socketio";
 import { ReactSVG } from 'react-svg'
-import { Divider } from "@material-ui/core";
+import { Divider, makeStyles } from "@material-ui/core";
 import './Opponent.css'
 
+const useStyles = makeStyles((theme) => ({
+  opponent: {
+    padding: theme.spacing(1)
+  },
+}));
+
 export const Opponent = (props) => {
+  const classes = useStyles();
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);
@@ -83,13 +90,13 @@ export const Opponent = (props) => {
   };
 
   return (
-    <>
+    <div className={classes.opponent}>
       {scoringCards.length ? (
           <span className="opponent-score-display">{ scoreDisplay }</span>
           ) : <span>{props.name}</span> }
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }
-    </>
+    </div>
   );
 }

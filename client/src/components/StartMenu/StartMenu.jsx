@@ -43,11 +43,11 @@ export const StartMenu = () => {
 
   return (
     <>
-      <Dialog open={open}>
+      <Dialog style={{ textAlign: 'center'}} open={open}>
         <DialogTitle>
           Game setup
         </DialogTitle>
-        <DialogContent>
+        <DialogContent dividers>
           <GameSettings />
         </DialogContent>
       </Dialog>

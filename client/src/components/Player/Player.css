@@ -7,44 +7,6 @@
   color: white!important;
 }
 
-.player {
-  display: inline-block;
-  width: 100%;
-  min-height: 200px;
-  text-align: center;
-}
-
-.player-header {
-  max-height: 60px;
-  margin: auto;
-}
-
-.player svg {
-  height: auto;
-  width: 13%;
-  padding: 0;
-  border-radius: 5px;
-  border: 1px solid #E0E0E0;
-  margin: 15px 5px;
-  pointer-events: none;
-}
-
-.player rect {
-  pointer-events: none;
-}
-
-.player svg:hover {
-  margin-bottom: 15px;
-}
-
-.player rect {
-  width: auto;
-}
-
-.player-name {
-  padding: 0 20px;
-}
-
 .crib-help-chip {
   margin-top: 12px;
 }
