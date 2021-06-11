@@ -24,8 +24,8 @@
 }
 
 .spaced-opponent-card svg {
-  margin: 0;
-  width: 40%;
+  margin: 0 -1em;
+  width: 33%;
 }
 
 .active-opponent-card svg {

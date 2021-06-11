@@ -246,9 +246,9 @@ export const Game = ()  => {
           <DialogTitle>
             Are you sure you want to leave?
           </DialogTitle>
-          <DialogContent>
-            <Button variant='contained' color='primary' onClick={e => setLeaveGameOpen(false)}>Stay</Button>
-            <Button variant='contained' color='secondary' onClick={handleLeaveGame}>Leave</Button>
+          <DialogContent style={{ display: 'inline-flex' }}>
+            <Button style={{ margin: 'auto' }} variant='contained' color='primary' onClick={e => setLeaveGameOpen(false)}>Stay</Button>
+            <Button style={{ margin: 'auto' }} variant='contained' color='secondary' onClick={handleLeaveGame}>Leave</Button>
           </DialogContent>
         </Dialog>
 
