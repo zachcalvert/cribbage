@@ -129,4 +129,8 @@ html, body {
   .send-message-button {
     font-size: 1.5rem!important;
   }
+
+  .animated-cards-container {
+    left: -10%;
+  }
 }

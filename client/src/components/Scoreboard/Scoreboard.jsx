@@ -17,11 +17,15 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
     height: '30%',
+    [theme.breakpoints.down('sm')]: {
+      padding: theme.spacing(1),
+      paddingLeft: theme.spacing(1),
+    }
   },
   skunkLine: {
     position: 'absolute',
     left: 'calc(75% - 4px)',
-    bottom: '-7px',
+    bottom: '-8px',
     fontSize: '20px',
     color: 'black'
   }

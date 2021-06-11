@@ -31,18 +31,10 @@
   background-color: #b71c1c!important;
 }
 
-
 .player-three {
   background-color: #388e3c!important;
 }
 
 .player-four {
   background-color: #fdd835!important;
-}
-
-.skunk-line {
-  position: absolute;
-  left: calc(75% - 4px);
-  bottom: -7px;
-  font-size: 20px;
 }

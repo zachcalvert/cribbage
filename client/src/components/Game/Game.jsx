@@ -90,6 +90,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '-30px',
     marginTop: '5px'
   },
+  gameTable: {
+    background: '#8d6e63',
+    height: '30%',
+    borderRadius: '10px',
+    margin: theme.spacing(3),
+    [theme.breakpoints.down('sm')]: {
+      margin: theme.spacing(1),
+    }
+  },
   opponents: {
     height: '25%',
     display: 'inline-flex',
@@ -351,15 +360,19 @@ export const Game = ()  => {
           <main className={classes.content}>
             {/* <div className={classes.toolbar} /> */}
             { renderOpponents() }
-            <div className='row'>
-              { inProgress ? (
-                <div className='col-9'>
+            { inProgress ? (
+              <div className={`row ${classes.gameTable}`}>
+                <div style={{ margin: 'auto' }} className='col-9'>
                   <Scoreboard />
-                </div>) : (<StartMenu />) }
-              <div className={`${classes.deck} col-3`}>
+                </div>
+                <div className={`${classes.deck} col-3`}>
                 <Deck />
               </div>
             </div>
+            ) : (
+              <StartMenu />
+            )}
+
             <Player name={ name }/>
           </main>
 

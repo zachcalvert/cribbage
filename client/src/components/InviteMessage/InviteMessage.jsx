@@ -3,19 +3,14 @@ import { Card, CardActions, CardContent, Link, makeStyles, ThemeProvider, Typogr
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: 350,
+    background: theme.palette.background.default,
+    width: 'auto',
     height: 'auto',
-    margin: 'auto',
-    padding: theme.spacing(1),
-    [theme.breakpoints.down('md')]: {
-      marginLeft: 400
-    },
-    [theme.breakpoints.down('sm')]: {
-      marginLeft: 'auto'
-    }
+    margin: theme.spacing(2),
+    padding: theme.spacing(1)
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
   },
   pos: {
     marginBottom: 12,

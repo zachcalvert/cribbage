@@ -1,5 +1,7 @@
 .animated-cards-container {
   position: absolute;
+  left: 10%;
+  top: 10%;
   will-change: transform;
   display: flex;
   align-items: center;

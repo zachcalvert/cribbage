@@ -6,7 +6,7 @@ import './Opponent.css'
 
 const useStyles = makeStyles((theme) => ({
   opponent: {
-    padding: theme.spacing(1)
+    padding: theme.spacing(1),
   },
 }));
 

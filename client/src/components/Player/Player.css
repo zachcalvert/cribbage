@@ -1,7 +1,3 @@
-.action-button {
-  margin-bottom: 10px!important;
-}
-
 .scoring-button {
   background-color: green!important;
   color: white!important;
@@ -14,11 +10,10 @@
 .player-cards {
   min-height: 210px;
   display: inline-flex;
-  padding: 0 10px;
 }
 
 .player-cards span {
-  padding: 3px 3px 0;
+  padding: 0 2px;
 }
 
 .pegging-total {
