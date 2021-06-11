@@ -82,11 +82,12 @@ const useStyles = makeStyles((theme) => ({
     width: 'calc(100vw - 400px)',
     [theme.breakpoints.down('sm')]: {
       left: 0,
-      width: '100%'
+      width: '100%',
+      padding: theme.spacing(1)
     }
   },
   deck: {
-    marginLeft: '-25px',
+    marginLeft: '-30px',
     marginTop: '5px'
   },
   opponents: {
@@ -165,7 +166,7 @@ export const Game = ()  => {
   };
 
   const handleLeaveGame = () => {
-    socket.emit("player_leave", {name: localStorage.getItem('name'), game: localStorage.getItem('game')});
+    socket.emit("player_leave", {name: localStorage.getItem('cribbage-live-name'), game: localStorage.getItem('cribbage-live-game')});
     localStorage.removeItem('cribbage-live-name');
     localStorage.removeItem('cribbage-live-game');
     setInProgress(false);

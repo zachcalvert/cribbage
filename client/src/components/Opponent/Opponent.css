@@ -1,6 +1,5 @@
 .opponent {
   margin: auto;
-  width: 50%;
   max-width: 250px;
   text-align: center;
 }
@@ -26,7 +25,7 @@
 
 .spaced-opponent-card svg {
   margin: 0;
-  width: 25%;
+  width: 40%;
 }
 
 .active-opponent-card svg {
