@@ -9,8 +9,8 @@ import GameSettings from "./GameSettings";
 
 
 export const StartMenu = () => {
-  const game = sessionStorage.getItem('game');
-  const name = sessionStorage.getItem('name');
+  const game = localStorage.getItem('cribbage-live-game');
+  const name = localStorage.getItem('cribbage-live-name');
   const [startable, setStartable] = useState(true);
   const [buttonText, setButtonText] = useState('Start')
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });

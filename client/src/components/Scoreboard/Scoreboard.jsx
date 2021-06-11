@@ -13,8 +13,8 @@ const colorClassMap = {
 };
 
 export const Scoreboard = () => {
-  const game = sessionStorage.getItem('game');
-  const name = sessionStorage.getItem('name');
+  const game = localStorage.getItem('cribbage-live-game');
+  const name = localStorage.getItem('cribbage-live-name');
   const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
   const [skunkLine, setSkunkLine] = useState(0);

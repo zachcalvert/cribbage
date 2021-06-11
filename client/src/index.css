@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.emoji-mart-scroll + .emoji-mart-bar {
+  display: none;
+}

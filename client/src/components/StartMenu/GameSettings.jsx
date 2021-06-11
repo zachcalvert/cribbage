@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function GameSettings() {
   const classes = useStyles();
-  const game = sessionStorage.getItem('game');
+  const game = localStorage.getItem('cribbage-live-game');
 
   const gameType = 'cribbage';
   const [cribSize, setCribSize] = useState(4);
