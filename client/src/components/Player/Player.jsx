@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     height: '40%',
     textAlign: 'center',
-    position: 'fixed',
     bottom: 0
   },
 }));
@@ -186,7 +185,7 @@ export const Player = (props) => {
   };
 
   const renderPlayableCards = () => {
-    return playableCards.length ? (
+    return playableCards.length && (
       <>
         {trail.map(({ x, height, ...rest }, index) => (
           <animated.div
@@ -206,9 +205,7 @@ export const Player = (props) => {
           </animated.div>
         ))}
       </>
-    ) : (
-      <span />
-    );
+    )
   };
 
   const clearSuits = () => {
@@ -312,7 +309,7 @@ export const Player = (props) => {
             /> : <span/>
            }
         </div>
-        <Divider variant="middle" />
+        <Divider />
         <div className="player-cards">
           { renderPlayableCards() }
         </div>
