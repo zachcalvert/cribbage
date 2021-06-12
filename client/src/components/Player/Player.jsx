@@ -195,20 +195,22 @@ export const Player = (props) => {
   };
 
   const renderPlayableCards = () => {
-    return playableCards.length && (
-      <>
-        {playableCards.map((card, index) => (
-          <ReactSVG
-            id={playableCards[index]}
-            className={`${activeCards.includes(playableCards[index]) ? `active-card ${classes.card}`: classes.card }`}
-            key={index}
-            onClick={handleCardClick}
-            wrapper='span'
-            src={`/cards/${playableCards[index]}.svg`}
-          />
-        ))}
-      </>
-    )
+    if (playableCards.length) {
+      return (
+        <>
+          {playableCards.map((card, index) => (
+            <ReactSVG
+              id={playableCards[index]}
+              className={`${activeCards.includes(playableCards[index]) ? `active-card ${classes.card}`: classes.card }`}
+              key={index}
+              onClick={handleCardClick}
+              wrapper='span'
+              src={`/cards/${playableCards[index]}.svg`}
+            />
+          ))}
+        </>
+      )
+    }
   };
 
   const clearSuits = () => {

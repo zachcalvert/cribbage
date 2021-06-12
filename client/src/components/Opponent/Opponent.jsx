@@ -54,34 +54,39 @@ export const Opponent = (props) => {
   });
 
   const renderCards = () => {
-    return playableCards.length && (
-      <span>
-        {playableCards.map((card, index) => (
-          <ReactSVG
-            key={index}
-            wrapper='span'
-            className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
-            ${showCards && "overlapping-card"}`}
-            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
-          />
-        ))}
-      </span>
-    )
+    if (playableCards.length) {
+      return playableCards.length && (
+        <span>
+          {playableCards.map((card, index) => (
+            <ReactSVG
+              key={index}
+              wrapper='span'
+              className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
+              ${showCards && "overlapping-card"}`}
+              src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
+              style={playableCards.length === 1 ? {'width': '100%'} : {}}
+            />
+          ))}
+        </span>
+      )
+    }
   };
 
   const renderPlayedCards = () => {
-    return playedCards.length && (
-      <>
-        {playedCards.map((card, index) => (
-          <ReactSVG
-            id={card}
-            key={index}
-            wrapper='span'
-            src={`/cards/${card}.svg`}
-          />
-        ))}
-      </>
-    )
+    if (playedCards.length) {
+      return (
+        <>
+          {playedCards.map((card, index) => (
+            <ReactSVG
+              id={card}
+              key={index}
+              wrapper='span'
+              src={`/cards/${card}.svg`}
+            />
+          ))}
+        </>
+      )
+    }
   };
 
   return (

@@ -3,15 +3,6 @@
   color: white!important;
 }
 
-.player-cards {
-  min-height: 210px;
-  width: 100%;
-}
-
-.player-cards span {
-  padding: 0 2px;
-}
-
 .pegging-total {
   font-size: 32px;
   color: #009688;
@@ -26,14 +17,6 @@
     height: 90px;
     width: auto;
     margin: -30px -25px 0 auto;
-}
-
-.available-card {
-  height: 100%;
-  max-width: 120px;
-  transition: margin 300ms;
-  float: left;
-  margin: 65px -45px 0 0
 }
 
 .active-card svg {
