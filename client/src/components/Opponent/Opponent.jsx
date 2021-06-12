@@ -54,25 +54,23 @@ export const Opponent = (props) => {
   });
 
   const renderCards = () => {
-    return playableCards.length ? (
+    return playableCards.length && (
       <span>
         {playableCards.map((card, index) => (
           <ReactSVG
             key={index}
             wrapper='span'
             className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
-            ${showCards ? "spaced-opponent-card" : ""}`}
+            ${showCards && "overlapping-card"}`}
             src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
       </span>
-    ) : (
-      <span />
-    );
+    )
   };
 
   const renderPlayedCards = () => {
-    return playedCards.length ? (
+    return playedCards.length && (
       <>
         {playedCards.map((card, index) => (
           <ReactSVG
@@ -83,16 +81,15 @@ export const Opponent = (props) => {
           />
         ))}
       </>
-    ) : (
-      <span />
-    );
+    )
   };
 
   return (
     <div className={classes.opponent}>
       {scoringCards.length ? (
-          <span className="opponent-score-display">{ scoreDisplay }</span>
-          ) : <span>{props.name}</span> }
+        <span className="opponent-score-display">{ scoreDisplay }</span>
+        ) : <span>{props.name}</span>
+      }
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }

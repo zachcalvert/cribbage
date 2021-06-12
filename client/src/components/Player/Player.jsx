@@ -16,6 +16,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     bottom: 0
   },
+  actionButton: {
+    margin: theme.spacing(2)
+  },
+  cribChip: {
+    marginTop: theme.spacing(3)
+  }
 }));
 
 export const Player = (props) => {
@@ -35,16 +41,6 @@ export const Player = (props) => {
   const [open, setOpen] = useState(false);
   const [jokerSuit, setJokerSuit] = useState(null);
   const [jokerRank, setJokerRank] = useState(null);
-
-  // dealt card animation
-  const config = { mass: 5, tension: 2000, friction: 100 }
-  const trail = useTrail(playableCards.length, {
-    config,
-    opacity: playableCards ? 1 : 1,
-    x: playableCards ? 0 : 20,
-    height: playableCards ? 20 : 0,
-    from: { opacity: 1, x: 20, height: 0 },
-  });
 
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
 
@@ -150,6 +146,10 @@ export const Player = (props) => {
   };
 
   const handleCardClick = (e) => {
+    console.log(e.target)
+    console.log(e.target.parentNode);
+    console.log(e.target.parentNode.parentNode);
+
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
     if (action === 'discard') {
       activeCards.includes(card) ? (
@@ -159,9 +159,9 @@ export const Player = (props) => {
       )
     } else {
       card === activeCards[0] ? (
-          setActiveCards([])
+        setActiveCards([])
       ) : (
-          setActiveCards([card])
+        setActiveCards([card])
       )
     }
   };
@@ -187,22 +187,15 @@ export const Player = (props) => {
   const renderPlayableCards = () => {
     return playableCards.length && (
       <>
-        {trail.map(({ x, height, ...rest }, index) => (
-          <animated.div
-            key={playableCards[index]}
-            className="trails-text"
-            style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
-            <animated.div style={{ height }}>
-              <ReactSVG
-                id={playableCards[index]}
-                className={`${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }`}
-                key={index}
-                onClick={handleCardClick}
-                wrapper='span'
-                src={`/cards/${playableCards[index]}.svg`}
-              />
-            </animated.div>
-          </animated.div>
+        {playableCards.map((card, index) => (
+          <ReactSVG
+            id={playableCards[index]}
+            className={`${activeCards.includes(playableCards[index]) ? 'active-card overlapping-card': 'overlapping-card' }`}
+            key={index}
+            onClick={handleCardClick}
+            wrapper='span'
+            src={`/cards/${playableCards[index]}.svg`}
+          />
         ))}
       </>
     )
@@ -245,7 +238,7 @@ export const Player = (props) => {
 
   return (
     <>
-      <Dialog className="cards-modal" open={open} onClose={false}>
+      <Dialog className="joker-modal" open={open} onClose={false}>
         <DialogTitle>
           You got a joker!
         </DialogTitle>
@@ -284,29 +277,27 @@ export const Player = (props) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        {action ? <div className='col-6'>
+        {action && <div className='col-6'>
           <Fab variant="extended"
-            className={scoring ? "scoring-button action-button" : "action-button"}
+            className={scoring ? `scoring-button ${classes.actionButton}` : classes.actionButton}
             color="primary"
             onClick={handleAction}
             disabled={!turn}>
             { action }
           </Fab>
-        </div> : <span/>}
+        </div>}
         <div className='col-3'>
-          {showPeggingTotal ? (
+          {showPeggingTotal && (
             <span className='pegging-total'>{peggingTotal}</span>
-          ) : (
-            <span />
           )}
-          {cribHelpText ?
+          {cribHelpText &&
             <Chip
-              className='crib-help-chip'
+              className={classes.cribChip}
               icon={<ViewColumn />}
               label={cribHelpText}
               color={cribHelpText.includes('your') ? 'primary' : 'secondary'}
               variant="sharp"
-            /> : <span/>
+            />
            }
         </div>
         <Divider />
@@ -314,7 +305,6 @@ export const Player = (props) => {
           { renderPlayableCards() }
         </div>
       </Grid>
-
     </>
   );
 };

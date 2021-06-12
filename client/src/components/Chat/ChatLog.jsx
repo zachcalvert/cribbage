@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     padding: theme.spacing(2),
     [theme.breakpoints.down('sm')]: {
-      height: 'calc(100vh - 84px)',
+      height: 'calc(100vh - 57px)',
       width: 'calc(100vw - 75px)',
     }
   },
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
     backgroundSize: '50px 50px',
     width: '50px',
     height: '50px'
+  },
+  bigMessage: {
+    fontWeight: 'bold'
   },
   chat: {
     height: 'calc(100% - 60px)',
@@ -55,6 +58,12 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 1,
     textAlign: 'left',
   },
+  gameUpdate: {
+    textAlign: 'center',
+    fontSize: 14,
+    padding: '3px 0',
+    fontFamily: 'helvetica'
+  },
   playerChatMessage: {
     width: 'fit-content',
     marginLeft: 'auto',
@@ -81,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       fontSize: 16
     }
+  },
+  pointsMessage: {
+    color: '#388e3c'
   },
   messageField: {
     position: 'absolute',
@@ -116,11 +128,9 @@ export const ChatLog = ()  => {
     if (newMessage.name === 'game-updater') {
       let cn;
       if (newMessage.type === 'points') {
-        cn = 'points-message big-message update'
+        cn = `${classes.pointsMessage} ${classes.bigMessage}`
       } else if (newMessage.type === 'big') {
-        cn = 'big-message update'
-      } else {
-        cn = 'update'
+        cn = classes.bigMessage
       }
       let update = {name: newMessage.name, message: <div className={cn}>{newMessage.message}</div>};
       newMessage = update;
@@ -156,11 +166,11 @@ export const ChatLog = ()  => {
   };
 
   const renderChat = () => {
-    return messages.length ? (
+    return messages.length && (
       <div className={classes.chat}>
         {messages.map(({name, message}, index) => (
             name === 'game-updater' ? (
-              <div key={index} className='game-update' color='textPrimary'>
+              <div key={index} className={classes.gameUpdate} color='textPrimary'>
                 { message }
               </div>
             ) : (
@@ -178,9 +188,7 @@ export const ChatLog = ()  => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-    ) : (
-      <p/>
-    );
+    )
   };
 
   return (

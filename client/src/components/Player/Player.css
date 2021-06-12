@@ -3,13 +3,9 @@
   color: white!important;
 }
 
-.crib-help-chip {
-  margin-top: 12px;
-}
-
 .player-cards {
   min-height: 210px;
-  display: inline-flex;
+  width: 100%;
 }
 
 .player-cards span {
@@ -34,19 +30,17 @@
 
 .available-card {
   height: 100%;
-  display: inline-block;
   max-width: 120px;
   transition: margin 300ms;
+  float: left;
+  margin: 65px -45px 0 0
 }
 
-.active-card {
+.active-card svg {
   margin-top: -15px;
   box-shadow: 0 8px 6px -6px black;
-  height: fit-content;
-}
-
-.ReactModal__Content {
-  text-align: center;
+  transition: margin 300ms;
+  z-index: 10;
 }
 
 .selected-rank {

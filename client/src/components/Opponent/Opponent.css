@@ -1,6 +1,6 @@
 .opponent {
   margin: auto;
-  max-width: 250px;
+  max-width: 300px;
   text-align: center;
   min-height: 100%;
 }
@@ -22,13 +22,16 @@
   margin: 0 -5px;
 }
 
-.spaced-opponent-card svg {
-  margin: 0 -1em;
-  width: 33%;
+.overlapping-card svg {
+  margin: 0 -2em;
+  width: 30%;
+  max-width: 130px;
 }
 
 .active-opponent-card svg {
   border: 2px solid green;
+  width: 31%;
+  z-index: 2;
 }
 
 .opponent-score-display {

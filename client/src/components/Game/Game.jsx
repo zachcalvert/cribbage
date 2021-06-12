@@ -358,7 +358,6 @@ export const Game = ()  => {
             </Hidden>
           </nav>
           <main className={classes.content}>
-            {/* <div className={classes.toolbar} /> */}
             { renderOpponents() }
             { inProgress ? (
               <div className={`row ${classes.gameTable}`}>
@@ -372,8 +371,7 @@ export const Game = ()  => {
             ) : (
               <StartMenu />
             )}
-
-            <Player name={ name }/>
+            <Player name={name} />
           </main>
 
         </Dialog>
