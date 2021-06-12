@@ -25,6 +25,12 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     margin: '-35px',
   },
+  playedCard: {
+    width: '6em',
+    height: 'auto',
+    padding: 0,
+    margin: '0 0 0 -65px',
+  },
   cardsContainer: {
     width: '50%',
     marginLeft: 'auto',
@@ -37,7 +43,9 @@ const useStyles = makeStyles((theme) => ({
     marginTop: theme.spacing(3)
   },
   peggingTotal: {
-    margin: 'auto'
+    marginTop: '1rem',
+    fontSize: '32px',
+    color: '#009688'
   },
   playedCards: {
     margin: 'auto'
@@ -193,7 +201,7 @@ export const Player = (props) => {
         {playedCards.map((card, index) => (
           <ReactSVG
             id={card}
-            className={`played-card ${classes.card}`}
+            className={`played-card ${classes.playedCard}`}
             key={index}
             wrapper='span'
             src={`/cards/${card}.svg`}
@@ -308,18 +316,18 @@ export const Player = (props) => {
             { action }
           </Button>
         </Grid>}
-        <Grid item xs={3}>
-          {showPeggingTotal && (
-            <span className={classes.peggingTotal}>{peggingTotal}</span>
-          )}
-          {cribHelpText &&
+        <Grid className={classes.peggingTotal} item xs={3}>
+          {showPeggingTotal ? 
+            <span >{peggingTotal}</span> : <span />
+          }
+          {cribHelpText ?
             <Chip
               className={classes.cribChip}
               icon={<ViewColumn />}
               label={cribHelpText}
               color='#00695f'
               variant="sharp"
-            />
+            /> : <span />
            }
         </Grid>
         <Grid item xs={12} className={classes.cardsContainer}>
