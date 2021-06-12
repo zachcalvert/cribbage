@@ -42,6 +42,10 @@ const useStyles = makeStyles((theme) => ({
     background: '#00695f',
     zIndex: theme.zIndex.drawer + 1,
   },
+  appBarButton: {
+    outline: 'none',
+    margin: theme.spacing(1)
+  },
   closeModal: {
     position: 'absolute',
     top: 0,
@@ -59,9 +63,6 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerContainer: {
     overflow: 'auto',
-  },
-  drawerButton: {
-    outline: 'none'
   },
   form: {
     margin: 'auto',
@@ -293,18 +294,9 @@ export const Game = ()  => {
         <Dialog className={classes.game} fullScreen open={gameOpen} TransitionComponent={Transition}>
           <AppBar position='fixed' className={classes.appBar}>
             <Toolbar>
-              <Hidden mdUp>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                edge="start"
-                onClick={handleDrawerToggle}
-                className={classes.drawerButton}
-                style={{"outline": "none"}}
-              >
-                <ForumIcon />
+              <IconButton edge="end" color="inherit" onClick={e => setLeaveGameOpen(true)} aria-label="close">
+                <CloseIcon />
               </IconButton>
-              </Hidden>
               <Typography variant="h6" className={classes.title}>
                 {room}
               </Typography>
@@ -314,14 +306,27 @@ export const Game = ()  => {
               </IconButton>
 
               <Hidden smDown>
-                <IconButton color='inherit' style={{"outline": "none"}} onClick={e => setHelpOpen(true)} aria-label="help">
+                <IconButton
+                  color='inherit'
+                  className={classes.appBarButton}
+                  onClick={e => setHelpOpen(true)}
+                  aria-label="help">
                   <HelpOutlineRoundedIcon fontSize="inherit" />
                 </IconButton>
               </Hidden>
 
-              <IconButton edge="end" color="inherit" onClick={e => setLeaveGameOpen(true)} aria-label="close">
-                <CloseIcon />
-              </IconButton>
+              <Hidden mdUp>
+                <IconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  edge="start"
+                  onClick={handleDrawerToggle}
+                  className={classes.appBarButton}
+                  style={{"outline": "none"}}
+                >
+                  <ForumIcon />
+                </IconButton>
+              </Hidden>
             </Toolbar>
           </AppBar>
           
@@ -329,7 +334,7 @@ export const Game = ()  => {
             <Hidden mdDown implementation="css">
               <Drawer
                 variant="temporary"
-                anchor='left'
+                anchor='right'
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
                 ModalProps={{

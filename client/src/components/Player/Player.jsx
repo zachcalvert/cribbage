@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme) => ({
   },
   cribChip: {
     marginTop: theme.spacing(3)
+  },
+  peggingTotal: {
+    margin: 'auto'
+  },
+  playedCards: {
+    margin: 'auto'
   }
 }));
 
@@ -129,6 +135,9 @@ export const Player = (props) => {
 
   useSocket('invalid_card', msg => {
     setActiveCards([]);
+    if (action === 'discard') {
+      setTurn(true)
+    }
   });
 
   useSocket('invalid_joker', msg => {
@@ -146,10 +155,12 @@ export const Player = (props) => {
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
       setActiveCards([]);
+      setTurn(true);
       return;
     }
     if ((action === 'play' || action ==='discard') && (!activeCards.length)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
+      setTurn(true);
       return;
     }
     if (action === 'next') {
@@ -182,7 +193,7 @@ export const Player = (props) => {
         {playedCards.map((card, index) => (
           <ReactSVG
             id={card}
-            className='played-card'
+            className={`played-card ${classes.card}`}
             key={index}
             wrapper='span'
             src={`/cards/${card}.svg`}
@@ -286,7 +297,7 @@ export const Player = (props) => {
       </Dialog>
 
       <Grid container className={classes.player}>
-        <Grid item xs={3}>
+        <Grid item xs={3} className={`${classes.playedCards} ${classes.cardsContainer}`}>
           { renderPlayedCards() }
         </Grid>
         {action && <Grid item xs={6}>
@@ -299,7 +310,7 @@ export const Player = (props) => {
         </Grid>}
         <Grid item xs={3}>
           {showPeggingTotal && (
-            <span className='pegging-total'>{peggingTotal}</span>
+            <span className={classes.peggingTotal}>{peggingTotal}</span>
           )}
           {cribHelpText &&
             <Chip
