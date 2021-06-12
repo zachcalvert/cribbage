@@ -1,10 +1,9 @@
 import React, { useState } from "react";
-import { useTrail, animated } from 'react-spring';
 import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
 
-import { Chip, Dialog, DialogContent, DialogTitle, Divider, Fab, Grid, makeStyles } from "@material-ui/core";
+import { Button, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, makeStyles } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { ViewColumn } from "@material-ui/icons";
@@ -17,7 +16,22 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0
   },
   actionButton: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
+    background: '#ab003c'
+  },
+  card: {
+    width: '8em',
+    height: 'auto',
+    padding: 0,
+    margin: '-35px'
+  },
+  cardsContainer: {
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit,  minmax(10px, max-content))'
   },
   cribChip: {
     marginTop: theme.spacing(3)
@@ -52,7 +66,7 @@ export const Player = (props) => {
       setAction(msg.action);
     } else {
       setTurn(false);
-      setAction(`waiting for ${msg.players}`)
+      setAction(`${msg.players}...`)
     }
     if (msg.action === 'play' || msg.action === 'pass') {
       setShowPeggingTotal(true);
@@ -61,8 +75,8 @@ export const Player = (props) => {
     }
     if (msg.action === 'discard') {
       msg.crib === props.name
-      ? (setCribHelpText('your crib'))
-      : (setCribHelpText(`${msg.crib}'s crib`))
+      ? (setCribHelpText('yours'))
+      : (setCribHelpText(`${msg.crib}'s`))
     } else if (msg.action === 'cut') {
       setCribHelpText(null);
     }
@@ -146,10 +160,6 @@ export const Player = (props) => {
   };
 
   const handleCardClick = (e) => {
-    console.log(e.target)
-    console.log(e.target.parentNode);
-    console.log(e.target.parentNode.parentNode);
-
     let card = e.target.parentNode.parentNode.parentNode.id;  // :(
     if (action === 'discard') {
       activeCards.includes(card) ? (
@@ -190,7 +200,7 @@ export const Player = (props) => {
         {playableCards.map((card, index) => (
           <ReactSVG
             id={playableCards[index]}
-            className={`${activeCards.includes(playableCards[index]) ? 'active-card overlapping-card': 'overlapping-card' }`}
+            className={`${activeCards.includes(playableCards[index]) ? `active-card ${classes.card}`: classes.card }`}
             key={index}
             onClick={handleCardClick}
             wrapper='span'
@@ -274,19 +284,18 @@ export const Player = (props) => {
       </Dialog>
 
       <Grid container className={classes.player}>
-        <div className='col-3 played-cards'>
+        <Grid item xs={3}>
           { renderPlayedCards() }
-        </div>
-        {action && <div className='col-6'>
-          <Fab variant="extended"
+        </Grid>
+        {action && <Grid item xs={6}>
+          <Button variant='contained' color="secondary"
             className={scoring ? `scoring-button ${classes.actionButton}` : classes.actionButton}
-            color="primary"
             onClick={handleAction}
             disabled={!turn}>
             { action }
-          </Fab>
-        </div>}
-        <div className='col-3'>
+          </Button>
+        </Grid>}
+        <Grid item xs={3}>
           {showPeggingTotal && (
             <span className='pegging-total'>{peggingTotal}</span>
           )}
@@ -295,15 +304,15 @@ export const Player = (props) => {
               className={classes.cribChip}
               icon={<ViewColumn />}
               label={cribHelpText}
-              color={cribHelpText.includes('your') ? 'primary' : 'secondary'}
+              color='#00695f'
               variant="sharp"
             />
            }
-        </div>
+        </Grid>
         <Divider />
-        <div className="player-cards">
+        <Grid item xs={12} className={classes.cardsContainer}>
           { renderPlayableCards() }
-        </div>
+        </Grid>
       </Grid>
     </>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
 
-import { IconButton, InputAdornment, makeStyles, Paper, TextField, useMediaQuery } from "@material-ui/core";
+import { IconButton, InputAdornment, makeStyles, Paper, TextField } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import SendIcon from '@material-ui/icons/Send';
@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   pointsMessage: {
-    color: '#388e3c'
+    color: '#00695f'
   },
   messageField: {
     position: 'absolute',

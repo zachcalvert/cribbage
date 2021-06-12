@@ -62,7 +62,7 @@ export const Opponent = (props) => {
             wrapper='span'
             className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
             ${showCards && "overlapping-card"}`}
-            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
           />
         ))}
       </span>

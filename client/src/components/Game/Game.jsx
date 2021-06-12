@@ -2,7 +2,7 @@ import React from 'react';
 import { useSocket } from "use-socketio";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, ThemeProvider } from '@material-ui/core';
+import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, Paper, ThemeProvider } from '@material-ui/core';
 import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -16,12 +16,10 @@ import Typography from '@material-ui/core/Typography';
 import CloseIcon from '@material-ui/icons/Close';
 import ForumIcon from '@material-ui/icons/Forum';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import NightsStayRoundedIcon from '@material-ui/icons/NightsStayRounded';
-import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded';
+import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 
-import { AntSwitch } from "../AntSwitch/AntSwitch";
 import { HelpScreen } from "../HelpScreen/HelpScreen";
 import { ChatLog } from '../Chat/ChatLog';
 import { Deck } from "../Deck/Deck";
@@ -37,11 +35,11 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     height: '100%',
-    width: '100%'
+    width: '100%',
   },
   appBar: {
     position: 'relative',
-    background: '#4E78A0',
+    background: '#00695f',
     zIndex: theme.zIndex.drawer + 1,
   },
   closeModal: {
@@ -91,7 +89,6 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '5px'
   },
   gameTable: {
-    background: '#8d6e63',
     height: '30%',
     borderRadius: '10px',
     margin: theme.spacing(3),
@@ -197,7 +194,7 @@ export const Game = ()  => {
       setInProgress(true);
       socket.emit("player_refresh", {name: name, game: room});
     }
-  }, [room]);
+  }, [room, name, socket]);
 
   const renderOpponents = () => {
     return inProgress || opponents.length ? (
@@ -303,6 +300,7 @@ export const Game = ()  => {
                 edge="start"
                 onClick={handleDrawerToggle}
                 className={classes.drawerButton}
+                style={{"outline": "none"}}
               >
                 <ForumIcon />
               </IconButton>
@@ -310,21 +308,17 @@ export const Game = ()  => {
               <Typography variant="h6" className={classes.title}>
                 {room}
               </Typography>
-              <Typography className={classes.darkModeToggle} component="div">
-                <Grid component="label" container alignItems="center" spacing={1}>
-                  <Grid item><NightsStayRoundedIcon /></Grid>
-                  <Grid item>
-                    <AntSwitch checked={prefersDarkMode} onChange={handleDarkModeChange} name="darkModeSwitch" />
-                  </Grid>
-                  <Grid item><WbSunnyRoundedIcon /></Grid>
-                </Grid>
-              </Typography>
+              
+              <IconButton style={{"outline": "none"}} edge="end" color="inherit" onClick={handleDarkModeChange} aria-label="dark-mode-toggle">
+                <Brightness4Icon style={{"fill": prefersDarkMode ? "#ffeb3b" : ""}} />
+              </IconButton>
 
               <Hidden smDown>
                 <IconButton color='inherit' style={{"outline": "none"}} onClick={e => setHelpOpen(true)} aria-label="help">
                   <HelpOutlineRoundedIcon fontSize="inherit" />
                 </IconButton>
               </Hidden>
+
               <IconButton edge="end" color="inherit" onClick={e => setLeaveGameOpen(true)} aria-label="close">
                 <CloseIcon />
               </IconButton>
@@ -357,17 +351,17 @@ export const Game = ()  => {
               </Drawer>
             </Hidden>
           </nav>
-          <main className={classes.content}>
+          <main className={classes.content} style={{"background": prefersDarkMode ? "#212121" : "#eeeeee"}}>
             { renderOpponents() }
             { inProgress ? (
-              <div className={`row ${classes.gameTable}`}>
-                <div style={{ margin: 'auto' }} className='col-9'>
+              <Paper className={`row ${classes.gameTable}`} style={{"background": prefersDarkMode ? "#424242" : "#f5f5f5"}}>
+                <div style={{ margin: 'auto' }} className='col-8'>
                   <Scoreboard />
                 </div>
-                <div className={`${classes.deck} col-3`}>
+                <div className={`${classes.deck} col-4`}>
                 <Deck />
               </div>
-            </div>
+            </Paper>
             ) : (
               <StartMenu />
             )}
