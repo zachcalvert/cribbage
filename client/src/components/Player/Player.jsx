@@ -3,7 +3,7 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
 
-import { Button, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, makeStyles } from "@material-ui/core";
+import { Button, Chip, Dialog, DialogContent, DialogTitle, Grid, makeStyles } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { ViewColumn } from "@material-ui/icons";
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     width: '8em',
     height: 'auto',
     padding: 0,
-    margin: '-35px'
+    margin: '-35px',
   },
   cardsContainer: {
     width: '50%',
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 'auto',
     justifyContent: 'center',
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit,  minmax(10px, max-content))'
+    gridTemplateColumns: 'repeat(auto-fit,  minmax(10px, max-content))',
   },
   cribChip: {
     marginTop: theme.spacing(3)
@@ -309,7 +309,6 @@ export const Player = (props) => {
             />
            }
         </Grid>
-        <Divider />
         <Grid item xs={12} className={classes.cardsContainer}>
           { renderPlayableCards() }
         </Grid>

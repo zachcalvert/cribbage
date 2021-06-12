@@ -39,7 +39,6 @@
 .active-card svg {
   margin-top: -15px;
   box-shadow: 0 8px 6px -6px black;
-  transition: margin 300ms;
   z-index: 10;
 }
 
