@@ -4,9 +4,10 @@ import { Card, CardActions, CardContent, Link, makeStyles, Typography } from '@m
 const useStyles = makeStyles((theme) => ({
   root: {
     background: theme.palette.background.default,
-    width: 'auto',
+    width: 'fit-content',
     height: 'auto',
-    margin: theme.spacing(2),
+    margin: 'auto',
+    marginTop: theme.spacing(4),
     padding: theme.spacing(1)
   },
   title: {

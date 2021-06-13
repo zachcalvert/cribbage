@@ -11,10 +11,10 @@ export const HelpScreen = () => {
           <br />
           <ul style={{"text-align": "left"}} >
             <li>If the game ever appears to be stuck, please try refreshing the page.</li>
-            <li>If you ever notice anything broken, or have ideas on how to make the game better, please email me at zach@cribbage.live</li>
+            <li>If you ever notice anything broken, or have ideas on how to make the game more fun, please email me at zach@cribbage.live</li>
           </ul>
         </Typography>
-        <Typography variant='subtitle1'>   
+        <Typography style={{"text-align": "center"}} variant='subtitle1'>   
           Thank you for playing!
         </Typography>
     </>

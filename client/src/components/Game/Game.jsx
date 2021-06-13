@@ -79,6 +79,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     left: '400px',
     width: 'calc(100vw - 400px)',
+    textAlign: 'center',
     [theme.breakpoints.down('sm')]: {
       left: 0,
       width: '100%',
@@ -253,18 +254,18 @@ export const Game = ()  => {
           <DialogTitle>
             Are you sure you want to leave?
           </DialogTitle>
-          <DialogContent style={{ display: 'inline-flex' }}>
-            <Button style={{ margin: 'auto' }} variant='contained' color='primary' onClick={e => setLeaveGameOpen(false)}>Stay</Button>
+          <DialogContent style={{ display: 'inline-flex', padding: '24px' }}>
             <Button style={{ margin: 'auto' }} variant='contained' color='secondary' onClick={handleLeaveGame}>Leave</Button>
+            <Button style={{ margin: 'auto' }} variant='contained' color='primary' onClick={e => setLeaveGameOpen(false)}>Stay</Button>
           </DialogContent>
         </Dialog>
 
         <Dialog className="help-modal" open={helpOpen}>
-          <DialogTitle>
-            Help
+          <DialogTitle style={{"text-align": "center"}}>
+            Hi!
           </DialogTitle>
           <DialogContent>
-            <IconButton className={classes.closeModal} onClick={e => setHelpOpen(false)} aria-label="close">
+            <IconButton className={`${classes.closeModal} ${classes.appBarButton}`} onClick={e => setHelpOpen(false)} aria-label="close">
               <CloseIcon fontSize="inherit" />
             </IconButton>
             <HelpScreen />
@@ -356,7 +357,7 @@ export const Game = ()  => {
               </Drawer>
             </Hidden>
           </nav>
-          <main className={classes.content} style={{"background": prefersDarkMode ? "#212121" : "#eeeeee"}}>
+          <main className={classes.content} style={{"background": prefersDarkMode ? "#323232" : "#eeeeee"}}>
             { renderOpponents() }
             { inProgress ? (
               <Paper className={`row ${classes.gameTable}`} style={{"background": prefersDarkMode ? "#424242" : "#f5f5f5"}}>

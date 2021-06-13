@@ -24,17 +24,17 @@
 }
 
 .player-one {
-  background-color: #009688!important;
-}
-
-.player-two {
   background-color: #ab003c!important;
 }
 
+.player-two {
+  background-color: #009688!important;
+}
+
 .player-three {
-  background-color: #00e5ff!important;
+  background-color: #0288d1!important;
 }
 
 .player-four {
-  background-color: #ffeb3b!important;
+  background-color: #ffca28!important;
 }

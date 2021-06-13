@@ -2,17 +2,24 @@ import React from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
 
-import { Dialog, DialogContent, DialogTitle, Fab, makeStyles } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, makeStyles, Typography } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 
 import GameSettings from "./GameSettings";
 
 
 const useStyles = makeStyles((theme) => ({
-  startButton: {
+  actionButton: {
+    margin: theme.spacing(5),
+    background: '#ab003c'
+  },
+  closeModal: {
     position: 'absolute',
-    top: '55%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)'
+    top: 0,
+    right: 0
+  },
+  hint: {
+    fontSize: 12
   }
 }))
 
@@ -48,16 +55,21 @@ export const StartMenu = () => {
           Game setup
         </DialogTitle>
         <DialogContent dividers>
+            <IconButton className={classes.closeModal} onClick={e => setOpen(false)} aria-label="close">
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
           <GameSettings />
         </DialogContent>
+        <DialogActions>
+          <Typography className={classes.hint}>Once you start the game, others cannot join</Typography>
+        </DialogActions>
       </Dialog>
-      <Fab variant="extended"
-        className={classes.startButton}
-        color="primary"
+      <Button variant='contained' color="secondary"
+        className={classes.actionButton}
         onClick={handleAction}
         disabled={!startable}>
-        {buttonText}
-      </Fab>
+        { buttonText }
+      </Button>
     </>
   );
 }

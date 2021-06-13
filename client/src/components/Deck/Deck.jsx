@@ -69,7 +69,7 @@ export const Deck = () => {
   });
 
   useSocket('display_score', msg => {
-    if ( msg.cards.includes(cutCard)) {
+    if ( msg.cards?.includes(cutCard)) {
       setScoring(true);
     } else {
       setScoring(false);

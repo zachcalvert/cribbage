@@ -8,6 +8,23 @@ const useStyles = makeStyles((theme) => ({
   opponent: {
     padding: theme.spacing(1),
   },
+  card: {
+    width: '8em',
+    height: 'auto',
+    padding: 0,
+    margin: '-35px',
+  },
+  cardsContainer: {
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    justifyContent: 'center',
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit,  minmax(10px, max-content))',
+  },
+  cutCard: {
+    width: '100%'
+  }
 }));
 
 export const Opponent = (props) => {
@@ -55,20 +72,29 @@ export const Opponent = (props) => {
 
   const renderCards = () => {
     if (playableCards.length) {
+      if (playableCards.length === 1) {
+        return <span>
+          <ReactSVG
+            wrapper='span'
+            className={classes.cutCard} 
+            src={`/cards/${playableCards[0]}.svg`}
+          />
+        </span>
+      } else {
       return playableCards.length && (
         <span>
           {playableCards.map((card, index) => (
             <ReactSVG
               key={index}
               wrapper='span'
-              className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
+              className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
               ${showCards && "overlapping-card"}`}
               src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
               style={playableCards.length === 1 ? {'width': '100%'} : {}}
             />
           ))}
         </span>
-      )
+      )}
     }
   };
 

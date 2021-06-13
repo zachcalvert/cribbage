@@ -116,8 +116,11 @@ class CribbageNamespace(Namespace):
         return game
 
     def on_player_join(self, msg):
+        game = controller.get_or_create_game(msg['game'])
+        if game.get('started') is not None:
+            return
+
         join_room(msg['game'])
-        controller.get_or_create_game(msg['game'])
         game = controller.add_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce('{} joined'.format(msg['name']), room=msg['game'])

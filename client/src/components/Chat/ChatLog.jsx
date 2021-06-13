@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   pointsMessage: {
-    color: '#00695f'
+    color: '#0288d1'
   },
   messageField: {
     position: 'absolute',
