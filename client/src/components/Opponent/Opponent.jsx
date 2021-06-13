@@ -58,7 +58,7 @@ export const Opponent = (props) => {
 
   const renderCards = () => {
     if (playableCards.length) {
-      if (playableCards.length === 1) {
+      if (playableCards.length === 1 && playedCards === []) {
         return <span>
           <ReactSVG
             wrapper='span'
