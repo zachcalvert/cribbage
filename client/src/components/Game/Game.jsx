@@ -104,6 +104,9 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     width: '100%'
   },
+  pageTitle: {
+    marginBottom: theme.spacing(4)
+  },
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
@@ -217,6 +220,8 @@ export const Game = ()  => {
       <CssBaseline />
       <Grid container className={classes.root} spacing={2}>
         <form className={classes.form} onSubmit={event => handleJoin(event)}>
+          <Typography className={classes.pageTitle} color="textSecondary" variant='h6'>cribbage. live.</Typography>
+
           <TextField
               id="name"
               className={classes.formField}
