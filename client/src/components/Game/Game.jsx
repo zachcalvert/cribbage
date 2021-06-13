@@ -202,7 +202,6 @@ export const Game = ()  => {
       setName(localStorage.getItem('cribbage-live-name'));
       setRoom(localStorage.getItem('cribbage-live-game'));
       setGameOpen(true);
-      setInProgress(true);
       socket.emit("player_refresh", {name: name, game: room});
     }
   }, [room, name, socket]);
