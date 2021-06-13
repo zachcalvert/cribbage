@@ -22,7 +22,12 @@ const useStyles = makeStyles((theme) => ({
   },
   actions: {
     padding: "20px 0",
-  }
+  },
+  playButton: {
+    margin: theme.spacing(2),
+    background: '#009688',
+    color: 'white'
+  },
 }));
 
 export default function GameSettings() {
@@ -87,7 +92,7 @@ export default function GameSettings() {
           />
         </>
         <div className={classes.actions}>
-          <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
+          <Button variant="contained" className={classes.playButton} onClick={event => handleStartGame(event)}>Play</Button>
         </div>
       </div>
     </div>

@@ -105,7 +105,13 @@ const useStyles = makeStyles((theme) => ({
     width: '100%'
   },
   pageTitle: {
-    marginBottom: theme.spacing(4)
+    marginBottom: theme.spacing(2),
+    opacity: '50%'
+  },
+  playButton: {
+    margin: theme.spacing(2),
+    background: '#009688',
+    color: 'white'
   },
   title: {
     marginLeft: theme.spacing(2),
@@ -220,7 +226,7 @@ export const Game = ()  => {
       <CssBaseline />
       <Grid container className={classes.root} spacing={2}>
         <form className={classes.form} onSubmit={event => handleJoin(event)}>
-          <Typography className={classes.pageTitle} color="textSecondary" variant='h6'>cribbage. live.</Typography>
+          <Typography className={classes.pageTitle}>cribbage. live.</Typography>
 
           <TextField
               id="name"
@@ -247,9 +253,9 @@ export const Game = ()  => {
                 </IconButton>
               </InputAdornment>
             }}/><br/>
-          <Fab className={classes.playButton} variant="extended" color="primary" type="submit">
+          <Button className={classes.playButton} variant="contained" type="submit">
             Play
-          </Fab>
+          </Button>
           <Typography className='webmaster-info' variant='caption'>
             <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
           </Typography>
@@ -293,7 +299,7 @@ export const Game = ()  => {
               disabled={true}  />
           </DialogContent>
           <DialogActions>
-            <Button color='primary' onClick={handleJoin}>Play</Button>
+            <Button className={classes.playButton} onClick={handleJoin}>Play</Button>
           </DialogActions>
         </Dialog>
 

@@ -61,7 +61,7 @@ export const StartMenu = () => {
           <GameSettings />
         </DialogContent>
         <DialogActions>
-          <Typography className={classes.hint}>Once you start the game, others cannot join</Typography>
+          <Typography className={classes.hint}>All human players should join before starting the game.</Typography>
         </DialogActions>
       </Dialog>
       <Button variant='contained' color="secondary"
