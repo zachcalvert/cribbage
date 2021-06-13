@@ -48,17 +48,20 @@ def all_games():
     game_names = [k.decode() for k in cache.keys()]
     for game_name in game_names:
         g = json.loads(cache.get(game_name))
-        games.append({
-            "name": game_name,
-            "players": g["players"],
-            "jokers": g.get("jokers"),
-            "crib_size": g.get("crib_size"),
-            "started": g.get("started"),
-            "winning_score": g.get("winning_score"),
-            "winner": g.get("winner")
-        })
+        if g.get('started'):
+            games.append({
+                "name": game_name,
+                "players": g["players"],
+                "jokers": g.get("jokers"),
+                "crib_size": g.get("crib_size"),
+                "started": g.get("started"),
+                "winning_score": g.get("winning_score"),
+                "winner": g.get("winner")
+            })
 
-    return games
+    sorted_games = sorted(games, key=lambda k: k['started'])
+    sorted_games.reverse()
+    return sorted_games
 
 
 def get_value(game, value):
