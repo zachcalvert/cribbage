@@ -166,7 +166,7 @@ export const ChatLog = ()  => {
   };
 
   const renderChat = () => {
-    return messages.length && (
+    return messages.length ? (
       <div className={classes.chat}>
         {messages.map(({name, message}, index) => (
             name === 'game-updater' ? (
@@ -188,7 +188,7 @@ export const ChatLog = ()  => {
         ))}
         <div ref={messagesEndRef} />
       </div>
-    )
+    ) : <span />
   };
 
   return (

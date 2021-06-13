@@ -171,6 +171,10 @@ export const Game = ()  => {
     setInProgress(true);
   });
 
+  useSocket("draw_board", msg => {
+    setInProgress(true);
+  });
+
   const handleGameNameRefresh = React.useCallback((event) => setRoom(randomWords({ exactly: 3, join: '-' })), []);
 
   const handleJoin = e => {
@@ -375,7 +379,7 @@ export const Game = ()  => {
                   <Scoreboard />
                 </div>
                 <div className={`${classes.deck} col-4`}>
-                <Deck />
+                <Deck pattern='wide_red_stripes' />
               </div>
             </Paper>
             ) : (

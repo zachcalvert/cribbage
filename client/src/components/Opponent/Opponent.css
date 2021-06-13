@@ -32,6 +32,7 @@
   border: 2px solid green;
   width: 31%;
   z-index: 2;
+  margin-top: 1rem;
 }
 
 .opponent-score-display {

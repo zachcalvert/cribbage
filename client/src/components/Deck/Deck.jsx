@@ -10,36 +10,26 @@ const from = i => ({ x: 0, rot: 0, scale: 1.5, y: -1000 })
 // This is being used down there in the view, it interpolates rotation and scale into a css transform
 const trans = (r, s) => `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg) rotateZ(${r}deg) scale(${s})`
 
-const defaultDeck = [
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-  '/cards/wide_red_stripes.svg',
-]
 
-
-export const Deck = () => {
-  const [cards, setCards] = useState(defaultDeck);
+export const Deck = (props) => {
+  const { pattern } = props;
   const [cutCard, setCutCard] = useState(null);
   const [scoring, setScoring] = useState(false);
+  const defaultDeck = [
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+    `/cards/${pattern}.svg`,
+  ]
+  const [cards, setCards] = useState(defaultDeck);
 
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
-  const [props, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
+  const [properties, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
   // Create a gesture, we're interested in down-state, delta (current-pos - click-pos), direction and velocity
   const bind = useGesture(({ args: [index], down, delta: [xDelta], distance, direction: [xDir], velocity }) => {
     const trigger = velocity > 0.2 // If you flick hard enough it should trigger the card to fly out
@@ -77,7 +67,7 @@ export const Deck = () => {
   });
 
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
-  return props.map(({ x, y, rot, scale }, i) => (
+  return properties.map(({ x, y, rot, scale }, i) => (
     <animated.div className="animated-cards-container" key={i} style={{ transform: interpolate([x, y], (x, y) => `translate3d(${x}px,${y}px,0)`) }}>
       {/* This is the card itself, we're binding our gesture to it (and inject its index so we know which is which) */}
       <animated.div className={scoring && i === cards.length-1 ? "scoring-cut animated-card" : "animated-card"} {...bind(i)} style={{ transform: interpolate([rot, scale], trans), backgroundImage: `url(${cards[i]})` }} />

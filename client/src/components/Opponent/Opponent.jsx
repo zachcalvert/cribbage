@@ -14,19 +14,29 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Opponent = (props) => {
+  const { pattern } = props;
   const classes = useStyles();
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);
   const [scoringCards, setScoringCards] = useState([]);
   const [scoreDisplay, setScoreDisplay] = useState('');
+  const [drawCard, setDrawCard] = React.useState(null);
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
-      setPlayableCards(msg.cards[props.name]);
-      setPlayedCards([]);
+      console.log('here1')
+
+      if (msg.cards[props.name].length === 1) {
+        console.log('here2')
+        setDrawCard(msg.cards[props.name][0])
+      } else {
+        setDrawCard(null);
+        setPlayableCards(msg.cards[props.name]);
+        setPlayedCards([]);
+      }
     }
-    msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
+    msg.show_to_all === true ?  setShowCards(true) : setShowCards(false)
   });
 
   useSocket("send_cards", msg => {
@@ -56,49 +66,46 @@ export const Opponent = (props) => {
     setScoringCards([]);
   });
 
+  const renderDrawCard = () => {
+    return <span>
+    <ReactSVG
+        wrapper='span'
+        className={classes.cutCard} 
+        src={`/cards/${drawCard}.svg`}
+      />
+    </span>
+  }
+
   const renderCards = () => {
-    if (playableCards.length) {
-      if (playableCards.length === 1 && playedCards === []) {
-        return <span>
+    return (
+      <span>
+        {playableCards.map((card, index) => (
           <ReactSVG
+            key={index}
             wrapper='span'
-            className={classes.cutCard} 
-            src={`/cards/${playableCards[0]}.svg`}
+            className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
+            ${showCards ? "overlapping-card" : ""}`}
+            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
+            style={playableCards.length === 1 ? {'width': '100%'} : {}}
           />
-        </span>
-      } else {
-      return playableCards.length && (
-        <span>
-          {playableCards.map((card, index) => (
-            <ReactSVG
-              key={index}
-              wrapper='span'
-              className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
-              ${showCards && "overlapping-card"}`}
-              src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
-              style={playableCards.length === 1 ? {'width': '100%'} : {}}
-            />
-          ))}
-        </span>
-      )}
-    }
+        ))}
+      </span>
+    )
   };
 
   const renderPlayedCards = () => {
-    if (playedCards.length) {
-      return (
-        <>
-          {playedCards.map((card, index) => (
-            <ReactSVG
-              id={card}
-              key={index}
-              wrapper='span'
-              src={`/cards/${card}.svg`}
-            />
-          ))}
-        </>
-      )
-    }
+    return (
+      <>
+        {playedCards.map((card, index) => (
+          <ReactSVG
+            id={card}
+            key={index}
+            wrapper='span'
+            src={`/cards/${card}.svg`}
+          />
+        ))}
+      </>
+    )
   };
 
   return (
@@ -108,8 +115,9 @@ export const Opponent = (props) => {
         ) : <span>{props.name}</span>
       }
       <Divider className='opponent-divider' variant="middle" />
-      { renderCards() }
-      { renderPlayedCards() }
+      { drawCard ? renderDrawCard() : <span /> }
+      { playableCards.length ? renderCards() : <span/> }
+      { playedCards.length ? renderPlayedCards() : <span /> }
     </div>
   );
 }

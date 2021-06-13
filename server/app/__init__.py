@@ -129,7 +129,7 @@ class CribbageNamespace(Namespace):
         join_room(msg['game'])
         game = controller.get_or_create_game(msg['game'])
         emit('players', {'players': list(game['players'].keys())})
-        emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
+        emit('draw_board', {'players': game['players'], 'winning_score': game.get('winning_score')})
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']})
         self.announce('{} refreshed'.format(msg['name']), room=msg['game'])
 
