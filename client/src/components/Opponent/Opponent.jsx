@@ -8,20 +8,6 @@ const useStyles = makeStyles((theme) => ({
   opponent: {
     padding: theme.spacing(1),
   },
-  card: {
-    width: '8em',
-    height: 'auto',
-    padding: 0,
-    margin: '-35px',
-  },
-  cardsContainer: {
-    width: '50%',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    justifyContent: 'center',
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit,  minmax(10px, max-content))',
-  },
   cutCard: {
     width: '100%'
   }

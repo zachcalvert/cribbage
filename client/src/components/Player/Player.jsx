@@ -24,6 +24,10 @@ const useStyles = makeStyles((theme) => ({
     height: 'auto',
     padding: 0,
     margin: '-35px',
+    [theme.breakpoints.down('sm')]: {
+      width: '6.5em',
+      margin: '-30px',
+    }
   },
   playedCard: {
     width: '6em',
