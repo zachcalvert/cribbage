@@ -9,8 +9,8 @@ from flask import Flask
 from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room
 from threading import Lock
 
-from . import controller
 from . import bot
+from . import controller
 from . import utils
 
 app = Flask(__name__)
@@ -132,14 +132,14 @@ class CribbageNamespace(Namespace):
             emit('send_turn', {'players': game.get('current_turn'), 'action': game['current_action'], 'crib': game['dealer']})
             emit('send_cards', {'cards': game['hands'], 'played_cards': game['played_cards']})
 
+            for player, points in game['players'].items():
+                emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
+                emit('points', {'player': player, 'amount': points, 'winning_score': game['winning_score']})
+
             print('before cut card eval')
             if game['cut_card']:
                 print('emitting cut card')
                 emit('cut_card', {'card': game['cut_card']})
-
-            for player, points in game['players'].items():
-                emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
-                emit('points', {'player': player, 'amount': points, 'winning_score': game['winning_score']})
 
             if game['current_action'] in ['play', 'pass']:
                 emit('pegging_total', {'pegging_total': game['pegging']['total']})
@@ -277,7 +277,7 @@ class CribbageNamespace(Namespace):
 
     def on_winner(self, msg):
         game = controller.grant_victory(msg)
-        emit('winner', {'player': game['winner']})
+        emit('winner', {'player': game['winner']}, room=msg['game'])
         self.announce('{} wins!'.format(msg['player']), room=None, type='big')
         emit('send_turn', {'players': game['current_turn'], 'action': 'rematch'}, room=msg['game'])
 
