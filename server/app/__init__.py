@@ -283,6 +283,8 @@ class CribbageNamespace(Namespace):
         if set(game['players'].keys()) == set(game['play_again']):
             emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
             emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']}, room=msg['game'])
+            for player, points in game['players'].items():
+                emit('points', {'player': player, 'amount': points, 'winning_score': game['winning_score']})
             self.announce(game['opening_message'], room=game['name'], type='big')
 
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])

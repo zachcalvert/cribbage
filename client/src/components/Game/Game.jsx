@@ -3,7 +3,7 @@ import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, Paper, ThemeProvider } from '@material-ui/core';
+import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, Paper, Slide, Snackbar, ThemeProvider } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Link from '@material-ui/core/Link';
@@ -16,7 +16,6 @@ import CloseIcon from '@material-ui/icons/Close';
 import ForumIcon from '@material-ui/icons/Forum';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
-import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
 import ToggleButton from '@material-ui/lab/ToggleButton';
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
@@ -145,6 +144,8 @@ export const Game = ()  => {
   const [prefersDarkMode, setPrefersDarkMode] = React.useState(localStorage.getItem('dark-mode') === 'true');
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [pattern, setPattern] = React.useState('wide_red_stripes');
+  const [snackBarOpen, setSnackBarOpen] = React.useState(false);
+  const [latestMessage, setLatestMessage] = React.useState(null);
 
   const theme = createMuiTheme({
     palette: {
@@ -179,6 +180,16 @@ export const Game = ()  => {
   useSocket("draw_board", msg => {
     setInProgress(true);
   });
+
+  useSocket("chat", newMessage => {
+    setLatestMessage(null);
+    setLatestMessage(newMessage);
+    setSnackBarOpen(true);
+  });
+
+  function TransitionDown(props) {
+    return <Slide {...props} direction="up" />;
+  }
 
   const handleGameNameRefresh = React.useCallback((event) => setRoom(randomWords({ exactly: 3, join: '-' })), []);
 
@@ -447,6 +458,16 @@ export const Game = ()  => {
           </main>
 
         </Dialog>
+        <Hidden mdUp>
+          {latestMessage && <Snackbar
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            open={snackBarOpen}
+            TransitionComponent={TransitionDown}
+            message={latestMessage.message}
+            classes={classes.snackBarMessage}
+            key='latest-message' />
+          }
+        </Hidden>
       </Grid>
     </ThemeProvider>
   );
