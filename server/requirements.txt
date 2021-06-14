@@ -16,5 +16,5 @@ coverage
 fakeredis
 mock
 gunicorn
-eventlet
+eventlet==0.30.0
 giphy_client

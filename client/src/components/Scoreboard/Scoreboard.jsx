@@ -40,18 +40,23 @@ export const Scoreboard = () => {
   const [skunkLine, setSkunkLine] = useState(0);
   const [winnerBell] = useSound('/sounds/winner.wav', { volume: 0.5 });
 
-  const { socket } = useSocket("draw_board", msg => {
-    setPlayers(msg.players);
-    setWinningScore(msg.winning_score);
-    setSkunkLine(Math.floor(msg.winning_score * 0.75));
-  });
-
-  useSocket("points", msg => {
+  const { socket } = useSocket("points", msg => {
     // let width = (msg.amount / winningScore) * 100;
     setPlayers({...players, [msg.player]: msg.amount});
     if (msg.amount >= winningScore) {
+      if (msg.winning_score) {
+        if (msg.amount < msg.winning_score) {
+          return
+        }
+      }
       announceWin(msg.player);
     }
+  });
+
+  useSocket("draw_board", msg => {
+    setPlayers(msg.players);
+    setWinningScore(msg.winning_score);
+    setSkunkLine(Math.floor(msg.winning_score * 0.75));
   });
 
   useSocket("winner", msg => {

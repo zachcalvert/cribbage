@@ -116,11 +116,8 @@ class CribbageNamespace(Namespace):
         return game
 
     def on_player_join(self, msg):
-        game = controller.get_or_create_game(msg['game'])
-        if game.get('started') is not None:
-            return
-
         join_room(msg['game'])
+        controller.get_or_create_game(msg['game'])
         game = controller.add_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce('{} joined'.format(msg['name']), room=msg['game'])
@@ -129,20 +126,20 @@ class CribbageNamespace(Namespace):
         join_room(msg['game'])
         game = controller.get_or_create_game(msg['game'])
         emit('players', {'players': list(game['players'].keys())})
-        emit('draw_board', {'players': game['players'], 'winning_score': game.get('winning_score')})
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']})
-        self.announce('{} refreshed'.format(msg['name']), room=msg['game'])
 
-        emit('send_cards', {'cards': game['hands'], 'played_cards': game['played_cards']})
+        if game.get('winning_score'):
+            emit('send_turn', {'players': game.get('current_turn'), 'action': game['current_action'], 'crib': game['dealer']})
+            emit('send_cards', {'cards': game['hands'], 'played_cards': game['played_cards']})
 
-        if game['cut_card']:
-            emit('cut_card', {'card': game['cut_card']})
+            if game['cut_card']:
+                emit('cut_card', {'card': game['cut_card']})
 
-        for player, points in game['players'].items():
-            emit('points', {'player': player, 'amount': points})
+            for player, points in game['players'].items():
+                emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
+                emit('points', {'player': player, 'amount': points, 'winning_score': game['winning_score']})
 
-        if game['current_action'] in ['play', 'pass']:
-            emit('pegging_total', {'pegging_total': game['pegging']['total']})
+            if game['current_action'] in ['play', 'pass']:
+                emit('pegging_total', {'pegging_total': game['pegging']['total']})
 
     def on_player_leave(self, msg):
         game = controller.remove_player(msg['game'], msg['name'])
@@ -167,6 +164,9 @@ class CribbageNamespace(Namespace):
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce(game['opening_message'], room=msg['game'], type='big')
+
+    def on_pattern_selected(self, msg):
+        emit('card_pattern_selected', {'pattern': msg['pattern']})
 
     def on_draw(self, msg):
         game = controller.draw(msg)
@@ -225,6 +225,9 @@ class CribbageNamespace(Namespace):
         self.play_card(msg['player'], msg['card'], msg['game'], game['pegging']['total'])
         self.announce('{} played {}'.format(msg['player'], game['previous_turn']['action']), room=game['name'])
         self.dispatch_points(game)
+        if game['previous_turn']['points'] > 0:
+            print(f'sending {game["previous_turn"]["reason"]} to {msg["player"]}')
+            emit('display_score', {'player': msg['player'], 'text': game['previous_turn']['reason'], 'cards': [msg['card']]}, room=msg['game'])
 
         while game['current_turn'] == game['bot']:
             game = self.bot_move(game)
@@ -261,6 +264,7 @@ class CribbageNamespace(Namespace):
 
         if game['current_action'] == 'deal':
             self.announce('New round! It is now {}\'s crib.'.format(game['dealer']), room=game['name'], type='big')
+            emit('cards', {'cards': game['hands']}, room=msg['game'])
 
         if game['current_turn'] == game['bot']:
             game = self.bot_move(game)

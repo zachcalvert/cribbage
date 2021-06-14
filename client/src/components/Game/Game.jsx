@@ -219,7 +219,7 @@ export const Game = ()  => {
       setGameOpen(true);
       socket.emit("player_refresh", {name: name, game: room});
     }
-  }, [room, name, socket]);
+  }, [room]);
 
   const renderOpponents = () => {
     return inProgress || opponents.length ? (

@@ -171,7 +171,6 @@ def start_game(game_data, **kwargs):
     if game_data['jokers']:
         game_data['opening_message'] += ' We\'re playing with jokers!'
     game_data['opening_message'] += ' Draw to see who gets first crib.'
-
     return game_data
 
 
@@ -584,6 +583,7 @@ def next_round(game_data, **kwargs):
         next_to_score_first = utils.rotate_turn(next_to_deal, players)
 
         game_data.update({
+            'cards': {},
             'crib': [],
             'current_action': 'deal',
             'current_turn': next_to_deal,
