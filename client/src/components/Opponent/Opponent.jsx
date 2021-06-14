@@ -27,6 +27,8 @@ export const Opponent = (props) => {
     if (props.name in msg.cards) {
       if (msg.cards[props.name].length === 1) {
         setDrawCard(msg.cards[props.name][0])
+        setPlayedCards([]);
+        setPlayableCards([]);
       } else {
         setDrawCard(null);
         setPlayableCards(msg.cards[props.name]);
