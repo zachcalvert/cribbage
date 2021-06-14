@@ -150,7 +150,19 @@ export const Game = ()  => {
   const theme = createMuiTheme({
     palette: {
       type: prefersDarkMode ? 'dark' : 'light',
-    }
+      primary: {
+        light: '#33877f',
+        main: '#00695f',
+        dark: '#004942',
+        contrastText: '#fff',
+      },
+      secondary: {
+        light: '#bb3363',
+        main: '#ab003c',
+        dark: '#77002a',
+        contrastText: '#fff',
+      },
+    },
   });
 
   const handleDrawerToggle = () => {

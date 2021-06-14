@@ -37,10 +37,12 @@ export const Deck = (props) => {
 
   useSocket('card_pattern_selected', msg => {
     setCardPattern(msg.pattern);
-    setCards(Array(12).fill(`/cards/${msg.pattern}.svg`));
+    let cards = Array(12).fill(`/cards/${msg.pattern}.svg`)
+    setCards([...cards, '/cards/' + cutCard + '.svg']);
   });
 
   useSocket("cut_card", msg => {
+    console.log('received cut card')
     setCards([...cards, '/cards/' + msg.card + '.svg']);
     setCutCard(msg.card);
   });

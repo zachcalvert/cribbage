@@ -78,7 +78,8 @@ class CribbageNamespace(Namespace):
         self.dispatch_points(game)
 
     def bot_move(self, game):
-        action = game['current_action']
+        action = controller.get_value(game['name'], 'current_action')
+        print(f'action! {action}')
         player = game['bot']
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=game['name'])
         time.sleep(2)
@@ -120,7 +121,7 @@ class CribbageNamespace(Namespace):
         controller.get_or_create_game(msg['game'])
         game = controller.add_player(msg['game'], msg['name'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
-        self.announce('{} joined'.format(msg['name']), room=msg['game'])
+        self.announce('Welcome, {}!'.format(msg['name']), room=msg['game'])
 
     def on_player_refresh(self, msg):
         join_room(msg['game'])
@@ -131,7 +132,9 @@ class CribbageNamespace(Namespace):
             emit('send_turn', {'players': game.get('current_turn'), 'action': game['current_action'], 'crib': game['dealer']})
             emit('send_cards', {'cards': game['hands'], 'played_cards': game['played_cards']})
 
+            print('before cut card eval')
             if game['cut_card']:
+                print('emitting cut card')
                 emit('cut_card', {'card': game['cut_card']})
 
             for player, points in game['players'].items():
@@ -276,7 +279,7 @@ class CribbageNamespace(Namespace):
         game = controller.grant_victory(msg)
         emit('winner', {'player': game['winner']})
         self.announce('{} wins!'.format(msg['player']), room=None, type='big')
-        emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
+        emit('send_turn', {'players': game['current_turn'], 'action': 'rematch'}, room=msg['game'])
 
     def on_rematch(self, msg):
         game = controller.rematch(msg)

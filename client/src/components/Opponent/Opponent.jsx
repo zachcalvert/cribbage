@@ -10,6 +10,11 @@ const useStyles = makeStyles((theme) => ({
   },
   cutCard: {
     width: '100%'
+  },
+  divider: {
+    width: 'auto',
+    margin: '0 0 5px!important',
+    background: theme.palette.background.paper
   }
 }));
 
@@ -27,8 +32,6 @@ export const Opponent = (props) => {
     if (props.name in msg.cards) {
       if (msg.cards[props.name].length === 1) {
         setDrawCard(msg.cards[props.name][0])
-        setPlayedCards([]);
-        setPlayableCards([]);
       } else {
         setDrawCard(null);
         setPlayableCards(msg.cards[props.name]);
@@ -117,7 +120,7 @@ export const Opponent = (props) => {
         <span className="opponent-score-display">{ scoreDisplay }</span>
         ) : <span>{props.name}</span>
       }
-      <Divider className='opponent-divider' variant="middle" />
+      <Divider className={classes.divider} variant="middle" />
       { drawCard ? renderDrawCard() : <span /> }
       { playableCards.length ? renderCards() : <span/> }
       { playedCards.length ? renderPlayedCards() : <span /> }

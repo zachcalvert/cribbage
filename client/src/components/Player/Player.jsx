@@ -3,7 +3,7 @@ import { useSocket } from "use-socketio";
 import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
 
-import { Button, Chip, Dialog, DialogContent, DialogTitle, Grid, makeStyles } from "@material-ui/core";
+import { Button, Chip, Dialog, DialogContent, DialogTitle, Divider, Grid, makeStyles } from "@material-ui/core";
 import { ReactSVG } from 'react-svg'
 import './Player.css'
 import { ViewColumn } from "@material-ui/icons";
@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme) => ({
   },
   actionButton: {
     margin: theme.spacing(2),
-    background: '#ab003c'
   },
   card: {
     width: '8em',
@@ -28,6 +27,11 @@ const useStyles = makeStyles((theme) => ({
       width: '6.5em',
       margin: '-30px',
     }
+  },
+  divider: {
+    width: 'auto',
+    margin: '0 0 5px!important',
+    background: theme.palette.secondary.main
   },
   playedCard: {
     width: '6em',
@@ -313,7 +317,7 @@ export const Player = (props) => {
           { renderPlayedCards() }
         </Grid>
         {action && <Grid item xs={6}>
-          <Button variant='contained' color="secondary"
+          <Button variant='contained' color='primary'
             className={scoring ? `scoring-button ${classes.actionButton}` : classes.actionButton}
             onClick={handleAction}
             disabled={!turn}>
@@ -334,6 +338,7 @@ export const Player = (props) => {
             /> : <span />
            }
         </Grid>
+        <Divider className={classes.divider} variant="middle"/>
         <Grid item xs={12} className={classes.cardsContainer}>
           { renderPlayableCards() }
         </Grid>

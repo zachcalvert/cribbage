@@ -11,7 +11,6 @@ import GameSettings from "./GameSettings";
 const useStyles = makeStyles((theme) => ({
   actionButton: {
     margin: theme.spacing(5),
-    background: '#ab003c'
   },
   closeModal: {
     position: 'absolute',
@@ -64,7 +63,7 @@ export const StartMenu = () => {
           <Typography className={classes.hint}>All human players should join before starting the game.</Typography>
         </DialogActions>
       </Dialog>
-      <Button variant='contained' color="secondary"
+      <Button variant='contained' color='primary'
         className={classes.actionButton}
         onClick={handleAction}
         disabled={!startable}>

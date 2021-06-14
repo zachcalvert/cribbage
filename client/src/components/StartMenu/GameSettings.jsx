@@ -25,8 +25,6 @@ const useStyles = makeStyles((theme) => ({
   },
   playButton: {
     margin: theme.spacing(2),
-    background: '#009688',
-    color: 'white'
   },
 }));
 
@@ -92,7 +90,7 @@ export default function GameSettings() {
           />
         </>
         <div className={classes.actions}>
-          <Button variant="contained" className={classes.playButton} onClick={event => handleStartGame(event)}>Play</Button>
+          <Button variant="contained" color='primary' className={classes.playButton} onClick={event => handleStartGame(event)}>Play</Button>
         </div>
       </div>
     </div>
