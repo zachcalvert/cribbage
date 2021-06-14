@@ -173,7 +173,7 @@ class CribbageNamespace(Namespace):
 
     def on_draw(self, msg):
         game = controller.draw(msg)
-        emit('cards', {'cards': game['hands'], 'show_to_all': True}, room=msg['game'])
+        emit('cards', {'cards': game['hands'], 'draw': True, 'show_to_all': True}, room=msg['game'])
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         self.announce(game['opening_message'], room=msg['game'])
         if game['current_turn'] == game['bot']:

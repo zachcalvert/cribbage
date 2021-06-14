@@ -309,8 +309,8 @@ export const Game = ()  => {
         </Dialog>
 
         <Dialog className="help-modal" open={helpOpen}>
-          <DialogTitle style={{"text-align": "center"}}>
-            Hi!
+          <DialogTitle style={{textAlign: "center"}}>
+            Settings
           </DialogTitle>
           <DialogContent>
             <IconButton className={`${classes.closeModal} ${classes.appBarButton}`} onClick={e => setHelpOpen(false)} aria-label="close">

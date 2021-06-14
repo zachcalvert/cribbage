@@ -30,11 +30,12 @@ export const Opponent = (props) => {
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
-      if (msg.cards[props.name].length === 1) {
+      if (msg.draw) {
         setDrawCard(msg.cards[props.name][0])
+        setPlayedCards([]);
       } else {
         setDrawCard(null);
-        setPlayableCards(msg.cards[props.name]);
+        setPlayableCards(null);
         setPlayedCards([]);
       }
     }
@@ -42,7 +43,7 @@ export const Opponent = (props) => {
   });
 
   useSocket("send_cards", msg => {
-    if (props.name in msg.cards) {
+    if (props.name in msg.cards && msg.played_cards[props.name]?.length !== 4) {
       setPlayableCards(msg.cards[props.name]);
     }
     if (props.name in msg.played_cards) {
@@ -92,7 +93,7 @@ export const Opponent = (props) => {
             className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
             ${showCards ? "overlapping-card" : ""}`}
             src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/${cardPattern}.svg`}
-            style={playableCards.length === 1 ? {'width': '100%'} : {}}
+            style={playableCards?.length === 1 ? {'width': '100%'} : {}}
           />
         ))}
       </span>
@@ -122,8 +123,8 @@ export const Opponent = (props) => {
       }
       <Divider className={classes.divider} variant="middle" />
       { drawCard ? renderDrawCard() : <span /> }
-      { playableCards.length ? renderCards() : <span/> }
-      { playedCards.length ? renderPlayedCards() : <span /> }
+      { playableCards?.length ? renderCards() : <span/> }
+      { playedCards?.length ? renderPlayedCards() : <span /> }
     </div>
   );
 }
