@@ -79,7 +79,6 @@ class CribbageNamespace(Namespace):
 
     def bot_move(self, game):
         action = controller.get_value(game['name'], 'current_action')
-        print(f'action! {action}')
         player = game['bot']
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=game['name'])
         time.sleep(2)

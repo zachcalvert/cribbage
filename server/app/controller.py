@@ -56,7 +56,8 @@ def all_games():
                 "crib_size": g.get("crib_size"),
                 "started": g.get("started"),
                 "winning_score": g.get("winning_score"),
-                "winner": g.get("winner")
+                "winner": g.get("winner"),
+                'exited_players': g.get('exited_players')
             })
 
     sorted_games = sorted(games, key=lambda k: k['started'])
@@ -83,6 +84,7 @@ def get_or_create_game(name):
             "name": name,
             "players": {},
             "state": "INIT",
+            'exited_players': []
         }
         cache.set(name, json.dumps(g))
     return g
@@ -97,6 +99,7 @@ def add_player(game, player):
 
 def remove_player(game, player):
     g = json.loads(cache.get(game))
+    g['exited_players'].append(player)
     g['players'].pop(player)
     if not g['players']:
         cache.delete(game)

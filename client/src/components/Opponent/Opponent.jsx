@@ -35,11 +35,11 @@ export const Opponent = (props) => {
         setPlayedCards([]);
       } else {
         setDrawCard(null);
-        setPlayableCards(null);
+        setPlayableCards(msg.cards[props.name]);
         setPlayedCards([]);
       }
     }
-    msg.show_to_all === true ?  setShowCards(true) : setShowCards(false)
+    msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
   });
 
   useSocket("send_cards", msg => {
@@ -93,7 +93,7 @@ export const Opponent = (props) => {
             className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
             ${showCards ? "overlapping-card" : ""}`}
             src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/${cardPattern}.svg`}
-            style={playableCards?.length === 1 ? {'width': '100%'} : {}}
+            style={playableCards.length === 1 ? {'width': '100%'} : {}}
           />
         ))}
       </span>

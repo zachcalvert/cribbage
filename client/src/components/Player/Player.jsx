@@ -334,7 +334,7 @@ export const Player = (props) => {
               icon={<ViewColumn />}
               label={cribHelpText}
               color='#00695f'
-              variant="sharp"
+              variant="outlined"
             /> : <span />
            }
         </Grid>
