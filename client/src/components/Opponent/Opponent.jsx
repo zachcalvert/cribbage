@@ -14,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Opponent = (props) => {
-  const { pattern } = props;
   const classes = useStyles();
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
@@ -22,13 +21,11 @@ export const Opponent = (props) => {
   const [scoringCards, setScoringCards] = useState([]);
   const [scoreDisplay, setScoreDisplay] = useState('');
   const [drawCard, setDrawCard] = React.useState(null);
+  const [cardPattern, setCardPattern] = useState(localStorage.getItem('card-pattern') || 'wide_red_stripes');
 
   useSocket("cards", msg => {
     if (props.name in msg.cards) {
-      console.log('here1')
-
       if (msg.cards[props.name].length === 1) {
-        console.log('here2')
         setDrawCard(msg.cards[props.name][0])
       } else {
         setDrawCard(null);
@@ -66,6 +63,10 @@ export const Opponent = (props) => {
     setScoringCards([]);
   });
 
+  useSocket('card_pattern_selected', msg => {
+    setCardPattern(msg.pattern);
+  });
+
   const renderDrawCard = () => {
     return <span>
     <ReactSVG
@@ -85,7 +86,7 @@ export const Opponent = (props) => {
             wrapper='span'
             className={`${scoringCards.includes(playableCards[index]) ? `active-opponent-card opponent-card` : "opponent-card"} 
             ${showCards ? "overlapping-card" : ""}`}
-            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/wide_red_stripes.svg`}
+            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/${cardPattern}.svg`}
             style={playableCards.length === 1 ? {'width': '100%'} : {}}
           />
         ))}

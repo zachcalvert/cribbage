@@ -1,16 +1,15 @@
 import React from 'react';
+import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, Paper, ThemeProvider } from '@material-ui/core';
-import Fab from '@material-ui/core/Fab';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Link from '@material-ui/core/Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import HelpOutlineRoundedIcon from '@material-ui/icons/HelpOutlineRounded';
-import IconButton from '@material-ui/core/IconButton';
+import MoreVertIcon from '@material-ui/icons/MoreVert';import IconButton from '@material-ui/core/IconButton';
 import Typography from '@material-ui/core/Typography';
 
 import CloseIcon from '@material-ui/icons/Close';
@@ -19,6 +18,8 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 import Brightness4Icon from '@material-ui/icons/Brightness4';
 import Slide from '@material-ui/core/Slide';
 import TextField from '@material-ui/core/TextField';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 
 import { HelpScreen } from "../HelpScreen/HelpScreen";
 import { ChatLog } from '../Chat/ChatLog';
@@ -44,12 +45,15 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarButton: {
     outline: 'none',
-    margin: theme.spacing(1)
+    margin: theme.spacing(1),
+    marginRight: 0,
+    padding: theme.spacing(1),
+    paddingRight: 0
   },
   closeModal: {
     position: 'absolute',
     top: 0,
-    right: 0
+    right: '10px'
   },
   darkModeToggle: {
     margin: theme.spacing(2)
@@ -140,6 +144,7 @@ export const Game = ()  => {
   const [inProgress, setInProgress] = React.useState(false);
   const [prefersDarkMode, setPrefersDarkMode] = React.useState(localStorage.getItem('dark-mode') === 'true');
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [pattern, setPattern] = React.useState('wide_red_stripes');
 
   const theme = createMuiTheme({
     palette: {
@@ -194,6 +199,12 @@ export const Game = ()  => {
     setRoom(randomWords({ exactly: 3, join: '-' }));
     setLeaveGameOpen(false);
     setGameOpen(false);
+  };
+
+  const handlePattern = (event, newPattern) => {
+    setPattern(newPattern)
+    socket.emit('pattern_selected', {game: room, pattern: newPattern})
+    localStorage.setItem('card-pattern', newPattern);
   };
 
   React.useEffect(() => {
@@ -282,6 +293,55 @@ export const Game = ()  => {
             <IconButton className={`${classes.closeModal} ${classes.appBarButton}`} onClick={e => setHelpOpen(false)} aria-label="close">
               <CloseIcon fontSize="inherit" />
             </IconButton>
+            <Typography variant='subtitle2'>Card Pattern</Typography>
+            <ToggleButtonGroup
+              value={pattern}
+              exclusive
+              onChange={handlePattern}
+              aria-label="pattern-selector">
+              <ToggleButton value="wide_red_stripes" aria-label="centered">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/wide_red_stripes.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+              <ToggleButton value="wide_blue_stripes" aria-label="centered">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/wide_blue_stripes.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+              <ToggleButton value="thin_red_stripes" aria-label="centered">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/thin_red_stripes.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+              <ToggleButton value="thin_blue_stripes" aria-label="centered">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/thin_blue_stripes.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+              <ToggleButton value="dark_blue" aria-label="right aligned">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/dark_blue.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+              <ToggleButton value="dark_red" aria-label="right aligned">
+                <ReactSVG
+                  wrapper='span'
+                  src='/cards/dark_red.svg'
+                  className='card-pattern'
+                />
+              </ToggleButton>
+            </ToggleButtonGroup>
             <HelpScreen />
           </DialogContent>
         </Dialog>
@@ -320,16 +380,6 @@ export const Game = ()  => {
                 <Brightness4Icon style={{"fill": prefersDarkMode ? "#ffeb3b" : ""}} />
               </IconButton>
 
-              <Hidden smDown>
-                <IconButton
-                  color='inherit'
-                  className={classes.appBarButton}
-                  onClick={e => setHelpOpen(true)}
-                  aria-label="help">
-                  <HelpOutlineRoundedIcon fontSize="inherit" />
-                </IconButton>
-              </Hidden>
-
               <Hidden mdUp>
                 <IconButton
                   color="inherit"
@@ -342,6 +392,14 @@ export const Game = ()  => {
                   <ForumIcon />
                 </IconButton>
               </Hidden>
+
+              <IconButton
+                color='inherit'
+                className={classes.appBarButton}
+                onClick={e => setHelpOpen(true)}
+                aria-label="help">
+                <MoreVertIcon fontSize="inherit" />
+              </IconButton>
             </Toolbar>
           </AppBar>
           
@@ -379,9 +437,9 @@ export const Game = ()  => {
                   <Scoreboard />
                 </div>
                 <div className={`${classes.deck} col-4`}>
-                <Deck pattern='wide_red_stripes' />
-              </div>
-            </Paper>
+                  <Deck pattern={pattern} />
+                </div>
+              </Paper>
             ) : (
               <StartMenu />
             )}

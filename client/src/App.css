@@ -31,6 +31,11 @@ html, body {
   transform: translateX(-50%)
 }
 
+.card-pattern svg {
+  height: auto;
+  width: 100%;
+}
+
 
 @media only screen and (max-width: 960px) {
   .game {

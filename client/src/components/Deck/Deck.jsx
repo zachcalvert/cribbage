@@ -12,21 +12,10 @@ const trans = (r, s) => `perspective(1500px) rotateX(30deg) rotateY(${r / 10}deg
 
 
 export const Deck = (props) => {
-  const { pattern } = props;
+  const [cardPattern, setCardPattern] = useState(localStorage.getItem('card-pattern') || 'wide_red_stripes');
   const [cutCard, setCutCard] = useState(null);
   const [scoring, setScoring] = useState(false);
-  const defaultDeck = [
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-    `/cards/${pattern}.svg`,
-  ]
-  const [cards, setCards] = useState(defaultDeck);
+  const [cards, setCards] = useState(Array(12).fill(`/cards/${cardPattern}.svg`));
 
   const [gone] = useState(() => new Set()) // The set flags all the cards that are flicked out
   const [properties, set] = useSprings(cards.length, i => ({ ...to(i), from: from(i) })) // Create a bunch of springs using the helpers above
@@ -46,6 +35,11 @@ export const Deck = (props) => {
     if (!down && gone.size === cards.length) setTimeout(() => gone.clear() || set(i => to(i)), 600)
   });
 
+  useSocket('card_pattern_selected', msg => {
+    setCardPattern(msg.pattern);
+    setCards(Array(12).fill(`/cards/${msg.pattern}.svg`));
+  });
+
   useSocket("cut_card", msg => {
     setCards([...cards, '/cards/' + msg.card + '.svg']);
     setCutCard(msg.card);
@@ -54,7 +48,7 @@ export const Deck = (props) => {
   useSocket("send_turn", msg => {
     setScoring(false);
     if (msg.action === 'deal') {
-      setCards(defaultDeck);
+      setCards(Array(12).fill(`/cards/${cardPattern}.svg`));
     }
   });
 
