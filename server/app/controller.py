@@ -57,7 +57,8 @@ def all_games():
                 "started": g.get("started"),
                 "winning_score": g.get("winning_score"),
                 "winner": g.get("winner"),
-                'exited_players': g.get('exited_players')
+                'exited_players': g.get('exited_players'),
+                'chats': g.get('chats')
             })
 
     sorted_games = sorted(games, key=lambda k: k['started'])
@@ -84,7 +85,8 @@ def get_or_create_game(name):
             "name": name,
             "players": {},
             "state": "INIT",
-            'exited_players': []
+            'exited_players': [],
+            'chats': []
         }
         cache.set(name, json.dumps(g))
     return g
@@ -176,6 +178,16 @@ def start_game(game_data, **kwargs):
     game_data['opening_message'] += ' Draw to see who gets first crib.'
     return game_data
 
+
+@game_interaction
+def add_chat(game_data, **kwargs):
+    if kwargs['name'] != 'game-updater':
+        chat = {
+            'name': kwargs['name'],
+            'message': kwargs['message']
+        }
+        game_data['chats'].append(chat)
+    return game_data
 
 @game_interaction
 def draw(game_data, **kwargs):

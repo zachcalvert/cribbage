@@ -143,7 +143,7 @@ export const Game = ()  => {
   const [inProgress, setInProgress] = React.useState(false);
   const [prefersDarkMode, setPrefersDarkMode] = React.useState(localStorage.getItem('dark-mode') === 'true');
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [pattern, setPattern] = React.useState('wide_red_stripes');
+  const [pattern, setPattern] = React.useState(localStorage.getItem('card-pattern') || 'wide_red_stripes');
   const [snackBarOpen, setSnackBarOpen] = React.useState(false);
   const [latestMessage, setLatestMessage] = React.useState(null);
 
@@ -471,11 +471,11 @@ export const Game = ()  => {
 
         </Dialog>
         <Hidden mdUp>
-          {latestMessage && <Snackbar
+          {latestMessage && latestMessage.name !== name && <Snackbar
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             open={snackBarOpen}
             TransitionComponent={TransitionDown}
-            message={latestMessage.message}
+            message={latestMessage.name === 'game-updater' ? `${latestMessage.message}`: `${latestMessage.name}: ${latestMessage.message}`}
             classes={classes.snackBarMessage}
             key='latest-message' />
           }

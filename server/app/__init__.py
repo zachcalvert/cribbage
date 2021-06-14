@@ -135,9 +135,7 @@ class CribbageNamespace(Namespace):
                 emit('draw_board', {'players': game['players'], 'winning_score': game['winning_score']})
                 emit('points', {'player': player, 'amount': points, 'winning_score': game['winning_score']})
 
-            print('before cut card eval')
             if game['cut_card']:
-                print('emitting cut card')
                 emit('cut_card', {'card': game['cut_card']})
 
             if game['current_action'] in ['play', 'pass']:
@@ -151,6 +149,7 @@ class CribbageNamespace(Namespace):
     def on_chat_message(self, msg):
         room = None if msg.get('private') else msg['game']
         emit('chat', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=room)
+        controller.add_chat(msg)
 
     def on_animation(self, msg):
         emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])
