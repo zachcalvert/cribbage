@@ -181,6 +181,13 @@ export const Game = ()  => {
     localStorage.setItem('dark-mode', !prefersDarkMode)
   }
 
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackBarOpen(false);
+  };
+
   const { socket } = useSocket("players", msg => {
     setOpponents(msg.players.filter(player => player !== name))
   });
@@ -474,10 +481,17 @@ export const Game = ()  => {
           {latestMessage && latestMessage.name !== name && <Snackbar
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             open={snackBarOpen}
+            onClose={handleSnackbarClose}
+            autoHideDuration={5000}
             TransitionComponent={TransitionDown}
             message={latestMessage.name === 'game-updater' ? `${latestMessage.message}`: `${latestMessage.name}: ${latestMessage.message}`}
             classes={classes.snackBarMessage}
-            key='latest-message' />
+            key='latest-message'
+            action={
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            } />
           }
         </Hidden>
       </Grid>
