@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     right: 0
   },
   hint: {
-    fontSize: 12
+    color: theme.palette.secondary.light
   }
 }))
 

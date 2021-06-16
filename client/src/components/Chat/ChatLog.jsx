@@ -2,7 +2,7 @@ import React from "react";
 import { useSocket } from "use-socketio";
 import useSound from "use-sound";
 
-import { IconButton, InputAdornment, makeStyles, Paper, TextField } from "@material-ui/core";
+import { IconButton, InputAdornment, makeStyles, Paper, TextField, Typography } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import SendIcon from '@material-ui/icons/Send';
@@ -68,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
     width: 'fit-content',
     marginLeft: 'auto',
     textAlign: 'right',
+    color: '#fff'
   },
   chatMessageContent: {
     padding: '10px',
@@ -84,7 +85,6 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px',
     borderRadius: '10px',
     borderBottomRightRadius: 0,
-    color: 'eggshell',
     background: '#1982FC',
     fontSize: 20,
     [theme.breakpoints.down('sm')]: {
@@ -111,18 +111,17 @@ export const ChatLog = ()  => {
   const [newMessage, setNewMessage] = React.useState('');
   const [showEmojis, setShowEmojis] = React.useState(false);
   const messagesEndRef = React.useRef(null);
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+  React.useEffect(scrollToBottom, [messages]);
   
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   
   const nickname = localStorage.getItem('cribbage-live-name');
   const game = localStorage.getItem('cribbage-live-game');
-
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({behavior: "smooth"});
-    }
-  };
-  React.useEffect(scrollToBottom, [messages]);
 
   const { socket } = useSocket("chat", newMessage => {
     if (newMessage.name === 'game-updater') {
@@ -175,8 +174,8 @@ export const ChatLog = ()  => {
               </div>
             ) : (
               <div className={`${nickname === name ? classes.playerChatMessage : classes.chatMessage}`} key={index}>
-                <div className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`} color='textPrimary'>
-                  { message }
+                <div className={`${nickname === name ? classes.playerChatMessageContent : classes.chatMessageContent}`}>
+                  <Typography color='white'>{ message }</Typography>
                 </div>
                 {nickname !== name &&
                   <div className={classes.chatMessageName} color="textSecondary">
