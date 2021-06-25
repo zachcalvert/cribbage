@@ -7,6 +7,7 @@ COPY . /code
 
 ENV FLASK_DEBUG 1
 ENV FLASK_ENV development
+ENV CHAT_URL http://localhost:8000/bot/crib_message/
 
 EXPOSE 5000
 

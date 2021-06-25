@@ -18,3 +18,4 @@ mock
 gunicorn
 eventlet==0.30.0
 giphy_client
+requests
