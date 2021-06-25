@@ -3,7 +3,7 @@ import { ReactSVG } from 'react-svg'
 import { useSocket } from "use-socketio";
 
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Drawer, Hidden, Paper, Slide, Snackbar, ThemeProvider } from '@material-ui/core';
+import { Button, createMuiTheme, CssBaseline, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Drawer, Hidden, Paper, Slide, Snackbar, ThemeProvider } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Link from '@material-ui/core/Link';
@@ -48,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 0,
     padding: theme.spacing(1),
     paddingRight: 0
+  },
+  chatHeader: {
+    margin: 'auto',
+    marginLeft: theme.spacing(2),
+    padding: theme.spacing(2)
   },
   closeModal: {
     position: 'absolute',
@@ -171,7 +176,9 @@ export const Game = ()  => {
 
   const drawer = (
     <div>
-      <div className={classes.toolbar} />
+      <div className={classes.toolbar}>
+        <Typography variant='h6' className={classes.chatHeader}>{room} chat</Typography></div>
+        <Divider variant='middle' />
       <ChatLog />
     </div>
   );

@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(2),
   },
   card: {
-    width: '8em',
+    width: '7em',
     height: 'auto',
     padding: 0,
-    margin: '-35px',
+    margin: '-30px',
     [theme.breakpoints.down('sm')]: {
       width: '6.5em',
       margin: '-30px',
