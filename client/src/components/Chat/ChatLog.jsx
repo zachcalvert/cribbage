@@ -110,14 +110,6 @@ export const ChatLog = ()  => {
   const [messages, setMessages] = React.useState([]);
   const [newMessage, setNewMessage] = React.useState('');
   const [showEmojis, setShowEmojis] = React.useState(false);
-  const messagesEndRef = React.useRef(null);
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-  React.useEffect(scrollToBottom, [messages]);
-  
   const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
   
   const nickname = localStorage.getItem('cribbage-live-name');
@@ -135,6 +127,7 @@ export const ChatLog = ()  => {
       newMessage = update;
     }
     setMessages([...messages, newMessage]);
+    document.getElementById('messages-ref').scrollIntoView();
     boop()
   });
 
@@ -185,7 +178,7 @@ export const ChatLog = ()  => {
               </div>
             )
         ))}
-        <div ref={messagesEndRef} />
+        <div id='messages-ref' />
       </div>
     ) : <span />
   };
