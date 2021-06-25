@@ -159,7 +159,7 @@ class CribbageNamespace(Namespace):
         game = controller.get_or_create_game(msg['game'])
         if game['bot']:
             response = requests.post(CHAT_URL, json.dumps({"text": msg['message'], "sender": msg['name']}))
-            message = response['text'].replace('member_name', msg['name'])
+            message = response.json()['text'].replace('member_name', msg['name'])
 
             emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': message}, room=room)
             controller.add_chat(msg)
