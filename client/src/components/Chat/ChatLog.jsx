@@ -102,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.paper,
     [theme.breakpoints.down('sm')]: {
       width: '100%',
-      bottom: '60px'
+      bottom: '120px'
     }
   }
 }));
