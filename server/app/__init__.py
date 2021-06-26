@@ -162,7 +162,7 @@ class CribbageNamespace(Namespace):
             message = response.json()['text'].replace('member_name', msg['name'])
 
             emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': message}, room=room)
-            controller.add_chat(msg)
+            controller.add_chat({'name': game['bot'], 'message': message})
 
     def on_animation(self, msg):
         emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])

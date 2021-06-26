@@ -189,6 +189,7 @@ def add_chat(game_data, **kwargs):
         game_data['chats'].append(chat)
     return game_data
 
+
 @game_interaction
 def draw(game_data, **kwargs):
     game_data['opening_message'] = ''
