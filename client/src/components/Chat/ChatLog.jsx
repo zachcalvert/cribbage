@@ -98,10 +98,11 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     bottom: 0,
     left: 0,
+    zIndex: theme.zIndex.drawer + 1,
     background: theme.palette.background.paper,
     [theme.breakpoints.down('sm')]: {
       width: '100%',
-      bottom: '10px'
+      bottom: '60px'
     }
   }
 }));
