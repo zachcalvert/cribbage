@@ -123,7 +123,11 @@ class CribbageNamespace(Namespace):
 
     def get_comment(self, bot, quality, time):
         response = requests.post(COMMENT_URL, json.dumps({"bot": bot, "quality": quality, "time": time}))
-        return response.text
+        try:
+            text = response.json()['text']
+            return text
+        except Exception as e:
+            print(e)
 
     def on_player_join(self, msg):
         join_room(msg['game'])
@@ -183,6 +187,7 @@ class CribbageNamespace(Namespace):
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce(game['opening_message'], room=msg['game'], type='big')
+
         if game.get('bot'):
             comment = self.get_comment(game['bot'], 'GOOD', 'START')
             emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': comment}, room=game['name'])
