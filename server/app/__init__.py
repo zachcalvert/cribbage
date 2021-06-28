@@ -21,7 +21,8 @@ socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https:/
 thread = None
 thread_lock = Lock()
 
-CHAT_URL = os.environ['CHAT_URL']
+CHAT_URL = f"{os.environ['DJANGO_URL']}bot/crib_message/"
+COMMENT_URL = f"{os.environ['DJANGO_URL']}bot/game_comment/"
 
 
 @app.route('/all-games')
@@ -120,6 +121,10 @@ class CribbageNamespace(Namespace):
 
         return game
 
+    def get_comment(self, bot, quality, time):
+        response = requests.post(COMMENT_URL, json.dumps({"bot": bot, "quality": quality, "time": time}))
+        return response.text
+
     def on_player_join(self, msg):
         join_room(msg['game'])
         controller.get_or_create_game(msg['game'])
@@ -178,6 +183,10 @@ class CribbageNamespace(Namespace):
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action']}, room=msg['game'])
         emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
         self.announce(game['opening_message'], room=msg['game'], type='big')
+        if game.get('bot'):
+            comment = self.get_comment(game['bot'], 'GOOD', 'START')
+            emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': comment}, room=game['name'])
+            controller.add_chat({'name': game['bot'], 'message': comment})
 
     def on_pattern_selected(self, msg):
         emit('card_pattern_selected', {'pattern': msg['pattern']})

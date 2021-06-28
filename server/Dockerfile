@@ -7,7 +7,7 @@ COPY . /code
 
 ENV FLASK_DEBUG 1
 ENV FLASK_ENV development
-ENV CHAT_URL http://localhost:8000/bot/crib_message/
+ENV DJANGO_URL http://localhost:8000/
 
 EXPOSE 5000
 

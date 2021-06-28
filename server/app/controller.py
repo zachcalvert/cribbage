@@ -128,7 +128,7 @@ def start_game(game_data, **kwargs):
 
     players = list(game_data['players'].keys())
     if len(players) == 1:
-        bot = random.choice(['Bryan', 'Sally', 'Bev'])
+        bot = random.choice(['Bev', 'Lish'])
         players.append(bot)
         game_data['players'][bot] = 0
     else:

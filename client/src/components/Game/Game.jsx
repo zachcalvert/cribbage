@@ -172,6 +172,7 @@ export const Game = ()  => {
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
+    setSnackBarOpen(!mobileOpen);
   };
 
   const drawer = (
@@ -208,9 +209,11 @@ export const Game = ()  => {
   });
 
   useSocket("chat", newMessage => {
-    setLatestMessage(null);
-    setLatestMessage(newMessage);
-    setSnackBarOpen(true);
+    if (!mobileOpen) {
+      setLatestMessage(null);
+      setLatestMessage(newMessage);
+      setSnackBarOpen(true);
+    }
   });
 
   function TransitionDown(props) {
