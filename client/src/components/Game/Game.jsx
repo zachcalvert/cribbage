@@ -28,6 +28,7 @@ import { Opponent } from "../Opponent/Opponent";
 import { Player } from "../Player/Player";
 import { Scoreboard } from "../Scoreboard/Scoreboard";
 import { StartMenu } from "../StartMenu/StartMenu";
+import { GoodHand } from '../GoodHand/GoodHand';
 
 const randomWords = require('random-words');
 
@@ -280,6 +281,8 @@ export const Game = ()  => {
       <CssBaseline />
       <Grid container className={classes.root} spacing={2}>
         <form className={classes.form} onSubmit={event => handleJoin(event)}>
+          <GoodHand />
+
           <Typography className={classes.pageTitle}>cribbage. live.</Typography>
 
           <TextField
