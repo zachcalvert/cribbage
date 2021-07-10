@@ -9,6 +9,9 @@ import GameSettings from "./GameSettings";
 
 
 const useStyles = makeStyles((theme) => ({
+  actions: {
+    background: '#F0F0F0F0'
+  },
   actionButton: {
     margin: theme.spacing(5),
   },
@@ -59,8 +62,8 @@ export const StartMenu = () => {
             </IconButton>
           <GameSettings />
         </DialogContent>
-        <DialogActions>
-          <Typography className={classes.hint}>All human players should join before starting the game.</Typography>
+        <DialogActions className={classes.actions}>
+          <Typography className={classes.hint}>All human players should join before starting the game 👍</Typography>
         </DialogActions>
       </Dialog>
       <Button variant='contained' color='primary'

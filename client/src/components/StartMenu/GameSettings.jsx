@@ -90,7 +90,7 @@ export default function GameSettings() {
           />
         </>
         <div className={classes.actions}>
-          <Button variant="contained" color='primary' className={classes.playButton} onClick={event => handleStartGame(event)}>Play</Button>
+          <Button variant="contained" color='primary' className={classes.playButton} onClick={event => handleStartGame(event)}>Start Game</Button>
         </div>
       </div>
     </div>
