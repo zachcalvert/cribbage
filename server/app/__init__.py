@@ -206,6 +206,15 @@ class CribbageNamespace(Namespace):
         emit('send_turn', {'players': game['current_turn'], 'action': game['current_action'], 'crib': game['dealer']},
              room=msg['game'])
 
+        if game['bot']:
+            if game['current_turn'] == game['bot']:
+                comment = self.get_comment(game['bot'], 'BAD', 'DRAW')
+            else:
+                comment = self.get_comment(game['bot'], 'GOOD', 'DRAW')
+
+            emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': comment}, room=game['name'])
+            controller.add_chat({'name': game['bot'], 'message': comment})
+
     def on_deal(self, msg):
         game = controller.deal_hands(msg)
         emit('cards', {'cards': game['hands']}, room=msg['game'])
@@ -254,7 +263,6 @@ class CribbageNamespace(Namespace):
         self.announce('{} played {}'.format(msg['player'], game['previous_turn']['action']), room=game['name'])
         self.dispatch_points(game)
         if game['previous_turn']['points'] > 0:
-            print(f'sending {game["previous_turn"]["reason"]} to {msg["player"]}')
             emit('display_score', {'player': msg['player'], 'text': game['previous_turn']['reason'], 'cards': [msg['card']]}, room=msg['game'])
 
         while game['current_turn'] == game['bot']:
@@ -305,6 +313,15 @@ class CribbageNamespace(Namespace):
         emit('winner', {'player': game['winner']}, room=msg['game'])
         self.announce('{} wins!'.format(msg['player']), room=None, type='big')
         emit('send_turn', {'players': game['current_turn'], 'action': 'rematch'}, room=msg['game'])
+
+        if game['bot']:
+            if game['winner'] == game['bot']:
+                comment = self.get_comment(game['bot'], 'POOR', 'GAME')
+            else:
+                comment = self.get_comment(game['bot'], 'GOOD', 'GAME')
+
+            emit('chat', {'id': str(uuid.uuid4()), 'name': game['bot'], 'message': comment}, room=game['name'])
+            controller.add_chat({'name': game['bot'], 'message': comment})
 
     def on_rematch(self, msg):
         game = controller.rematch(msg)
