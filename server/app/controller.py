@@ -116,6 +116,7 @@ def start_game(game_data, **kwargs):
     deck = jokers_deck if jokers else standard_deck
 
     players = list(game_data['players'].keys())
+
     if len(players) == 1:
         bot = random.choice(['Bryan', 'Sally', 'Bev'])
         players.append(bot)
