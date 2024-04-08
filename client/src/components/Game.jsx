@@ -95,10 +95,10 @@ function Game() {
       </>
       ) : (
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <Item><Chat /></Item>
         </Grid>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
           <Item>xs=4</Item>
         </Grid>
       </Grid>
