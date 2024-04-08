@@ -19,7 +19,6 @@ const outerTheme = createTheme({
 
 export default function App() {
   const [isConnected, setIsConnected] = useState(socket.connected);
-  const [fooEvents, setFooEvents] = useState([]);
 
   useEffect(() => {
     function onConnect() {
@@ -29,10 +28,6 @@ export default function App() {
 
     function onDisconnect() {
       setIsConnected(false);
-    }
-
-    function onFooEvent(value) {
-      setFooEvents(previous => [...previous, value]);
     }
 
     socket.on('connect', onConnect);

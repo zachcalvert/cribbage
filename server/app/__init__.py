@@ -2,6 +2,7 @@
 import eventlet
 eventlet.monkey_patch()
 
+import logging
 import time
 import uuid
 
@@ -13,7 +14,12 @@ from . import controller
 from . import bot
 from . import utils
 
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+
 app = Flask(__name__)
+logger = logging.getLogger(__name__)
 socketio = SocketIO(app, cors_allowed_origins=['http://localhost:3000', 'https://cribbage.live'])
 thread = None
 thread_lock = Lock()
@@ -27,14 +33,26 @@ def all_games():
 
 class CribbageNamespace(Namespace):
 
-    def on_connect(self):
-        pass
+    def on_player_join(self, msg):
+        room = msg['room']
+        player = msg['name']
+        logger.info(f'adding {player} to room {room}')
 
-    def on_disconnect(self):
-        pass
+        join_room(room)
+        controller.get_or_create_game(room)
+        game = controller.add_player(room, msg['name'])
+        # emit('players', {'players': list(game['players'].keys())}, room=room)
+        self.announce('{} joined'.format(msg['name']), room=room)
 
     def announce(self, message, room, type=None):
-        emit('chat', {'id': str(uuid.uuid4()), 'name': 'game-updater', 'message': message, 'type': type}, room=room)
+        emit('chat', {
+                'id': str(uuid.uuid4()),
+                'name': 'game-updater',
+                'message': message,
+                'type': type
+            },
+            room=room
+        )
 
     def award_points(self, player, reason, amount, total, game):
         message = '+{} for {} ({})'.format(amount, player, reason)
@@ -115,13 +133,6 @@ class CribbageNamespace(Namespace):
 
         return game
 
-    def on_player_join(self, msg):
-        join_room(msg['game'])
-        controller.get_or_create_game(msg['game'])
-        game = controller.add_player(msg['game'], msg['name'])
-        emit('players', {'players': list(game['players'].keys())}, room=msg['game'])
-        self.announce('{} joined'.format(msg['name']), room=msg['game'])
-
     def on_player_refresh(self, msg):
         join_room(msg['game'])
         game = controller.get_or_create_game(msg['game'])
@@ -147,8 +158,16 @@ class CribbageNamespace(Namespace):
         self.announce('{} left'.format(msg['name']), room=msg['game'])
 
     def on_chat_message(self, msg):
-        room = None if msg.get('private') else msg['game']
-        emit('chat', {'id': str(uuid.uuid4()), 'name': msg['name'], 'message': msg['message']}, room=room)
+        logger.info('chat!')
+        room = None if msg.get('private') else msg['room']
+        logger.info(msg)
+        emit('chat', {
+                'id': str(uuid.uuid4()),
+                'name': msg['name'],
+                'message': msg['message']
+            },
+            room=room)
+        logger.info('emitted')
 
     def on_animation(self, msg):
         emit('animation', {'id': str(uuid.uuid4()), 'name': msg['name'], 'imageUrl': msg['imageUrl']}, room=msg['game'])
