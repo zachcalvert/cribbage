@@ -5,9 +5,6 @@ import os
 import random
 import redis
 
-from itertools import combinations
-import more_itertools as mit
-
 from app import bot
 from app.hand import Hand
 from app import utils
