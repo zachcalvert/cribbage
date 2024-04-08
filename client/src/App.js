@@ -1,6 +1,6 @@
 import React, { useEffect, useState}  from 'react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { green, orange } from '@mui/material/colors';
+import { indigo, green } from '@mui/material/colors';
 
 import { socket } from './socket';
 import Header from './components/Header/Header';
@@ -9,10 +9,10 @@ import Game from "./components/Game";
 const outerTheme = createTheme({
   palette: {
     primary: {
-      main: green[500],
+      main: indigo[900],
     },
     secondary: {
-      main: orange[500],
+      main: green[500],
     },
   },
 });

@@ -10,6 +10,7 @@ import Container from '@mui/material/Container';
 
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import StyleIcon from '@mui/icons-material/SportsBar';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -109,7 +110,7 @@ function Header({ isConnected }) {
           <Box sx={{ flexGrow: 0 }}>
           {isConnected ?
                 <CheckCircleIcon color="secondary" />
-                : <CheckCircleIcon color="error" />
+                : <CancelIcon color="error" />
             }
           </Box>
         </Toolbar>
