@@ -15,7 +15,7 @@ export const Chat = ()  => {
   const messagesEndRef = useRef(null);
 
   const nickname = sessionStorage.getItem('name');
-  const room = sessionStorage.getItem('room');
+  const room = sessionStorage.getItem('game');
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {

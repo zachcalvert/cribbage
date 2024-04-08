@@ -53,7 +53,7 @@ function Game() {
   return (
     <Container maxWidth="xl">
       <Box sx={{ my: 4 }}>
-      {gameStatus === 'NEW' ? <Chat /> : (
+      {gameStatus !== 'NEW' ? <Chat /> : (
         <>
         <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
         <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>

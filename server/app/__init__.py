@@ -71,7 +71,7 @@ class CribbageNamespace(Namespace):
         msg = "  ".join([utils.card_short_text_from_id(card_id) for card_id in card_ids])
         msg += f'  {text}'
         emit('display_score', {'player': player, 'text': text, 'cards': card_ids}, room=game)
-        # self.announce(msg, room=game)
+        self.announce(msg, room=game)
         time.sleep(1.5)
 
     def play_card(self, player, card, game, total=None):
