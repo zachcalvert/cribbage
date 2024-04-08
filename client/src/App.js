@@ -1,15 +1,24 @@
 import React  from 'react';
-import { ModalProvider } from "react-modal-hook";
-import { SocketIOProvider } from "use-socketio";
-import { TransitionGroup } from "react-transition-group";
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { green, orange } from '@mui/material/colors';
 
-import { Game } from "./components/Game";
-import './App.css';
+import Header from './components/Header/Header';
+import Game from "./components/Game";
+
+const outerTheme = createTheme({
+  palette: {
+    primary: {
+      main: green[500],
+    },
+    secondary: {
+      main: orange[500],
+    },
+  },
+});
 
 export const App = () => (
-  <SocketIOProvider url={process.env.REACT_APP_SOCKET_HOST}>
-    <ModalProvider rootComponent={TransitionGroup}>
-      <Game />
-    </ModalProvider>
-  </SocketIOProvider>
+  <ThemeProvider theme={outerTheme}>
+    <Header />
+    <Game />
+  </ThemeProvider>
 );

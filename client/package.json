@@ -1,24 +1,25 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "dependencies": {
-    "@material-ui/icons": "^4.9.1",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/roboto": "^5.0.12",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/material": "^5.15.12",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "emoji-mart": "^3.0.0",
-    "random-words": "^1.1.1",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "react-modal": "^3.11.2",
-    "react-scripts": "3.4.1",
-    "react-spring": "^8.0.27",
-    "react-svg": "^11.0.32",
-    "react-use-gesture": "^7.0.15",
-    "use-animate-number": "^1.0.5",
-    "use-socketio": "^2.0.3",
-    "use-sound": "^1.0.2"
+    "axios": "^1.6.7",
+    "date-fns-tz": "^2.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "5.0.1",
+    "react-spring": "^9.7.3",
+    "use-clipboard-copy": "^0.2.0",
+    "random-words": "^2.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -40,9 +41,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@material-ui/core": "^4.11.0",
-    "react-modal-hook": "^3.0.0"
   }
 }
