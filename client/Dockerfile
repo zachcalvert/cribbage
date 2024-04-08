@@ -1,19 +1,21 @@
-# build environment
-FROM node:13.12.0-alpine as build
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
+# pull official base image
+FROM node:21-alpine3.18
+
+# set working directory
+WORKDIR /code
+
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /code/node_modules/.bin:$PATH
 ARG REACT_APP_SOCKET_HOST
-ENV REACT_APP_SOCKET_HOST https://cribbage.live/
+ENV REACT_APP_SOCKET_HOST http://localhost:5000
+
+# install app dependencies
 COPY package.json ./
 COPY package-lock.json ./
-RUN npm ci
-RUN npm install react-scripts@3.4.1 -g
+RUN npm install --silent
+
+# add app
 COPY . ./
 
-RUN npm run build
-
-# production environment
-FROM nginx:stable-alpine
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# start app
+CMD ["npm", "start"]
