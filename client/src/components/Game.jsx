@@ -2,17 +2,28 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { generate } from "random-words";
 
+import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
+import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { Chat } from "./Chat/Chat";
 import { socket } from '../socket';
+
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}));
 
 function Game() {
   const [name, setName] = useState('');
@@ -53,13 +64,13 @@ function Game() {
   return (
     <Container maxWidth="xl">
       <Box sx={{ my: 4 }}>
-      {gameStatus !== 'NEW' ? <Chat /> : (
+      {gameStatus === 'NEW' ? (
         <>
-        <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
-        <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
-          <TextField
-            id="name"
-            helperText="your name"
+          <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
+          <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+            <TextField
+              id="name"
+              helperText="your name"
             autoFocus={true}
             onChange={e => setName(e.target.value.trim())}
           />
@@ -81,7 +92,16 @@ function Game() {
             <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
           </Typography>
         </form>
-        </>
+      </>
+      ) : (
+      <Grid container spacing={2}>
+        <Grid item xs={4}>
+          <Item><Chat /></Item>
+        </Grid>
+        <Grid item xs={8}>
+          <Item>xs=4</Item>
+        </Grid>
+      </Grid>
       )}
       </Box>
     </Container>
