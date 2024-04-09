@@ -28,7 +28,9 @@ def rotate_reverse(current, players):
 
 
 def next_player(players_in_order, hands, passed_list):
-    return next_for_this_round(players_in_order, hands, passed_list) or next_with_cards(players_in_order, hands)
+    return next_for_this_round(players_in_order, hands, passed_list) or next_with_cards(
+        players_in_order, hands
+    )
 
 
 def next_for_this_round(players_in_order, hands, passed_list):
@@ -55,18 +57,18 @@ def play_or_pass(card_values, pegging_total):
     """
     Determine if the next player has cards to play or should pass.
     """
-    action = 'pass'
+    action = "pass"
     remainder = 31 - pegging_total
     if any(int(value) <= remainder for value in card_values):
-        action = 'play'
+        action = "play"
     return action
 
 
 SUIT_MAP = {
-    'clubs': '♣️',
-    'diamonds': "♦️",
-    'hearts': "♥️",
-    'spades': '♠️',
+    "clubs": "♣️",
+    "diamonds": "♦️",
+    "hearts": "♥️",
+    "spades": "♠️",
 }
 
 
@@ -77,17 +79,17 @@ def card_text_from_id(card_id):
     :return:
     """
     card = deck[card_id]
-    return 'the {} of {}'.format(card['name'], card['suit'])
+    return "the {} of {}".format(card["name"], card["suit"])
 
 
 def card_short_text_from_id(card_id):
-    text = ''
+    text = ""
     card = deck[card_id]
-    if card['rank'] in [1,11,12,13]:
-        text += card['name'][0].upper()
+    if card["rank"] in [1, 11, 12, 13]:
+        text += card["name"][0].upper()
     else:
-        text += str(card['rank'])
-    text += SUIT_MAP[card['suit']]
+        text += str(card["rank"])
+    text += SUIT_MAP[card["suit"]]
     return text
 
 
@@ -97,6 +99,6 @@ def card_object_from_text(rank, suit):
 
     :return: card_dict of the corresponding card
     """
-    suits_of_that_rank = {k: v for k, v in deck.items() if v['name'] == rank}
-    card_dict = {k: v for k, v in suits_of_that_rank.items() if v['suit'] == suit}
+    suits_of_that_rank = {k: v for k, v in deck.items() if v["name"] == rank}
+    card_dict = {k: v for k, v in suits_of_that_rank.items() if v["suit"] == suit}
     return card_dict
