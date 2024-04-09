@@ -16,6 +16,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { Chat } from "./Chat/Chat";
 import { socket } from '../socket';
+import Header from './Header/Header';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -28,7 +29,7 @@ const Item = styled(Paper)(({ theme }) => ({
 function Game() {
   const [name, setName] = useState('');
   const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 3, separator: "-" })[0]);
-  const [gameStatus, setGameStatus] = useState('NEW');
+  const [gameInProgress, setGameInProgress] = useState(false);
 
   const [players, setPlayers] = useState([]);
 
@@ -45,66 +46,57 @@ function Game() {
     sessionStorage.setItem('name', name);
     sessionStorage.setItem('game', room);
     socket.emit("player_join", {name: name, room: room});
-    setGameStatus('IN_PROGRESS');
-  };
-
-  const handleLeave = e => {
-    e.preventDefault();
-    socket.emit(
-      "player_leave", {
-        name: sessionStorage.getItem('name'),
-        game: sessionStorage.getItem('game')
-      }
-    );
-    sessionStorage.removeItem('name');
-    sessionStorage.removeItem('game');
-    setRoom(generate({ exactly: 1, wordsPerString: 3, separator: "-" })[0]);
+    setGameInProgress(true);
   };
 
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ my: 4 }}>
-      {gameStatus === 'NEW' ? (
-        <>
-          <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
-          <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+    <>
+      <Header isConnected={socket.connected} room={room} setRoom={setRoom} gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} name={name} />
+      <Container maxWidth="xl">
+        <Box sx={{ my: 4 }}>
+        {!gameInProgress ? (
+          <Grid >
+            <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
+            <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+              <TextField
+                id="name"
+                helperText="your name"
+              autoFocus={true}
+              onChange={e => setName(e.target.value.trim())}
+            />
             <TextField
-              id="name"
-              helperText="your name"
-            autoFocus={true}
-            onChange={e => setName(e.target.value.trim())}
-          />
-          <TextField
-            id="room"
-            onChange={e => setRoom(e.target.value.trim())}
-            helperText="game name"
-            value={room}
-          />
-          <IconButton className="refresh-game-name" onClick={e => handleGameNameRefresh(e)}>
-            <RefreshIcon fontSize="30px"/>
-          </IconButton><br/>
-          <Fab variant="extended"
-            color="primary"
-            type="submit">
-            Play
-          </Fab>
-          <Typography className='webmaster-info' variant='caption'>
-            <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
-          </Typography>
-        </form>
-      </>
-      ) : (
-      <Grid container spacing={2}>
-        <Grid item xs={3}>
-          <Item><Chat /></Item>
+              id="room"
+              onChange={e => setRoom(e.target.value.trim())}
+              helperText="game name"
+              value={room}
+            />
+            <IconButton className="refresh-game-name" onClick={e => handleGameNameRefresh(e)}>
+              <RefreshIcon fontSize="30px"/>
+            </IconButton><br/>
+            <Fab variant="extended"
+              color="primary"
+              type="submit">
+              Play
+            </Fab>
+            <Typography className='webmaster-info' variant='caption'>
+              <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
+            </Typography>
+          </form>
         </Grid>
-        <Grid item xs={9}>
-          <Item>xs=4</Item>
+        ) : (
+        <Grid container spacing={2}>
+          
+          <Grid item xs={9}>
+            <Item>xs=4</Item>
+          </Grid>
+          <Grid item xs={3}>
+            <Item><Chat /></Item>
+          </Grid>
         </Grid>
-      </Grid>
-      )}
-      </Box>
-    </Container>
+        )}
+        </Box>
+      </Container>
+    </>
   )
 }
 
