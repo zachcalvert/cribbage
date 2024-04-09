@@ -4,10 +4,13 @@ import { generate } from "random-words";
 
 import { styled } from '@mui/material/styles';
 import Container from '@mui/material/Container';
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 import Box from '@mui/material/Box';
 import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
+import InputAdornment from '@mui/material/InputAdornment';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
@@ -55,37 +58,74 @@ function Game() {
       <Container maxWidth="xl">
         <Box sx={{ my: 4 }}>
         {!gameInProgress ? (
-          <Grid >
-            <img style={{ marginTop: '20px' }} alt='logo' src="logo.png" />
+          <>
+          <Grid
+            container
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            sx={{ height: '100%' }}
+          >
+            <Grid item xs={12}>
+              <img style={{ marginTop: '20px', height: '150px' }} alt='logo' src="logo.png" />
+            </Grid>
             <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+              <Grid item xs={12} style={{marginBottom: '12px'}}>
               <TextField
                 id="name"
                 helperText="your name"
-              autoFocus={true}
-              onChange={e => setName(e.target.value.trim())}
-            />
-            <TextField
-              id="room"
-              onChange={e => setRoom(e.target.value.trim())}
-              helperText="game name"
-              value={room}
-            />
-            <IconButton className="refresh-game-name" onClick={e => handleGameNameRefresh(e)}>
-              <RefreshIcon fontSize="30px"/>
-            </IconButton><br/>
-            <Fab variant="extended"
-              color="primary"
-              type="submit">
-              Play
-            </Fab>
-            <Typography className='webmaster-info' variant='caption'>
-              <Link href="https://github.com/zachcalvert/cribbage">Github</Link>
-            </Typography>
+                autoFocus={true}
+                onChange={e => setName(e.target.value.trim())}
+                sx={{ width: '300px' }}
+              />
+            </Grid>
+            <Grid item xs={12} style={{ marginBottom: '24px' }}>
+              <TextField
+                id="room"
+                onChange={e => setRoom(e.target.value.trim())}
+                helperText="game name"
+                value={room}
+                sx={{ width: '300px' }}
+                InputProps={{
+                  endAdornment: <InputAdornment position="end">
+                  <IconButton
+                    aria-label="refresh game name"
+                    onClick={e => handleGameNameRefresh(e)}
+                    edge="end"
+                  >
+                    <RefreshIcon />
+                  </IconButton>
+                </InputAdornment>,
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12} style={{ marginBottom: '40px', textAlign: 'center' }}>
+              <Fab
+                variant="extended"
+                color="primary"
+                type="submit"
+                sx={{ padding: '20px' }}
+              >
+                Play
+              </Fab>
+            </Grid>
           </form>
+          
         </Grid>
+        <BottomNavigation
+          showLabels
+          value="source"
+          onChange={(event, newValue) => {
+            console.log(newValue);
+          }}
+        >
+        <BottomNavigationAction label="View Source" href="https://github.com/zachcalvert/cribbage" />
+      </BottomNavigation>
+      </>
         ) : (
         <Grid container spacing={2}>
-          
           <Grid item xs={9}>
             <Item>xs=4</Item>
           </Grid>
