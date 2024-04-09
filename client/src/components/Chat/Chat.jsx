@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -82,8 +83,8 @@ export const Chat = ()  => {
   };
 
   return (
-    <>
-      <Typography variant="h6">Game: { room }</Typography>
+    <Box height="100%">
+      <Typography variant="h6">Chat</Typography>
       <Divider variant="middle"/>
       { renderChat() }
       <div>
@@ -99,6 +100,6 @@ export const Chat = ()  => {
           </IconButton>
         </form>
       </div>
-    </>
+    </Box>
   );
 };

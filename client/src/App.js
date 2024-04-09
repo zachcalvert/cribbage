@@ -7,7 +7,7 @@ import Game from "./components/Game";
 const outerTheme = createTheme({
   palette: {
     primary: {
-      main: indigo[900],
+      main: "#000",
     },
     secondary: {
       main: green[500],

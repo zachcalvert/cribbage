@@ -52,7 +52,7 @@ function Game() {
 
   return (
     <>
-      <Header isConnected={socket.connected} room={room} setRoom={setRoom} gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} name={name} />
+      <Header room={room} gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} name={name} />
       <Container maxWidth="xl">
         <Box sx={{ my: 4 }}>
         {!gameInProgress ? (
@@ -124,13 +124,13 @@ function Game() {
       </>
         ) : (
         <Grid container spacing={2}>
-          <Grid item xs={9} sx={{ height: "85vh"}}>
-            <Item sx={{ height: "100%"}}>
-              
+          <Grid item xs={9} sx={{ height: "calc('85vh-100px')"}}>
+            <Item sx={{ height: "100%"}} elevation={3}>
+
             </Item>
           </Grid>
-          <Grid item xs={3}>
-            <Item><Chat /></Item>
+          <Grid item xs={3} sx={{ height: "100%"}}>
+            <Item elevation={3}><Chat /></Item>
           </Grid>
         </Grid>
         )}

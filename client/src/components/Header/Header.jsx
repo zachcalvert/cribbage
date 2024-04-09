@@ -8,7 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StyleIcon from '@mui/icons-material/Style';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -18,7 +19,7 @@ import DialogActions from '@mui/material/DialogActions';
 
 import { socket } from '../../socket';
 
-function Header({ gameInProgress, setGameInProgress }) {
+function Header({ room, name, gameInProgress, setGameInProgress }) {
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
 
   const handleLeave = e => {
@@ -56,17 +57,20 @@ function Header({ gameInProgress, setGameInProgress }) {
               textDecoration: 'none',
             }}
           >
-            Cribbage
+            {gameInProgress ? `Game: ${room}` : 'Cribbage'}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
 
           <Box sx={{ flexGrow: 0 }}>
             { gameInProgress && (
-              <Grid container spacing={1}>
-                <Grid>
+              <Grid container spacing={2}>
+                <Grid item xs={8} sx={{  marginTop: "8px" }}>
+                  {name}
+                </Grid>
+                <Grid item xs={2}>
                 <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
-                  <CloseOutlinedIcon color="error" sx={{ transform: "scale(2)", marginTop: "8px" }} />
+                  <CancelPresentationIcon color="error" sx={{ transform: "scale(2)", marginTop: "0px" }} />
                 </IconButton>
                 </Grid>
               </Grid>
