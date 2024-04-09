@@ -11,10 +11,8 @@ import Fab from '@mui/material/Fab';
 import Grid from '@mui/material/Grid';
 import IconButton from '@mui/material/IconButton';
 import InputAdornment from '@mui/material/InputAdornment';
-import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
 import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { Chat } from "./Chat/Chat";
@@ -126,8 +124,10 @@ function Game() {
       </>
         ) : (
         <Grid container spacing={2}>
-          <Grid item xs={9}>
-            <Item>xs=4</Item>
+          <Grid item xs={9} sx={{ height: "85vh"}}>
+            <Item sx={{ height: "100%"}}>
+              
+            </Item>
           </Grid>
           <Grid item xs={3}>
             <Item><Chat /></Item>
