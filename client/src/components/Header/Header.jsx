@@ -18,7 +18,7 @@ import DialogActions from '@mui/material/DialogActions';
 
 import { socket } from '../../socket';
 
-function Header({ isConnected, gameInProgress, setGameInProgress, name, room, setRoom }) {
+function Header({ gameInProgress, setGameInProgress }) {
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
 
   const handleLeave = e => {
@@ -65,12 +65,8 @@ function Header({ isConnected, gameInProgress, setGameInProgress, name, room, se
             { gameInProgress && (
               <Grid container spacing={1}>
                 <Grid>
-                  <Typography>game name: {room}</Typography>
-                  <Typography>username: {name}</Typography>
-                </Grid>
-                <Grid>
                 <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
-                  <CloseOutlinedIcon fontSize="32" color="error" />
+                  <CloseOutlinedIcon color="error" sx={{ transform: "scale(2)", marginTop: "8px" }} />
                 </IconButton>
                 </Grid>
               </Grid>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import CancelIcon from '@mui/icons-material/Cancel';
+import Typography from '@mui/material/Typography';
 import SendIcon from '@mui/icons-material/Send';
 
 import { socket } from "../../socket";
@@ -83,7 +83,7 @@ export const Chat = ()  => {
 
   return (
     <>
-      <div className="game-name">Game: { room }</div>
+      <Typography variant="h6">Game: { room }</Typography>
       <Divider variant="middle"/>
       { renderChat() }
       <div>
