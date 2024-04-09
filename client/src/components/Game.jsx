@@ -18,6 +18,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { Chat } from "./Chat/Chat";
 import { socket } from '../socket';
 import Header from './Header/Header';
+import { StartMenu } from './StartMenu/StartMenu';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -126,7 +127,7 @@ function Game() {
         <Grid container spacing={2}>
           <Grid item xs={9} sx={{ height: "calc('85vh-100px')"}}>
             <Item sx={{ height: "100%"}} elevation={3}>
-
+              <StartMenu />
             </Item>
           </Grid>
           <Grid item xs={3} sx={{ height: "100%"}}>

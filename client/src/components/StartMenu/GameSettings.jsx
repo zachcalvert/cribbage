@@ -1,40 +1,31 @@
 import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
-import { TextField, Checkbox } from "@material-ui/core";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import Select from "@material-ui/core/Select";
-import MenuItem from "@material-ui/core/MenuItem";
-import { useSocket } from "use-socketio";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
-  backButton: {
-    marginRight: theme.spacing(2),
-  },
-  instructions: {
-    marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(1),
-  },
-  actions: {
-    padding: "20px 0",
-  }
-}));
+import { TextField, Checkbox, Button, FormControl, FormControlLabel, InputLabel, Select, MenuItem } from "@mui/material";
 
-export default function GameSettings() {
-  const classes = useStyles();
+import { socket } from '../../socket';
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: '100%',
+//   },
+//   backButton: {
+//     marginRight: theme.spacing(2),
+//   },
+//   instructions: {
+//     marginTop: theme.spacing(1),
+//     marginBottom: theme.spacing(1),
+//   },
+//   actions: {
+//     padding: "20px 0",
+//   }
+// }));
+
+export default function GameSettings({setShowStartGameModal}) {
   const game = sessionStorage.getItem('game');
 
   const gameType = 'cribbage';
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
   const [jokers, setJokers] = useState(false);
-
-  const { socket } = useSocket("setup_started");
 
   const handleStartGame = e => {
     e.preventDefault();
@@ -47,11 +38,12 @@ export default function GameSettings() {
         jokers: jokers
       });
     }
+    setShowStartGameModal(false);
   };
 
   return (
-    <div className={classes.root}>
-      <div className={classes.instructions}>
+    <div>
+      <div>
         <>
           <TextField
             defaultValue="121"
@@ -86,7 +78,7 @@ export default function GameSettings() {
             label="Play with Jokers"
           />
         </>
-        <div className={classes.actions}>
+        <div>
           <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
         </div>
       </div>
