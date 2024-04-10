@@ -8,7 +8,6 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StyleIcon from '@mui/icons-material/Style';
 import Dialog from '@mui/material/Dialog';
@@ -19,7 +18,9 @@ import DialogActions from '@mui/material/DialogActions';
 
 import { socket } from '../../socket';
 
-function Header({ room, name, gameInProgress, setGameInProgress }) {
+export function Header({ gameInProgress, setGameInProgress }) {
+  const name = sessionStorage.getItem('name');
+  const room = sessionStorage.getItem('game');
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
 
   const handleLeave = e => {
@@ -95,4 +96,3 @@ function Header({ room, name, gameInProgress, setGameInProgress }) {
     </>
   );
 }
-export default Header;
