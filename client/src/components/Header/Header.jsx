@@ -8,8 +8,11 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StyleIcon from '@mui/icons-material/Style';
+
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
@@ -17,11 +20,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 
 import { socket } from '../../socket';
+import { useTheme } from '@mui/material';
 
-export function Header({ gameInProgress, setGameInProgress }) {
+export function Header({ toggleColorMode, gameInProgress, setGameInProgress }) {
   const name = sessionStorage.getItem('name');
   const room = sessionStorage.getItem('game');
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
+  const theme = useTheme();
 
   const handleLeave = e => {
     e.preventDefault();
@@ -64,18 +69,25 @@ export function Header({ gameInProgress, setGameInProgress }) {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
 
           <Box sx={{ flexGrow: 0 }}>
-            { gameInProgress && (
-              <Grid container spacing={2}>
-                <Grid item xs={8} sx={{  marginTop: "8px" }}>
-                  {name}
-                </Grid>
-                <Grid item xs={2}>
-                <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
-                  <CancelPresentationIcon color="error" sx={{ transform: "scale(2)", marginTop: "0px" }} />
+            <Grid container spacing={2}>
+              <Grid item xs={2}>
+                <IconButton onClick={toggleColorMode} color="inherit">
+                  {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
                 </IconButton>
-                </Grid>
               </Grid>
-            )}
+              { gameInProgress && (
+                <>
+                  <Grid item xs={8} sx={{  marginTop: "8px" }}>
+                    {name}
+                  </Grid>
+                  <Grid item xs={2}>
+                  <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
+                    <CancelPresentationIcon color="error" sx={{ transform: "scale(2)", marginTop: "0px" }} />
+                  </IconButton>
+                  </Grid>
+                </>
+              )}
+            </Grid>
           </Box>
         </Toolbar>
       </Container>

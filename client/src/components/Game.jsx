@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 
 import { styled } from '@mui/material/styles';
@@ -11,6 +11,7 @@ import { Chat } from "./Chat/Chat";
 import { Header } from './Header/Header';
 import { Lobby } from './Lobby';
 import { StartMenu } from './StartMenu/StartMenu';
+import { ColorModeContext } from '../App';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -21,12 +22,13 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function Game() {
+  const { toggleColorMode } = useContext(ColorModeContext);
   const [gameInProgress, setGameInProgress] = useState(false);
   const [players, setPlayers] = useState([]);
 
   return (
     <>
-      <Header gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} />
+      <Header toggleColorMode={toggleColorMode} gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} />
       <Container maxWidth="xl">
         <Box sx={{ my: 4 }}>
         {gameInProgress ? (
