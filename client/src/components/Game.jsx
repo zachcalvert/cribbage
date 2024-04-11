@@ -21,28 +21,42 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 function Game() {
-  const [gameInProgress, setGameInProgress] = useState(false);
+  const [roomCreated, setRoomCreated] = useState(false);
   const [players, setPlayers] = useState([]);
 
   return (
     <>
-      <Header gameInProgress={gameInProgress} setGameInProgress={setGameInProgress} />
+      <Header roomCreated={roomCreated} setRoomCreated={setRoomCreated} />
       <Container maxWidth="xl">
-        <Box sx={{ my: 4 }}>
-        {gameInProgress ? (
-          <Grid container spacing={2}>
-          <Grid item xs={9} sx={{ height: "calc('85vh-100px')"}}>
-            <Item sx={{ height: "100%"}} elevation={3}>
-              <StartMenu />
-            </Item>
+        <Box
+          sx={{ my: 4 }}
+          justifyContent="center"
+          alignItems="center"
+          minHeight="100vh"
+        >
+          <Grid container spacing={2} style={{ height: "100%" }}>
+          {roomCreated ? (
+            <>
+              <Grid item xs={12} sx={{ height: "33%"}}>
+                <Item sx={{ height: "100%"}} elevation={3}>
+                </Item>
+              </Grid>
+              <Grid item xs={12} sx={{ height: "33%"}}>
+                <Item sx={{ height: "100%"}} elevation={3}>
+                  <StartMenu />
+                </Item>
+              </Grid>
+              <Grid item xs={12} sx={{ height: "33%"}}>
+                <Item sx={{ height: "100%"}} elevation={3}><Chat /></Item>
+              </Grid>
+              </>
+          
+          ) : (
+            <Grid item xs={12} sx={{ height: "100%"}}>
+              <Lobby setRoomCreated={setRoomCreated} />
+            </Grid>
+          )}
           </Grid>
-          <Grid item xs={3} sx={{ height: "100%"}}>
-            <Item elevation={3}><Chat /></Item>
-          </Grid>
-        </Grid>
-        ) : (
-          <Lobby setGameInProgress={setGameInProgress} />
-        )}
         </Box>
       </Container>
     </>

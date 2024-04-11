@@ -18,7 +18,7 @@ import DialogActions from '@mui/material/DialogActions';
 
 import { socket } from '../../socket';
 
-export function Header({ gameInProgress, setGameInProgress }) {
+export function Header({ roomCreated, setRoomCreated }) {
   const name = sessionStorage.getItem('name');
   const room = sessionStorage.getItem('game');
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
@@ -34,7 +34,7 @@ export function Header({ gameInProgress, setGameInProgress }) {
     sessionStorage.removeItem('name');
     sessionStorage.removeItem('game');
     setShowLeaveGameModal(false);
-    setGameInProgress(false);
+    setRoomCreated(false);
   };
 
   return (
@@ -58,13 +58,13 @@ export function Header({ gameInProgress, setGameInProgress }) {
               textDecoration: 'none',
             }}
           >
-            {gameInProgress ? `Game: ${room}` : 'Cribbage'}
+            {roomCreated ? `Game: ${room}` : 'Cribbage'}
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
 
           <Box sx={{ flexGrow: 0 }}>
-            { gameInProgress && (
+            { roomCreated && (
               <Grid container spacing={2}>
                 <Grid item xs={8} sx={{  marginTop: "8px" }}>
                   {name}

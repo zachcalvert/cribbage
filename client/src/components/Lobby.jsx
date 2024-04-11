@@ -13,7 +13,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { socket } from '../socket';
 
-export function Lobby({setGameInProgress}) {
+export function Lobby({setRoomCreated}) {
   const [name, setName] = useState('');
   const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 3, separator: "-" })[0]);
 
@@ -30,7 +30,7 @@ export function Lobby({setGameInProgress}) {
     sessionStorage.setItem('name', name);
     sessionStorage.setItem('game', room);
     socket.emit("player_join", {name: name, room: room});
-    setGameInProgress(true);
+    setRoomCreated(true);
   };
 
   return (
