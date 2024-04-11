@@ -1,22 +1,38 @@
 import React, { useEffect, useRef, useState } from "react";
-
-import Box from '@mui/material/Box';
+import { styled } from '@mui/material/styles';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import Drawer from '@mui/material/Drawer';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from "@mui/material/TextField";
 import Typography from '@mui/material/Typography';
+
 import SendIcon from '@mui/icons-material/Send';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 import { socket } from "../../socket";
-import './Chat.css'
+import './Chat.css';
 
+const drawerWidth = 300;
 
-export const Chat = ()  => {
+const DrawerHeader = styled('div')(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  padding: theme.spacing(0, 2),
+  // necessary for content to be below app bar
+  ...theme.mixins.toolbar,
+  justifyContent: 'flex-start',
+}));
+
+export function Chat() {
+  const [open, setOpen] = useState(true);
   const [chats, setChat] = useState([]);
   const [message, setMessage] = useState('');
   const messagesEndRef = useRef(null);
 
   const nickname = sessionStorage.getItem('name');
-  const room = sessionStorage.getItem('game');
+  const room = sessionStorage.getItem('room');
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -40,7 +56,6 @@ export const Chat = ()  => {
 
   const handleChange = e => {
     setMessage(e.target.value);
-    console.log(message)
   };
 
   const handleSubmit = e => {
@@ -65,13 +80,8 @@ export const Chat = ()  => {
             ) : (
               <div key={index}>
                 <div color='textPrimary'>
-                  { message }
+                  <strong>{name}</strong>: { message }
                 </div>
-                {nickname !== name ?
-                  <div color="textSecondary">
-                    {name}
-                  </div> : <span />
-                }
               </div>
             )
         ))}
@@ -83,23 +93,64 @@ export const Chat = ()  => {
   };
 
   return (
-    <Box height="100%">
-      <Typography variant="h6">Chat</Typography>
-      <Divider variant="middle"/>
-      { renderChat() }
-      <div>
-        <form onSubmit={handleSubmit}>
-          <input
-            id="message-input"
-            type="text"
+      open ? (
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexGrow: 1,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+            '& .MuiDrawer-root': {
+              position: 'absolute',
+            },
+            '& .MuiPaper-root': {
+              position: 'absolute',
+              height: '400px',
+              marginLeft: 'auto',
+              marginRight: '1rem',
+            },
+          }}
+          variant="persistent"
+          anchor="bottom"
+          open={open}
+        >
+        <DrawerHeader>
+          <Typography variant="h6">Chat</Typography>
+          <IconButton onClick={() => setOpen(false)} sx={{ transform: "scale(1.5)", position: "fixed", right: "2rem"}}>
+            <KeyboardArrowDownIcon />
+          </IconButton>
+        </DrawerHeader>
+        <Divider />
+        { renderChat() }
+
+        <form onSubmit={handleSubmit} className="send-message-form">
+          <TextField
             value={message}
             onChange={handleChange}
+            size="small"
+            sx={{ width: '100%' }}
+            id="message-input"
+              InputProps={{
+                endAdornment: <InputAdornment position="end">
+                <IconButton style={{"outline": "none", "boxShadow": "none"}} onClick={handleSubmit}>
+                  <SendIcon fontSize="inherit" />
+                </IconButton>
+              </InputAdornment>,
+              }}
           />
-          <IconButton style={{"outline": "none", "boxShadow": "none"}} className='send-message-button' onClick={handleSubmit}>
-            <SendIcon fontSize="inherit" />
-          </IconButton>
         </form>
+      </Drawer>
+    ) : (
+      <div className="open-chat-container">
+        <div className="open-chat">
+          <Typography variant="h6" sx={{ float: 'left'}}>Chat</Typography>
+          <IconButton sx={{ float: 'right', transform: "scale(1.5)", "outline": "none", "boxShadow": "none"}} onClick={() => setOpen(true)}>
+            <KeyboardArrowUpIcon fontSize="32px" />
+          </IconButton>
+        </div>
       </div>
-    </Box>
+    )
   );
-};
+}

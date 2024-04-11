@@ -1,8 +1,9 @@
-import React, { useState } from 'react'
-import { useSprings, animated, interpolate } from 'react-spring'
-import { useGesture } from 'react-use-gesture'
-import './Deck.css'
-import { useSocket } from "use-socketio";
+import React, { useEffect, useState } from 'react';
+import { useSprings, animated, interpolate } from 'react-spring';
+import { useGesture } from '@use-gesture/react';
+
+import { socket } from '../../socket';
+import './Deck.css';
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = i => ({ x: 0, y: i * -1, scale: 1, rot: -10 + Math.random() * 20, delay: i * 50 })
@@ -56,25 +57,50 @@ export const Deck = () => {
     if (!down && gone.size === cards.length) setTimeout(() => gone.clear() || set(i => to(i)), 600)
   });
 
-  useSocket("cut_card", msg => {
-    setCards([...cards, '/cards/' + msg.card + '.svg']);
-    setCutCard(msg.card);
-  });
-
-  useSocket("send_turn", msg => {
-    setScoring(false);
-    if (msg.action === 'deal') {
-      setCards(defaultDeck);
+  useEffect(() => {
+    function onCutCard(msg) {
+      setCards([...cards, '/cards/' + msg.card + '.svg']);
+      setCutCard(msg.card);
     }
-  });
 
-  useSocket('display_score', msg => {
-    if ( msg.cards.includes(cutCard)) {
-      setScoring(true);
-    } else {
+    socket.on("cut_card", onCutCard);
+
+    return () => {
+      socket.off("cut_card", onCutCard);
+    };
+  }, [cards, cutCard]);
+
+
+  useEffect(() => {
+    function onSendTurn(msg) {
       setScoring(false);
+      if (msg.action === 'deal') {
+        setCards(defaultDeck);
+      }
     }
-  });
+  
+    socket.on("send_turn", onSendTurn);
+  
+    return () => {
+      socket.off("send_turn", onSendTurn);
+    };
+  }, []);
+
+  useEffect(() => {
+    function onDisplayScore(msg) {
+      if (msg.cards.includes(cutCard)) {
+        setScoring(true);
+      } else {
+        setScoring(false);
+      }
+    }
+  
+    socket.on('display_score', onDisplayScore);
+  
+    return () => {
+      socket.off('display_score', onDisplayScore);
+    };
+  }, [cutCard]);
 
   // Now we're just mapping the animated values to our view, that's it. Btw, this component only renders once. :-)
   return props.map(({ x, y, rot, scale }, i) => (

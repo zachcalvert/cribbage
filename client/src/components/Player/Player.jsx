@@ -12,7 +12,7 @@ import { ViewColumn } from "@material-ui/icons";
 import Chip from "@material-ui/core/Chip";
 
 export const Player = (props) => {
-  const game = sessionStorage.getItem('game');
+  const game = sessionStorage.getItem('room');
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
   const [activeCards, setActiveCards] = useState([]);

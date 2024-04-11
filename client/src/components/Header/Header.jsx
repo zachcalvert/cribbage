@@ -20,7 +20,7 @@ import { socket } from '../../socket';
 
 export function Header({ roomCreated, setRoomCreated }) {
   const name = sessionStorage.getItem('name');
-  const room = sessionStorage.getItem('game');
+  const room = sessionStorage.getItem('room');
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
 
   const handleLeave = e => {
@@ -28,11 +28,11 @@ export function Header({ roomCreated, setRoomCreated }) {
     socket.emit(
       "player_leave", {
         name: sessionStorage.getItem('name'),
-        game: sessionStorage.getItem('game')
+        game: sessionStorage.getItem('room')
       }
     );
     sessionStorage.removeItem('name');
-    sessionStorage.removeItem('game');
+    sessionStorage.removeItem('room');
     setShowLeaveGameModal(false);
     setRoomCreated(false);
   };

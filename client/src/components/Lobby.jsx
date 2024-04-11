@@ -15,10 +15,10 @@ import { socket } from '../socket';
 
 export function Lobby({setRoomCreated}) {
   const [name, setName] = useState('');
-  const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 3, separator: "-" })[0]);
+  const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]);
 
   const handleGameNameRefresh = useCallback(
-    (event) => setRoom(generate({ exactly: 1, wordsPerString: 3, separator: "-" })[0]),
+    (event) => setRoom(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]),
     []
   );
 
@@ -28,26 +28,26 @@ export function Lobby({setRoomCreated}) {
       return alert("Please provide both your nickname and a game name.");
     }
     sessionStorage.setItem('name', name);
-    sessionStorage.setItem('game', room);
+    sessionStorage.setItem('room', room);
     socket.emit("player_join", {name: name, room: room});
     setRoomCreated(true);
   };
 
   return (
     <>
-        <Grid
-          container
-          spacing={0}
-          direction="column"
-          alignItems="center"
-          justifyContent="center"
-          sx={{ height: '100%' }}
-        >
-          <Grid item xs={12}>
-            <img style={{ marginTop: '20px', height: '150px' }} alt='logo' src="logo.png" />
-          </Grid>
-          <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
-            <Grid item xs={12} style={{marginBottom: '12px'}}>
+      <Grid
+        container
+        spacing={0}
+        direction="column"
+        alignItems="center"
+        justifyContent="center"
+        sx={{ height: '100%' }}
+      >
+        <Grid item xs={12}>
+          <img style={{ marginTop: '20px', height: '150px' }} alt='logo' src="logo.png" />
+        </Grid>
+        <form style={{ marginTop: '20px' }} onSubmit={event => handleJoin(event)}>
+          <Grid item xs={12} style={{marginBottom: '12px'}}>
             <TextField
               id="name"
               helperText="your name"
@@ -88,7 +88,6 @@ export function Lobby({setRoomCreated}) {
             </Fab>
           </Grid>
         </form>
-        
       </Grid>
       <BottomNavigation
         showLabels

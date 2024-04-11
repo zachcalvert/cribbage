@@ -15,7 +15,7 @@ export const GameData = () => {
   const [gameData, setGameData] = React.useState({});
   
   useKeypress('?', () => {
-    socket.emit('get_game_data', {'game': sessionStorage.getItem('game')});
+    socket.emit('get_game_data', {'game': sessionStorage.getItem('room')});
     setOpen(true);
   });
 
@@ -28,7 +28,7 @@ export const GameData = () => {
   };
 
   const handleResendCards = () => {
-    socket.emit('send_cards', {'game': sessionStorage.getItem('game')});
+    socket.emit('send_cards', {'game': sessionStorage.getItem('room')});
   };
 
   const PrettyPrintJson = ({data}) => {
