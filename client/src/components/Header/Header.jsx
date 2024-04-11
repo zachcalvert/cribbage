@@ -42,7 +42,7 @@ export function Header({ roomCreated, setRoomCreated }) {
     <AppBar position="static" enableColorOnDark>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <StyleIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <StyleIcon sx={{ display: { xs: 'none', md: 'flex' } }} />
           <Typography
             variant="h6"
             noWrap
@@ -61,13 +61,13 @@ export function Header({ roomCreated, setRoomCreated }) {
             {roomCreated ? `Game: ${room}` : 'Cribbage'}
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }} />
+          <Box sx={{ flexGrow: 1 }} />
 
-          <Box sx={{ flexGrow: 0 }}>
+          <Box sx={{ flexGrow: 0, marginRight: "2rem" }}>
             { roomCreated && (
               <Grid container spacing={2}>
-                <Grid item xs={8} sx={{  marginTop: "8px" }}>
-                  {name}
+                <Grid item xs={10} sx={{  marginTop: "8px" }}>
+                  Welcome, {name}
                 </Grid>
                 <Grid item xs={2}>
                 <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">

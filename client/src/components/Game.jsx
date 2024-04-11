@@ -27,36 +27,28 @@ function Game() {
   return (
     <>
       <Header roomCreated={roomCreated} setRoomCreated={setRoomCreated} />
-      <Container maxWidth="xl">
-        <Box
-          sx={{ my: 4 }}
-          justifyContent="center"
-          alignItems="center"
-          minHeight="100vh"
-        >
-          <Grid container spacing={2} style={{ height: "100%" }}>
-          {roomCreated ? (
-            <>
-              <Grid item xs={12} sx={{ height: "33%"}}>
-                <Item sx={{ height: "100%"}} elevation={3}>
-                </Item>
-              </Grid>
-              <Grid item xs={12} sx={{ height: "33%"}}>
-                <Item sx={{ height: "100%"}} elevation={3}>
-                  <StartMenu />
-                </Item>
-              </Grid>
-              <Grid item xs={12} sx={{ height: "33%"}}>
-                <Item sx={{ height: "100%"}} elevation={3}><Chat /></Item>
-              </Grid>
-              </>
-          
-          ) : (
-            <Grid item xs={12} sx={{ height: "100%"}}>
-              <Lobby setRoomCreated={setRoomCreated} />
+      <Container maxWidth={false}>
+      <Box sx={{ my: 4 }}>
+        {roomCreated ? (
+          <Grid container spacing={2}>
+            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+              <Item sx={{ height: "100%"}} elevation={0}>
+              </Item>
             </Grid>
-          )}
+            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+              <Item sx={{ height: "100%"}} elevation={0}>
+                <StartMenu />
+              </Item>
+            </Grid>
+            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+              <Item sx={{ height: "100%"}} elevation={1}>
+                <Chat />
+              </Item>
+            </Grid>
           </Grid>
+        ) : (
+          <Lobby setRoomCreated={setRoomCreated} />
+        )}
         </Box>
       </Container>
     </>
