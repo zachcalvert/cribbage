@@ -30,7 +30,7 @@ def discard(hand):
     return card_ids
 
 
-def play_card(hand, pegging_data):
+def choose_card_to_play(hand, pegging_data):
     """
     return card_id
 

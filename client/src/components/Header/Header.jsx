@@ -42,12 +42,10 @@ export function Header({ roomCreated, setRoomCreated }) {
     <AppBar position="static" enableColorOnDark>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <StyleIcon sx={{ display: { xs: 'none', md: 'flex' } }} />
+          <StyleIcon sx={{ display: { xs: 'none', md: 'flex', marginRight: '1rem' } }} />
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="#app-bar-with-responsive-menu"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -58,7 +56,7 @@ export function Header({ roomCreated, setRoomCreated }) {
               textDecoration: 'none',
             }}
           >
-            {roomCreated ? `Game: ${room}` : 'Cribbage'}
+            {roomCreated ? ` Cribbage: ${room}` : 'Cribbage'}
           </Typography>
 
           <Box sx={{ flexGrow: 1 }} />

@@ -17,6 +17,7 @@ import { StartMenu } from './StartMenu/StartMenu';
 
 import { socket } from '../socket';
 import { GameData } from './GameData/GameData';
+import { Divider, Link, Typography } from '@mui/material';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -54,22 +55,22 @@ function Game() {
 
   const InviteLink = () => {
     const encoded = encodeURI(`https://cribbage.live/?game=${room}`)
-    return gameStatus === 'NEW' ? (
-      <div className="jumbotron">
-        <p className="display-4">Welcome!</p>
-        <p>Invite others to this game by sharing the below link:</p>
-        <a href={encoded}>{encoded}</a>
-        <hr></hr>
-        <p>Or, click the Start button to play against the computer.</p>
-      </div>
-    ) : ( <span /> )
+    return gameStatus === 'NEW' && (
+      <Box>
+        <Typography variant="h4">Welcome!</Typography>
+        <Typography variant="h6" sx={{ marginBottom: '.5rem', marginTop: '.5rem' }}>Click the Start button now to play against the computer.</Typography>
+        <Typography variant="h6" sx={{ marginBottom: '.5rem' }}>Invite others to this game by sharing the below link:</Typography>
+        <Link sx={{ fontSize: '20px' }} href={encoded}>{encoded}</Link>
+        <Divider sx={{ marginBottom: '1rem', marginTop: '2rem' }} />
+      </Box>
+    )
   };
 
   return (
     <>
       <Header roomCreated={roomCreated} setRoomCreated={setRoomCreated} />
       <Container maxWidth="md">
-      <Box sx={{ my: 4 }}>
+      <Paper sx={{ my: 4 }} elevation={2}>
         {roomCreated ? (
           <Grid container spacing={2}>
             <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
@@ -87,27 +88,43 @@ function Game() {
                 }
               </Item>
             </Grid>
+
             <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
-              <Item sx={{ height: "100%"}} elevation={1}>
-                <div className="scoreboard col-8">
-                  { gameStatus === 'NEW' ? <StartMenu /> : <Scoreboard /> }
-                </div>
-                <div className="col-1 middle-row-spacer"></div>
-                <div className="deck col-2">
-                  <Deck />
-                </div>
+              <Item sx={{ height: "100%"}} elevation={0}>
+                <Grid container spacing={1} sx={{ alignItems: 'center', height: '100%' }}>
+                  <Grid item xs={2}>
+                    <Deck />
+                  </Grid>
+                  { gameStatus === 'NEW' ? 
+                    <>
+                    <Grid item xs={8}>
+                      <StartMenu />
+                    </Grid>
+                    <Grid item xs={2} />
+                    </>
+                  :
+                    <>
+                    <Grid item xs={2} />
+                    <Grid item xs={8}>
+                      <Scoreboard />
+                    </Grid>
+                    </>
+                  }
+                  
+                </Grid>
               </Item>
             </Grid>
+
             <Grid item xs={12} sx={{ height: "calc(40vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={0}>
-                <Player name={ name }/>
+                <Player name={name}/>
               </Item>
             </Grid>
           </Grid>
         ) : (
           <Lobby setRoomCreated={setRoomCreated} />
         )}
-        </Box>
+        </Paper>
         {roomCreated && <Chat />}
       </Container>
       <GameData />

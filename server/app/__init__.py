@@ -151,7 +151,10 @@ class CribbageNamespace(Namespace):
             self.dispatch_points(game)
 
         elif action == "play":
-            card = bot.play_card(game["hands"][player], game["pegging"])
+            card = bot.choose_card_to_play(
+                hand=game["hands"][player],
+                pegging_data=game["pegging"]
+            )
             game = controller.play_card(
                 {"game": game["name"], "player": player, "card": card}
             )

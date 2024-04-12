@@ -44,7 +44,6 @@ export function Chat() {
 
   useEffect(() => {
     function onChat(value) {
-      console.log(value)
       setChat([...chats, value]);
     }
 
@@ -63,7 +62,6 @@ export function Chat() {
     e.preventDefault();
     
     if (message !== '') {
-      console.log('sent')
       socket.emit('chat_message', {name: nickname, message: message, room: room});
     }
     document.getElementById('message-input').value = '';
@@ -76,7 +74,7 @@ export function Chat() {
         {chats.map(({ name, message }, index) => (
           <Box key={index} sx={{ mb: 1 }}>
             {name === 'game-updater' ? (
-              <Typography variant="body1" color="primary">
+              <Typography variant="body2" color="primary">
                 {message}
               </Typography>
             ) : (
