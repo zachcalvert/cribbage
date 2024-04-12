@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Drawer from '@mui/material/Drawer';
@@ -71,24 +72,24 @@ export function Chat() {
 
   const renderChat = () => {
     return chats.length ? (
-      <div id='chat-log' className='chat-log'>
-        {chats.map(({name, message}, index) => (
-            name === 'game-updater' ? (
-              <div key={index} className='game-update' color='textPrimary'>
-                { message }
-              </div>
+      <Box id='chat-log' className='chat-log'>
+        {chats.map(({ name, message }, index) => (
+          <Box key={index} sx={{ mb: 1 }}>
+            {name === 'game-updater' ? (
+              <Typography variant="body1" color="primary">
+                {message}
+              </Typography>
             ) : (
-              <div key={index}>
-                <div color='textPrimary'>
-                  <strong>{name}</strong>: { message }
-                </div>
-              </div>
-            )
+              <Typography variant="body1">
+                <strong>{name}</strong>: {message}
+              </Typography>
+            )}
+          </Box>
         ))}
         <div ref={messagesEndRef} />
-      </div>
+      </Box>
     ) : (
-      <p/>
+      <Typography variant="body1">No messages yet.</Typography>
     );
   };
 

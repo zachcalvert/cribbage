@@ -14,11 +14,12 @@ const colorClassMap = {
 };
 
 export const Scoreboard = () => {
-  const game = sessionStorage.getItem('room');
-  const name = sessionStorage.getItem('name');
   const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
   const [skunkLine, setSkunkLine] = useState(0);
+
+  const name = sessionStorage.getItem('name');
+  const game = sessionStorage.getItem('room');
 
   useEffect(() => {
     function onDrawBoard(msg) {

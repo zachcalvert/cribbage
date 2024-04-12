@@ -11,10 +11,12 @@ import { Deck } from './Deck/Deck';
 import { Header } from './Header/Header';
 import { Lobby } from './Lobby';
 import { Opponent } from './Opponent/Opponent';
+import { Player } from './Player/Player';
 import { Scoreboard } from './Scoreboard/Scoreboard'
 import { StartMenu } from './StartMenu/StartMenu';
 
 import { socket } from '../socket';
+import { GameData } from './GameData/GameData';
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
@@ -66,11 +68,11 @@ function Game() {
   return (
     <>
       <Header roomCreated={roomCreated} setRoomCreated={setRoomCreated} />
-      <Container maxWidth={false}>
+      <Container maxWidth="md">
       <Box sx={{ my: 4 }}>
         {roomCreated ? (
           <Grid container spacing={2}>
-            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+            <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={0}>
                 {
                   opponents.length ? (
@@ -85,7 +87,7 @@ function Game() {
                 }
               </Item>
             </Grid>
-            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+            <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={1}>
                 <div className="scoreboard col-8">
                   { gameStatus === 'NEW' ? <StartMenu /> : <Scoreboard /> }
@@ -96,8 +98,9 @@ function Game() {
                 </div>
               </Item>
             </Grid>
-            <Grid item xs={12} sx={{ height: "calc(33vh - 40px)"}}>
+            <Grid item xs={12} sx={{ height: "calc(40vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={0}>
+                <Player name={ name }/>
               </Item>
             </Grid>
           </Grid>
@@ -107,6 +110,7 @@ function Game() {
         </Box>
         {roomCreated && <Chat />}
       </Container>
+      <GameData />
     </>
   )
 }
