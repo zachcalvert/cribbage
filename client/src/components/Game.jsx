@@ -92,17 +92,32 @@ function Game() {
             <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={0}>
                 <Grid container spacing={1} sx={{ alignItems: 'center', height: '100%' }}>
-                  <Grid item xs={12}>
-                    { gameStatus === 'NEW' ? <StartMenu /> : <Scoreboard /> }
+                  <Grid item xs={2}>
                     <Deck />
                   </Grid>
+                  { gameStatus === 'NEW' ? 
+                    <>
+                    <Grid item xs={8}>
+                      <StartMenu />
+                    </Grid>
+                    <Grid item xs={2} />
+                    </>
+                  :
+                    <>
+                    <Grid item xs={2} />
+                    <Grid item xs={8}>
+                      <Scoreboard />
+                    </Grid>
+                    </>
+                  }
+                  
                 </Grid>
               </Item>
             </Grid>
 
             <Grid item xs={12} sx={{ height: "calc(40vh - 40px)"}}>
               <Item sx={{ height: "100%"}} elevation={0}>
-                <Player name={ name }/>
+                <Player name={name}/>
               </Item>
             </Grid>
           </Grid>

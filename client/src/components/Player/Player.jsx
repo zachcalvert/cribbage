@@ -16,7 +16,7 @@ import { socket } from "../../socket";
 
 import './Player.css'
 
-export const Player = (props) => {
+export const Player = ({name}) => {
   const game = sessionStorage.getItem('room');
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
@@ -47,7 +47,7 @@ export const Player = (props) => {
     function onSendTurn(msg) {
       setScoring(false);
       setActiveCards([]);
-      if (msg.players.includes(props.name)) {
+      if (msg.players.includes(name)) {
         setTurn(true);
         setAction(msg.action);
       } else {
@@ -56,7 +56,7 @@ export const Player = (props) => {
       }
       setShowPeggingTotal(msg.action === 'play' || msg.action === 'pass');
       if (msg.action === 'discard') {
-        setCribHelpText(msg.crib === props.name ? 'your crib' : `${msg.crib}'s crib`);
+        setCribHelpText(msg.crib === name ? 'your crib' : `${msg.crib}'s crib`);
       } else if (msg.action === 'cut') {
         setCribHelpText(null);
       }
@@ -67,14 +67,14 @@ export const Player = (props) => {
     return () => {
       socket.off("send_turn", onSendTurn);
     };
-  }, [props.name]);
+  }, [name]);
   
   useEffect(() => {
     function onCards(msg) {
-      if (props.name in msg.cards) {
-        setPlayableCards(msg.cards[props.name]);
+      if (name in msg.cards) {
+        setPlayableCards(msg.cards[name]);
         setPlayedCards([]);
-        if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
+        if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
           setShowJokerModal(true);
         }
       }
@@ -85,18 +85,33 @@ export const Player = (props) => {
     return () => {
       socket.off("cards", onCards);
     };
-  }, [props.name]);
+  }, [name]);
   
   useEffect(() => {
+    function onPeggingTotal(msg) {
+      console.log('setting pegging total')
+      console.log({msg})
+      setPeggingTotal(msg.pegging_total)
+    }
+  
+    socket.on("pegging_total", onPeggingTotal);
+  
+    return () => {
+      socket.off("pegging_total", onPeggingTotal);
+    };
+  }, [peggingTotal]);
+
+  useEffect(() => {
     function onSendCards(msg) {
-      if (props.name in msg.cards) {
-        setPlayableCards(msg.cards[props.name]);
-        if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
+      console.log({msg})
+      if (name in msg.cards) {
+        setPlayableCards(msg.cards[name]);
+        if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
           showJokerModal();
         }
       }
-      if (props.name in msg.played_cards) {
-        setPlayedCards(msg.played_cards[props.name]);
+      if (name in msg.played_cards) {
+        setPlayedCards(msg.played_cards[name]);
       }
     }
   
@@ -105,7 +120,7 @@ export const Player = (props) => {
     return () => {
       socket.off("send_cards", onSendCards);
     };
-  }, [props.name]);
+  }, [name]);
 
   const handleAction = (e) => {
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
@@ -120,7 +135,7 @@ export const Player = (props) => {
     if (action === 'next') {
       setPlayableCards([])
     }
-    socket.emit(action, { game: game, player: props.name, card: activeCards[0], second_card: activeCards[1]});
+    socket.emit(action, { game: game, player: name, card: activeCards[0], second_card: activeCards[1]});
     document.activeElement.blur();
   };
 
@@ -134,9 +149,9 @@ export const Player = (props) => {
       )
     } else {
       card === activeCards[0] ? (
-          setActiveCards([])
+        setActiveCards([])
       ) : (
-          setActiveCards([card])
+        setActiveCards([card])
       )
     }
   };
@@ -212,7 +227,7 @@ export const Player = (props) => {
   };
 
   const handleJokerSelection = (e) => {
-    socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit });
+    socket.emit('joker_selected', { game: game, player: name, rank: jokerRank, suit: jokerSuit });
     setShowJokerModal(false);
     setJokerSuit(null);
     setJokerRank(null);
