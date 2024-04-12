@@ -1,50 +1,92 @@
-import React, { useState } from "react";
-import { useSocket } from "use-socketio";
-import { ReactSVG } from 'react-svg'
-import { Divider } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { ReactSVG } from "react-svg";
+
+import Divider from "@mui/material/Divider";
+
+import { socket } from "../../socket";
 import './Opponent.css'
 
-export const Opponent = (props) => {
+export const Opponent = ({opponentName}) => {
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);
   const [scoringCards, setScoringCards] = useState([]);
   const [scoreDisplay, setScoreDisplay] = useState('');
 
-  useSocket("cards", msg => {
-    if (props.name in msg.cards) {
-      setPlayableCards(msg.cards[props.name]);
-      setPlayedCards([]);
+  useEffect(() => {
+    function onCards(msg) {
+      if (opponentName in msg.cards) {
+        setPlayableCards(msg.cards[opponentName]);
+        setPlayedCards([]);
+      }
+      msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
     }
-    msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
-  });
 
-  useSocket("send_cards", msg => {
-    if (props.name in msg.cards) {
-      setPlayableCards(msg.cards[props.name]);
-    }
-    if (props.name in msg.played_cards) {
-      setPlayedCards(msg.played_cards[props.name]);
-    }
-  });
+    socket.on("cards", onCards);
 
-  useSocket("card_played", msg => {
-    if (props.name === msg.player) {
-      setPlayableCards(playableCards.filter(card => card !== msg.card));
-      setPlayedCards([...playedCards, msg.card]);
-    }
-  });
+    return () => {
+      socket.off("cards", onCards);
+    };
+  }, [playableCards, playedCards, showCards, opponentName]);
 
-  useSocket("display_score", msg => {
-    if (props.name === msg.player) {
-      setScoreDisplay(msg.text);
-      setScoringCards(msg.cards);
+  useEffect(() => {
+    function onSendCards(msg) {
+      if (opponentName in msg.cards) {
+        setPlayableCards(msg.cards[opponentName]);
+      }
+      if (opponentName in msg.played_cards) {
+        setPlayedCards(msg.played_cards[opponentName]);
+      }
     }
-  });
 
-  useSocket('send_turn', msg => {
-    setScoringCards([]);
-  });
+    socket.on("send_cards", onSendCards);
+
+    return () => {
+      socket.off("send_cards", onSendCards);
+    };
+  }, [opponentName, playableCards, playedCards]);
+
+  useEffect(() => {
+    function onPlayCard(msg) {
+      if (opponentName === msg.player) {
+        setPlayableCards(playableCards.filter(card => card !== msg.card));
+        setPlayedCards([...playedCards, msg.card]);
+      }
+    }
+
+    socket.on("card_played", onPlayCard);
+
+    return () => {
+      socket.off("card_played", onPlayCard);
+    };
+  }, [opponentName, playableCards, playedCards]);
+
+  useEffect(() => {
+    function onDisplayScore(msg) {
+      if (opponentName === msg.player) {
+        setScoreDisplay(msg.text);
+        setScoringCards(msg.cards);
+      }
+    }
+
+    socket.on("display_score", onDisplayScore);
+
+    return () => {
+      socket.off("display_score", onDisplayScore);
+    };
+  }, [opponentName, scoreDisplay, scoringCards]);
+
+  useEffect(() => {
+    function onSendTurn(msg) {
+      setScoringCards([]);
+    }
+
+    socket.on("send_turn", onSendTurn);
+
+    return () => {
+      socket.off("send_turn", onSendTurn);
+    };
+  }, [scoringCards]);
 
   const renderCards = () => {
     return playableCards.length ? (
@@ -85,8 +127,10 @@ export const Opponent = (props) => {
   return (
     <>
       {scoringCards.length ? (
-          <span className="opponent-score-display">{ scoreDisplay }</span>
-          ) : <span>{props.name}</span> }
+        <span className="opponent-score-display">{scoreDisplay}</span>
+      ) : (
+        <span>{opponentName}</span>
+      )}
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }
       { renderPlayedCards() }

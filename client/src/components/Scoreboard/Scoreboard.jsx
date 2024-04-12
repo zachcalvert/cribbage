@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { useSocket } from "use-socketio";
-import useSound from "use-sound";
-import Tooltip from '@material-ui/core/Tooltip';
+import React, { useEffect, useState } from "react";
+
+import Tooltip from '@mui/material/Tooltip';
+
+import { socket } from "../../socket";
 
 import './Scoreboard.css'
 
@@ -13,34 +14,35 @@ const colorClassMap = {
 };
 
 export const Scoreboard = () => {
-  const game = sessionStorage.getItem('game');
-  const name = sessionStorage.getItem('name');
   const [players, setPlayers] = useState({});
   const [winningScore, setWinningScore] = useState(0);
   const [skunkLine, setSkunkLine] = useState(0);
-  const [winnerBell] = useSound('/sounds/winner.wav', { volume: 0.5 });
 
-  const { socket } = useSocket("draw_board", msg => {
-    setPlayers(msg.players);
-    setWinningScore(msg.winning_score);
-    setSkunkLine(Math.floor(msg.winning_score * 0.75));
-  });
+  const name = sessionStorage.getItem('name');
+  const game = sessionStorage.getItem('room');
 
-  useSocket("points", msg => {
-    // let width = (msg.amount / winningScore) * 100;
-    setPlayers({...players, [msg.player]: msg.amount});
-    if (msg.amount >= winningScore) {
-      announceWin(msg.player);
+  useEffect(() => {
+    function onDrawBoard(msg) {
+      setPlayers(msg.players);
+      setWinningScore(msg.winning_score);
+      setSkunkLine(Math.floor(msg.winning_score * 0.75));
     }
-  });
 
-  useSocket("winner", msg => {
-    winnerBell();
-  });
+    function onPoints(msg) {
+      setPlayers({...players, [msg.player]: msg.amount});
+      if (msg.amount >= winningScore) {
+        socket.emit('winner', { game: game, player: msg.player })
+      }
+    }
 
-  function announceWin(player) {
-    socket.emit('winner', { game: game, player: player });
-  }
+    socket.on('draw_board', onDrawBoard);
+    socket.on('points', onPoints)
+
+    return () => {
+      socket.off('draw_board', onDrawBoard);
+      socket.off('points', onPoints)
+    };
+  }, [game, players, winningScore]);
 
   const renderProgressBars = () => {
     const { [name]: playerScore, ...opponents } = players;

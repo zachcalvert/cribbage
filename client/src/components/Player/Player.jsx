@@ -1,18 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTrail, animated } from 'react-spring';
-import { useSocket } from "use-socketio";
-import useSound from 'use-sound';
 import useAnimateNumber from 'use-animate-number';
 
-import {Dialog, DialogContent, DialogTitle, Divider, Fab} from "@material-ui/core";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import Divider from "@mui/material/Divider";
+import Fab from "@mui/material/Fab";
+import Chip from "@mui/material/Chip";
+import ViewColumnIcon from '@mui/icons-material/ViewColumn';
+
 import { ReactSVG } from 'react-svg'
+
+import { socket } from "../../socket";
+
 import './Player.css'
-import { useModal } from "react-modal-hook";
-import { ViewColumn } from "@material-ui/icons";
-import Chip from "@material-ui/core/Chip";
 
 export const Player = (props) => {
-  const game = sessionStorage.getItem('game');
+  const game = sessionStorage.getItem('room');
   const [action, setAction] = useState('');
   const [turn, setTurn] = useState(true);
   const [activeCards, setActiveCards] = useState([]);
@@ -24,6 +29,7 @@ export const Player = (props) => {
   const [cribHelpText, setCribHelpText] = useState(null);
   const [scoring, setScoring] = useState(false);
 
+  const [showJokerModal, setShowJokerModal] = useState(false);
   const [jokerSuit, setJokerSuit] = useState(null);
   const [jokerRank, setJokerRank] = useState(null);
 
@@ -37,93 +43,71 @@ export const Player = (props) => {
     from: { opacity: 1, x: 20, height: 0 },
   });
 
-  const [boop] = useSound('/sounds/boop.mp3', { volume: 0.25 });
-
-  const { socket } = useSocket("send_turn", msg => {
-    setScoring(false);
-    setActiveCards([]);
-    if (msg.players.includes(props.name)) {
-      setTurn(true);
-      setAction(msg.action);
-    } else {
-      setTurn(false);
-      setAction(`waiting for ${msg.players}`)
-    }
-    if (msg.action === 'play' || msg.action === 'pass') {
-      setShowPeggingTotal(true);
-    } else {
-      setShowPeggingTotal(false);
-    }
-    if (msg.action === 'discard') {
-      msg.crib === props.name
-      ? (setCribHelpText('your crib'))
-      : (setCribHelpText(`${msg.crib}'s crib`))
-    } else if (msg.action === 'cut') {
-      setCribHelpText(null);
-    }
-  });
-
-  useSocket("cards", msg => {
-    if (props.name in msg.cards) {
-      setPlayableCards(msg.cards[props.name]);
-      setPlayedCards([]);
-      if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
-        showJokerModal();
+  useEffect(() => {
+    function onSendTurn(msg) {
+      setScoring(false);
+      setActiveCards([]);
+      if (msg.players.includes(props.name)) {
+        setTurn(true);
+        setAction(msg.action);
+      } else {
+        setTurn(false);
+        setAction(`waiting for ${msg.players}`);
+      }
+      setShowPeggingTotal(msg.action === 'play' || msg.action === 'pass');
+      if (msg.action === 'discard') {
+        setCribHelpText(msg.crib === props.name ? 'your crib' : `${msg.crib}'s crib`);
+      } else if (msg.action === 'cut') {
+        setCribHelpText(null);
       }
     }
-  });
-
-  useSocket("send_cards", msg => {
-    if (props.name in msg.cards) {
-      setPlayableCards(msg.cards[props.name]);
-      if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
-        showJokerModal();
+  
+    socket.on("send_turn", onSendTurn);
+  
+    return () => {
+      socket.off("send_turn", onSendTurn);
+    };
+  }, [props.name]);
+  
+  useEffect(() => {
+    function onCards(msg) {
+      if (props.name in msg.cards) {
+        setPlayableCards(msg.cards[props.name]);
+        setPlayedCards([]);
+        if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
+          setShowJokerModal(true);
+        }
       }
     }
-    if (props.name in msg.played_cards) {
-      setPlayedCards(msg.played_cards[props.name]);
+  
+    socket.on("cards", onCards);
+  
+    return () => {
+      socket.off("cards", onCards);
+    };
+  }, [props.name]);
+  
+  useEffect(() => {
+    function onSendCards(msg) {
+      if (props.name in msg.cards) {
+        setPlayableCards(msg.cards[props.name]);
+        if (msg.cards[props.name].includes('joker1') || msg.cards[props.name].includes('joker2')) {
+          showJokerModal();
+        }
+      }
+      if (props.name in msg.played_cards) {
+        setPlayedCards(msg.played_cards[props.name]);
+      }
     }
-  });
-
-  useSocket("card_played", msg => {
-    if (props.name === msg.player) {
-      setPlayableCards(playableCards.filter(card => card !== msg.card));
-      setPlayedCards([...playedCards, msg.card]);
-    }
-    setShowPeggingTotal(true);
-    setPeggingTotal(msg.pegging_total);
-  });
-
-  useSocket("points", msg => {
-    if (msg.reason === 'go') {
-      setPeggingTotal(0);
-    }
-  });
-
-  useSocket("display_score", msg =>{
-    if (props.name === msg.player) {
-      setScoring(true);
-      setAction(msg.text);
-      setActiveCards(msg.cards);
-    }
-  });
-
-  useSocket('invalid_card', msg => {
-    setActiveCards([]);
-  });
-
-  useSocket('invalid_joker', msg => {
-    showJokerModal(true);
-  });
-
-  useSocket('pegging_total', msg => {
-    setPeggingTotal(msg.pegging_total);
-  })
+  
+    socket.on("send_cards", onSendCards);
+  
+    return () => {
+      socket.off("send_cards", onSendCards);
+    };
+  }, [props.name]);
 
   const handleAction = (e) => {
-    setTurn(false);
-
-    boop();
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
       setActiveCards([]);
@@ -229,51 +213,12 @@ export const Player = (props) => {
 
   const handleJokerSelection = (e) => {
     socket.emit('joker_selected', { game: game, player: props.name, rank: jokerRank, suit: jokerSuit });
-    hideJokerModal();
+    setShowJokerModal(false);
     setJokerSuit(null);
     setJokerRank(null);
     clearRanks();
     clearSuits();
   };
-
-  const [showJokerModal, hideJokerModal] = useModal(({in: open, onExited}) => (
-    <>
-      <Dialog className="cards-modal" open={open} onExited={hideJokerModal} onClose={false}>
-        <DialogTitle>
-          You got a joker!
-        </DialogTitle>
-        <DialogContent>
-          <span>You can turn it into any card that's not already in your hand.</span>
-          <br />
-          <div className='joker-rank-row'>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ace">A</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="two">2</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="three">3</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="four">4</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="five">5</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="six">6</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="seven">7</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="eight">8</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="nine">9</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ten">10</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="jack">J</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="queen">Q</span>
-            <span className='joker-rank-selection' onClick={handleRankSelection} data-value="king">K</span>
-          </div>
-          <div className="joker-suit-selection-row">
-            <img style={{width: '25%'}} data-value="hearts" alt='hearts' onClick={handleSuitSelection} src="/cards/hearts"/>
-            <img style={{width: '25%'}} data-value="spades" alt='spades' onClick={handleSuitSelection} src="/cards/spades"/>
-            <img style={{width: '25%'}} data-value="diamonds" alt='diamonds' onClick={handleSuitSelection} src="/cards/diamonds"/>
-            <img style={{width: '25%'}} data-value="clubs" alt='clubs' onClick={handleSuitSelection} src="/cards/clubs"/>
-          </div>
-          <span></span>
-          <button id="select-joker" disabled={!jokerSuit || !jokerRank} className="joker-submit-button btn btn-default btn-primary btn-block" onClick={handleJokerSelection}>
-            Make my joker the {jokerRank} of {jokerSuit}
-          </button>
-        </DialogContent>
-      </Dialog>
-    </>
-  ), [jokerRank, jokerSuit]);
 
   return (
     <>
@@ -281,7 +226,7 @@ export const Player = (props) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        {action ? <div className='col-6'>
+        {action && <div className='col-6'>
           <Fab variant="extended"
             className={scoring ? "scoring-button action-button" : "action-button"}
             color="primary"
@@ -289,28 +234,62 @@ export const Player = (props) => {
             disabled={!turn}>
             { action }
           </Fab>
-        </div> : <span/>}
+          </div>
+        }
         <div className='col-3'>
-          {showPeggingTotal ? (
-            <span className='pegging-total'>{peggingTotal}</span>
-          ) : (
-            <span />
-          )}
-          {cribHelpText ?
+          {showPeggingTotal && <span className='pegging-total'>{peggingTotal}</span>}
+          {cribHelpText &&
             <Chip
               className='crib-help-chip'
-              icon={<ViewColumn />}
+              icon={<ViewColumnIcon />}
               label={cribHelpText}
               color={cribHelpText.includes('your') ? 'primary' : 'secondary'}
               variant="sharp"
-            /> : <span/>
-           }
+            />
+          }
         </div>
       </div>
       <Divider variant="middle" />
       <div className="player-cards">
         { renderPlayableCards() }
       </div>
+
+      {showJokerModal && (
+        <Dialog className="cards-modal" open={showJokerModal} onClose={() => setShowJokerModal(false)}>
+          <DialogTitle>
+            You got a joker!
+          </DialogTitle>
+          <DialogContent>
+            <span>You can turn it into any card that's not already in your hand.</span>
+            <br />
+            <div className='joker-rank-row'>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ace">A</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="two">2</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="three">3</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="four">4</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="five">5</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="six">6</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="seven">7</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="eight">8</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="nine">9</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="ten">10</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="jack">J</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="queen">Q</span>
+              <span className='joker-rank-selection' onClick={handleRankSelection} data-value="king">K</span>
+            </div>
+            <div className="joker-suit-selection-row">
+              <img style={{width: '25%'}} data-value="hearts" alt='hearts' onClick={handleSuitSelection} src="/cards/hearts"/>
+              <img style={{width: '25%'}} data-value="spades" alt='spades' onClick={handleSuitSelection} src="/cards/spades"/>
+              <img style={{width: '25%'}} data-value="diamonds" alt='diamonds' onClick={handleSuitSelection} src="/cards/diamonds"/>
+              <img style={{width: '25%'}} data-value="clubs" alt='clubs' onClick={handleSuitSelection} src="/cards/clubs"/>
+            </div>
+            <span></span>
+            <button id="select-joker" disabled={!jokerSuit || !jokerRank} className="joker-submit-button" onClick={handleJokerSelection}>
+              Make my joker the {jokerRank} of {jokerSuit}
+            </button>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
-  );
+  )
 };

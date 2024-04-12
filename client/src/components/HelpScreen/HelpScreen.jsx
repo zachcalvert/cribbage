@@ -2,7 +2,6 @@ import React from "react";
 import { Divider, Typography } from '@material-ui/core';
 
 export const HelpScreen = () => {
-  const game = sessionStorage.getItem('game');
 
   return (
     <>

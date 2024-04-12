@@ -1,31 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Dialog, DialogContent, DialogTitle, Fab } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, DialogActions, Fab } from "@mui/material";
+import Button from "@mui/material/Button";
+
+import GameSettings from "./GameSettings";
 
 import { socket } from "../../socket";
-import GameSettings from "./GameSettings";
 
 
 export const StartMenu = () => {
-  const game = sessionStorage.getItem('game');
+  const game = sessionStorage.getItem('room');
   const name = sessionStorage.getItem('name');
   const [showStartGameModal, setShowStartGameModal] = useState(false);
   const [startable, setStartable] = useState(true);
-  const [buttonText, setButtonText] = useState('Start')
+  const [cribSize, setCribSize] = useState(4);
+  const [winningScore, setWinningScore] = useState(121);
+  const [jokers, setJokers] = useState(false);
 
-  // const { socket } = useSocket("setup_started", msg => {
-  //   if (msg.players.includes(name)) {
-  //     setStartable(true);
-  //   } else {
-  //     setStartable(false);
-  //     setButtonText(`Waiting for ${msg.players}`)
-  //   }
-  // });
+  useEffect(() => {
+    function onSetupStarted(value) {
+      setStartable(false);
+    }
 
-  const handleStartGame = (e) => {
+    socket.on('setup_started', onSetupStarted);
+
+    return () => {
+      socket.off('setup_started', onSetupStarted);
+    };
+  }, [startable]);
+
+  const handleGameSetup = (e) => {
     setShowStartGameModal(true);
     socket.emit('setup', { game: game, player: name });
     document.activeElement.blur();
+  };
+
+  const handleStartGame = e => {
+    e.preventDefault();
+    if (Number.isInteger(parseInt(winningScore))) {
+      socket.emit('start_game', {
+        game: game,
+        type: "cribbage",
+        winning_score: winningScore,
+        crib_size: cribSize,
+        jokers: jokers
+      });
+    }
+    setShowStartGameModal(false);
   };
 
   return (
@@ -33,14 +54,14 @@ export const StartMenu = () => {
       <Fab variant="extended"
         className="action-button"
         color="primary"
-        onClick={handleStartGame}
+        onClick={handleGameSetup}
         disabled={!startable}>
-        {buttonText}
+        Start
       </Fab>
 
       {showStartGameModal && 
         <Dialog
-          maxWidth="md"
+          maxWidth="sm"
           fullWidth={true}
           open={showStartGameModal}
           onExited={() => setShowStartGameModal(false)}
@@ -50,8 +71,16 @@ export const StartMenu = () => {
             Game settings
           </DialogTitle>
           <DialogContent>
-            <GameSettings setShowStartGameModal={setShowStartGameModal} />
+            <GameSettings
+              setWinningScore={setWinningScore}
+              setCribSize={setCribSize}
+              jokers={jokers}
+              setJokers={setJokers}
+            />
           </DialogContent>
+          <DialogActions>
+            <Button variant="contained" color="primary" onClick={event => handleStartGame(event)}>Play</Button>
+          </DialogActions>
         </Dialog>
       }
     </>
