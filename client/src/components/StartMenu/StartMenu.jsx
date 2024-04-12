@@ -2,8 +2,10 @@ import React, { useEffect, useState } from "react";
 
 import { Dialog, DialogContent, DialogTitle, DialogActions, Fab } from "@mui/material";
 import Button from "@mui/material/Button";
-import { socket } from "../../socket";
+
 import GameSettings from "./GameSettings";
+
+import { socket } from "../../socket";
 
 
 export const StartMenu = () => {
@@ -14,7 +16,6 @@ export const StartMenu = () => {
   const [cribSize, setCribSize] = useState(4);
   const [winningScore, setWinningScore] = useState(121);
   const [jokers, setJokers] = useState(false);
-
 
   useEffect(() => {
     function onSetupStarted(value) {
@@ -60,7 +61,7 @@ export const StartMenu = () => {
 
       {showStartGameModal && 
         <Dialog
-          maxWidth="md"
+          maxWidth="sm"
           fullWidth={true}
           open={showStartGameModal}
           onExited={() => setShowStartGameModal(false)}
