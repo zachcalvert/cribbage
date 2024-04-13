@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
 
 import Tooltip from '@mui/material/Tooltip';
+import Typography from "@mui/material/Typography";
 
 import { socket } from "../../socket";
 
 import './Scoreboard.css'
+import { Paper } from "@mui/material";
 
 const colorClassMap = {
   0: 'scoreboard-player-progress player-one',
@@ -48,10 +50,11 @@ export const Scoreboard = () => {
     const { [name]: playerScore, ...opponents } = players;
 
     return opponents ? (
-      <>
+      // <Paper elevation={0} sx={{ background: 'url(board.png)', backgroundSize: 'cover' }}>
+      <Paper elevation={0}>
         {Object.entries(opponents).map( ([player, score], index) => (
           <div key={index} className='scoreboard-player row'>
-            <span className='scoreboard-player-name col-10'>{player}</span>
+            <span className='scoreboard-player-name col-10'><Typography variant="h6">{player}</Typography></span>
             <div className="progress col-10">
               <div
                 className={`${colorClassMap[index]} progress-bar`}
@@ -65,7 +68,7 @@ export const Scoreboard = () => {
           </div>
         ))}
         <div key={Object.keys(players).length} className='scoreboard-player row'>
-          <span className='scoreboard-player-name col-10'>{name}</span>
+          <span className='scoreboard-player-name col-10'><Typography variant="h6" sx={{ fontFamily: "Comic Sans MS" }}>{name}</Typography></span>
           <div className="progress col-10">
             <div
               className={`${colorClassMap[Object.keys(opponents).length]} progress-bar`}
@@ -77,7 +80,7 @@ export const Scoreboard = () => {
           </div>
           <div className="scoreboard-player-score col-2">{playerScore}</div>
         </div>
-      </>
+      </Paper>
     ) : (
       <span />
     );

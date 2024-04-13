@@ -13,14 +13,30 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 
 import { socket } from '../socket';
 
+
+const STREET_NAMES = ["Maple", "Oak", "Main", "Elm", "Cedar", "Pine", "First", "Second", "Third", "Fourth", "Fifth", "Park", "Chestnut", "Walnut", "Spruce", "Birch", "Willow", "Juniper", "Sycamore", "Hickory"]
+const PET_NAMES = ["Buddy", "Max", "Charlie", "Bella", "Lucy", "Molly", "Daisy", "Bailey", "Cooper", "Rocky", "Sadie", "Lola", "Tucker", "Jack", "Oliver", "Luna", "Sophie", "Maggie", "Chloe", "Zoe"]
+
 export function Lobby({setRoomCreated}) {
+
   const [name, setName] = useState('');
-  const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]);
+  const [room, setRoom] = useState(generateNewName());
 
   const handleGameNameRefresh = useCallback(
-    (event) => setRoom(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]),
+    (event) => setRoom(generateNewName()),
     []
   );
+
+  function chooseRandomItem(array) {
+    return array[Math.floor(Math.random() * array.length)];
+  }
+
+  function generateNewName() {
+    const randomStreetName = chooseRandomItem(STREET_NAMES);
+    const randomPetName = chooseRandomItem(PET_NAMES);
+    return randomPetName + "-" + randomStreetName;
+  }
+  
 
   const handleJoin = e => {
     e.preventDefault();
@@ -50,27 +66,43 @@ export function Lobby({setRoomCreated}) {
           <Grid item xs={12} style={{marginBottom: '12px'}}>
             <TextField
               id="name"
-              helperText="your name"
+              helperText="Your Name"
               autoFocus={true}
               onChange={e => setName(e.target.value.trim())}
-              sx={{ width: '300px' }}
+              sx={{
+                width: '300px',
+                '& .MuiInputBase-input': {
+                  fontSize: '1.5rem', // Adjust the font size as needed
+                },
+                '& .MuiFormHelperText-root': {
+                  fontSize: '1rem', // Adjust the font size as needed
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} style={{ marginBottom: '24px' }}>
             <TextField
               id="room"
               onChange={e => setRoom(e.target.value.trim())}
-              helperText="game name"
+              helperText="Game Name"
               value={room}
-              sx={{ width: '300px' }}
+              sx={{
+                width: '300px',
+                '& .MuiInputBase-input': {
+                  fontSize: '1.5rem', // Adjust the font size as needed
+                },
+                '& .MuiFormHelperText-root': {
+                  fontSize: '1rem', // Adjust the font size as needed
+                }, }}
               InputProps={{
                 endAdornment: <InputAdornment position="end">
                 <IconButton
                   aria-label="refresh game name"
                   onClick={e => handleGameNameRefresh(e)}
                   edge="end"
+                  
                 >
-                  <RefreshIcon />
+                  <RefreshIcon sx={{ transform: "scale(1.3)" }} />
                 </IconButton>
               </InputAdornment>,
               }}

@@ -5,6 +5,7 @@ import Divider from "@mui/material/Divider";
 
 import { socket } from "../../socket";
 import './Opponent.css'
+import { Typography } from "@mui/material";
 
 export const Opponent = ({opponentName}) => {
   const [playableCards, setPlayableCards] = useState([]);
@@ -129,7 +130,7 @@ export const Opponent = ({opponentName}) => {
       {scoringCards.length ? (
         <span className="opponent-score-display">{scoreDisplay}</span>
       ) : (
-        <span>{opponentName}</span>
+        <Typography variant="h5">{opponentName}</Typography>
       )}
       <Divider className='opponent-divider' variant="middle" />
       { renderCards() }

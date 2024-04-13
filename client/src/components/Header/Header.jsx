@@ -1,24 +1,29 @@
 import React, {useState} from 'react';
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-
-import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
-import StyleIcon from '@mui/icons-material/Style';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
+import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+
+import CancelPresentationTwoToneIcon from '@mui/icons-material/CancelPresentationTwoTone';
+import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
+import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
+import StyleIcon from '@mui/icons-material/Style';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 import { socket } from '../../socket';
 
-export function Header({ roomCreated, setRoomCreated }) {
+export function Header({ darkMode, handleDarkMode, roomCreated, setRoomCreated }) {
   const name = sessionStorage.getItem('name');
   const room = sessionStorage.getItem('room');
   const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
@@ -49,7 +54,6 @@ export function Header({ roomCreated, setRoomCreated }) {
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
-              fontFamily: 'monospace',
               fontWeight: 700,
               letterSpacing: '.2rem',
               color: 'inherit',
@@ -64,13 +68,21 @@ export function Header({ roomCreated, setRoomCreated }) {
           <Box sx={{ flexGrow: 0, marginRight: "2rem" }}>
             { roomCreated && (
               <Grid container spacing={2}>
-                <Grid item xs={10} sx={{  marginTop: "8px" }}>
-                  Welcome, {name}
+                <Grid item xs={7} sx={{  marginTop: "4px" }}>
+                  <Typography variant="h6">Welcome, {name}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
-                  <CancelPresentationIcon color="error" sx={{ transform: "scale(2)", marginTop: "0px" }} />
-                </IconButton>
+                  <IconButton onClick={handleDarkMode}>
+                    {darkMode ? 
+                      <Brightness4Icon sx={{ color: "#eceff1", transform: "scale(1.7)", marginTop: "0px", marginRight: '6px' }} /> :
+                      <Brightness4Icon sx={{ color: "#fff9c4", transform: "scale(1.7)", marginTop: "0px", marginRight: '6px' }} />}
+                  </IconButton>
+                </Grid>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={2}>
+                  <IconButton className="leave-game" onClick={() => setShowLeaveGameModal(true)} aria-label="leave">
+                    <CancelPresentationRoundedIcon sx={{ color: "#f44336", transform: "scale(1.9)", marginTop: "0px" }} />
+                  </IconButton>
                 </Grid>
               </Grid>
             )}

@@ -73,15 +73,22 @@ export function Chat() {
       <Box id='chat-log' className='chat-log'>
         {chats.map(({ name, message }, index) => (
           <Box key={index} sx={{ mb: 1 }}>
-            {name === 'game-updater' ? (
-              <Typography variant="body2" color="primary">
+            {name === 'game-updater' && (
+              <Typography variant="body2">
                 {message}
               </Typography>
-            ) : (
-              <Typography variant="body1">
+            )}
+            {name === nickname && (
+              <Typography color="#1565c0" variant="body1">
                 <strong>{name}</strong>: {message}
               </Typography>
             )}
+            {name !== nickname && name !== 'game-updater' && (
+              <Typography color="#b71c1c" variant="body1">
+                <strong>{name}</strong>: {message}
+              </Typography>
+            )}
+            
           </Box>
         ))}
         <div ref={messagesEndRef} />
@@ -116,7 +123,7 @@ export function Chat() {
           open={open}
         >
         <DrawerHeader>
-          <Typography variant="h6">Chat</Typography>
+          <Typography variant="h6">CribChat</Typography>
           <IconButton onClick={() => setOpen(false)} sx={{ transform: "scale(1.5)", position: "fixed", right: "2rem"}}>
             <KeyboardArrowDownIcon />
           </IconButton>
