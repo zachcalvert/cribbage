@@ -14,19 +14,17 @@ import IconButton from '@mui/material/IconButton';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 
-import CancelPresentationTwoToneIcon from '@mui/icons-material/CancelPresentationTwoTone';
 import CancelPresentationRoundedIcon from '@mui/icons-material/CancelPresentationRounded';
-import CancelPresentationIcon from '@mui/icons-material/CancelPresentation';
 import StyleIcon from '@mui/icons-material/Style';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
 
 import { socket } from '../../socket';
 
 export function Header({ darkMode, handleDarkMode, roomCreated, setRoomCreated }) {
+  const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
+
   const name = sessionStorage.getItem('name');
   const room = sessionStorage.getItem('room');
-  const [showLeaveGameModal, setShowLeaveGameModal] = useState(false);
 
   const handleLeave = e => {
     e.preventDefault();

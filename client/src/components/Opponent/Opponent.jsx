@@ -95,10 +95,12 @@ export const Opponent = ({opponentName}) => {
         {playableCards.map((card, index) => (
           <ReactSVG
             key={index}
-            wrapper='span'
-            className={`${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
-            ${showCards ? "spaced-opponent-card" : ""}`}
-            src={ showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+            wrapper="span"
+            className={
+              `${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
+              ${showCards ? "spaced-opponent-card" : ""}`
+            }
+            src={showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
       </span>

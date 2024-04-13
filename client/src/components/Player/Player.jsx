@@ -242,11 +242,13 @@ export const Player = ({name}) => {
           { renderPlayedCards() }
         </div>
         {action && <div className='col-6'>
-          <Fab variant="extended"
+          <Fab
+            variant="extended"
             className={scoring ? "scoring-button action-button" : "action-button"}
-            color="primary"
+            color="secondary"
             onClick={handleAction}
-            disabled={!turn}>
+            disabled={!turn}
+          >
             { action }
           </Fab>
           </div>

@@ -10,7 +10,10 @@ import Game from "./components/Game";
 const themeLight = createTheme({
   palette: {
     primary: {
-      main: teal[900]
+      main: teal[200]
+    },
+    secondary: {
+      main: teal[500]
     },
     background: {
       default: blueGrey[50],
@@ -25,7 +28,10 @@ const themeLight = createTheme({
 const themeDark = createTheme({
   palette: {
     primary: {
-      main: indigo[700]
+      main: teal[900]
+    },
+    secondary: {
+      main: teal[500]
     },
     background: {
       default: "#222222",
