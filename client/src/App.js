@@ -10,14 +10,15 @@ import Game from "./components/Game";
 const themeLight = createTheme({
   palette: {
     primary: {
-      main: teal[200]
+      main: teal[800]
     },
     secondary: {
-      main: teal[500]
+      main: '#ce1848'
     },
     background: {
       default: blueGrey[50],
-      paper: '#fff'
+      paper: '#fff',
+      paperBorder: '#aeacad'
     }
   },
   typography: {
@@ -28,21 +29,25 @@ const themeLight = createTheme({
 const themeDark = createTheme({
   palette: {
     primary: {
-      main: teal[900]
+      main: teal[500]
     },
     secondary: {
-      main: teal[500]
+      main: '#EC4040'
     },
     background: {
       default: "#222222",
-      paper: '#263238'
+      paper: '#263238',
+      paperBorder: '#000'
     },
     text: {
       primary: "#ffffff",
       secondary: "#f5f5f5",
       link: "#90caf9"
-    }
-  }
+    },
+  },
+  typography: {
+    "fontFamily": "Comic Sans MS",
+  },
 });
 
 export default function App() {
@@ -50,6 +55,7 @@ export default function App() {
 
   const handleDarkMode = () => {
     setDarkMode((prev) => !prev)
+    document.activeElement.blur()
   }
   return (
     <ThemeProvider theme={darkMode ? themeDark : themeLight}>

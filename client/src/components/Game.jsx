@@ -53,7 +53,7 @@ function InviteLink(room) {
           variant="filled"
           sx={{ width: '100%' }}
         >
-          Link copied to clipboard
+          Invite link copied to clipboard
         </Alert>
       </Snackbar>
       <Typography variant="h4" gutterBottom>

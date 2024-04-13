@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { styled } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
@@ -27,6 +28,7 @@ const DrawerHeader = styled('div')(({ theme }) => ({
 }));
 
 export function Chat() {
+  const theme = useTheme();
   const [open, setOpen] = useState(true);
   const [chats, setChat] = useState([]);
   const [message, setMessage] = useState('');
@@ -34,6 +36,11 @@ export function Chat() {
 
   const nickname = sessionStorage.getItem('name');
   const room = sessionStorage.getItem('room');
+
+  const scrollbarBackground = theme.palette.mode === 'dark' ? theme.palette.background.default : 'white';
+  const scrollbarTrackBackground = theme.palette.mode === 'dark' ? theme.palette.background.paper : 'white';
+  const scrollbarCornerBackground = theme.palette.mode === 'dark' ? theme.palette.background.paper : 'white';
+  const toggleChatIconColor = theme.palette.mode === 'dark' ? theme.palette.primary : theme.palette.primary.dark;
 
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
@@ -107,6 +114,9 @@ export function Chat() {
             '& .MuiDrawer-paper': {
               width: drawerWidth,
               boxSizing: 'border-box',
+              border: `1px solid ${theme.palette.background.paperBorder}`,
+              borderTopLeftRadius: '4px',
+              borderTopRightRadius: '4px'
             },
             '& .MuiDrawer-root': {
               position: 'absolute',
@@ -117,6 +127,16 @@ export function Chat() {
               marginLeft: 'auto',
               marginRight: '1rem',
             },
+            scrollbarColor: `transparent ${scrollbarBackground}`, // Hide scrollbar thumb in WebKit browsers
+              '&::-webkit-scrollbar': {
+                background: scrollbarBackground,
+              },
+              '&::-webkit-scrollbar-track': {
+                background: scrollbarTrackBackground,
+              },
+              '&::-webkit-scrollbar-corner': {
+                background: scrollbarCornerBackground,
+              },
           }}
           variant="persistent"
           anchor="bottom"
@@ -128,7 +148,7 @@ export function Chat() {
             <KeyboardArrowDownIcon />
           </IconButton>
         </DrawerHeader>
-        <Divider />
+        <Divider color={theme.palette.background.paperBorder}/>
         { renderChat() }
 
         <form onSubmit={handleSubmit} className="send-message-form">
@@ -152,7 +172,16 @@ export function Chat() {
       <div className="open-chat-container">
         <div className="open-chat">
           <Typography variant="h6" sx={{ float: 'left'}}>Chat</Typography>
-          <IconButton sx={{ float: 'right', transform: "scale(1.5)", "outline": "none", "boxShadow": "none"}} onClick={() => setOpen(true)}>
+          <IconButton
+            sx={{
+              float: 'right',
+              transform: "scale(1.5)",
+              "outline": "none",
+              "boxShadow": "none",
+              "color": toggleChatIconColor
+            }}
+            onClick={() => setOpen(true)}
+          >
             <KeyboardArrowUpIcon fontSize="32px" />
           </IconButton>
         </div>

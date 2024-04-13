@@ -70,7 +70,7 @@ export function Header({ darkMode, handleDarkMode, roomCreated, setRoomCreated }
                   <Typography variant="h6">Welcome, {name}</Typography>
                 </Grid>
                 <Grid item xs={2}>
-                  <IconButton onClick={handleDarkMode}>
+                  <IconButton onClick={handleDarkMode} style={{borderRadius: 0}}>
                     {darkMode ? 
                       <Brightness4Icon sx={{ color: "#eceff1", transform: "scale(1.7)", marginTop: "0px", marginRight: '6px' }} /> :
                       <Brightness4Icon sx={{ color: "#fff9c4", transform: "scale(1.7)", marginTop: "0px", marginRight: '6px' }} />}
