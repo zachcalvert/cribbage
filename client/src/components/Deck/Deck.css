@@ -39,3 +39,7 @@
   margin-top: -20px;
   transition: margin 300ms;
 }
+
+.scoring-cut svg {
+  color: green!important;
+}

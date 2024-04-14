@@ -23,6 +23,8 @@ export const Player = ({name}) => {
   const [activeCards, setActiveCards] = useState([]);
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
+  const [scoringCards, setScoringCards] = useState([]);
+  const [scoreDisplay, setScoreDisplay] = useState('');
 
   const [peggingTotal, setPeggingTotal] = useAnimateNumber(0, {decimals: 0});
   const [showPeggingTotal, setShowPeggingTotal] = useState(false);
@@ -46,6 +48,7 @@ export const Player = ({name}) => {
   useEffect(() => {
     function onSendTurn(msg) {
       setScoring(false);
+      setScoringCards([]);
       setActiveCards([]);
       if (msg.players.includes(name)) {
         setTurn(true);
@@ -140,6 +143,21 @@ export const Player = ({name}) => {
     };
   }, [name]);
 
+  useEffect(() => {
+    function onDisplayScore(msg) {
+      if (msg.player === name) {
+        setScoreDisplay(msg.text);
+        setScoringCards(msg.cards);
+      }
+    }
+
+    socket.on("display_score", onDisplayScore);
+
+    return () => {
+      socket.off("display_score", onDisplayScore);
+    };
+  }, [name, scoreDisplay, scoringCards]);
+
   const handleAction = (e) => {
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
@@ -203,7 +221,11 @@ export const Player = ({name}) => {
             <animated.div style={{ height }}>
               <ReactSVG
                 id={playableCards[index]}
-                className={`${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }`}
+                className={
+                  `
+                    ${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }
+                    ${scoringCards.includes(playableCards[index]) ? "scoring-card available-card" : "available-card" }
+                  `}
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
@@ -259,16 +281,17 @@ export const Player = ({name}) => {
         <div className='col-3 played-cards'>
           { renderPlayedCards() }
         </div>
-        {action && <div className='col-6'>
-          <Fab
-            variant="extended"
-            className={scoring ? "scoring-button action-button" : "action-button"}
-            color="secondary"
-            onClick={handleAction}
-            disabled={!turn}
-          >
-            { action }
-          </Fab>
+        {action &&
+          <div className='col-6'>
+            <Fab
+              variant="extended"
+              className={scoring ? "scoring-button action-button" : "action-button"}
+              color="secondary"
+              onClick={handleAction}
+              disabled={!turn}
+            >
+              { scoringCards.length ? scoreDisplay : action}
+            </Fab>
           </div>
         }
         <div className='col-3'>

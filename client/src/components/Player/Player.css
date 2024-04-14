@@ -47,6 +47,7 @@
 
 .crib-help-chip {
   margin-top: 12px;
+  padding: 8px;
 }
 
 .player-cards {
@@ -86,6 +87,15 @@
   margin-top: -15px;
   box-shadow: 0 8px 6px -6px black;
   height: fit-content;
+}
+
+.scoring-card svg {
+  border: 2px solid green;
+}
+
+.score-display {
+  color: green!important;
+  font-weight: bold;
 }
 
 .ReactModal__Content {
