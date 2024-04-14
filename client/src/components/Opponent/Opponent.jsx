@@ -7,7 +7,7 @@ import { socket } from "../../socket";
 import './Opponent.css'
 import { Typography } from "@mui/material";
 
-export const Opponent = ({opponentName}) => {
+export const Opponent = ({ opponentName }) => {
   const [playableCards, setPlayableCards] = useState([]);
   const [playedCards, setPlayedCards] = useState([]);
   const [showCards, setShowCards] = useState(false);

@@ -102,6 +102,20 @@ export const Player = ({name}) => {
   }, [peggingTotal]);
 
   useEffect(() => {
+    function onCardPlayed(msg) {
+      console.log('opponent played a card')
+      console.log({msg})
+      setPeggingTotal(msg.pegging_total)
+    }
+  
+    socket.on("card_played", onCardPlayed);
+  
+    return () => {
+      socket.off("card_played", onCardPlayed);
+    };
+  }, [peggingTotal, setPeggingTotal]);
+
+  useEffect(() => {
     function onSendCards(msg) {
       console.log({msg})
       if (name in msg.cards) {

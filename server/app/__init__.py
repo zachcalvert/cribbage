@@ -8,7 +8,7 @@ import time
 import uuid
 
 from flask import Flask
-from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room
+from flask_socketio import SocketIO, Namespace, emit, join_room
 from threading import Lock
 
 from . import controller
@@ -218,15 +218,12 @@ class CribbageNamespace(Namespace):
         self.announce("{} left".format(msg["name"]), room=msg["game"])
 
     def on_chat_message(self, msg):
-        logger.info("chat!")
         room = None if msg.get("private") else msg["room"]
-        logger.info(msg)
         emit(
             "chat",
             {"id": str(uuid.uuid4()), "name": msg["name"], "message": msg["message"]},
             room=room,
         )
-        logger.info("emitted")
 
     def on_animation(self, msg):
         emit(

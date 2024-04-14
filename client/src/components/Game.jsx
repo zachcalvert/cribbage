@@ -59,9 +59,10 @@ function InviteLink(room) {
       <Typography variant="h4" gutterBottom>
         Welcome!
       </Typography>
+
       <Typography variant="h6" sx={{ marginBottom: '1rem' }}>
-        Click the Start button now to play against the computer.
-        </Typography>
+        Invite a friend to play with the below link.
+      </Typography>
       <Button
         color="secondary"
         variant="contained"
@@ -71,7 +72,7 @@ function InviteLink(room) {
           clipboard.copy()
         }}
         >
-        Invite a friend to play
+        Copy Invite Link
       </Button>
       <input style={{ display: 'none' }} ref={clipboard.target} value={encoded} readOnly />
     </Box>
@@ -135,22 +136,24 @@ function Game({ darkMode, handleDarkMode }) {
             <Grid item xs={12} sx={{ height: "calc(30vh - 40px)"}}>
               <Item sx={{ height: "100%" }} elevation={0}>
                 <Grid container spacing={1} sx={{ alignItems: 'center', height: '100%' }}>
-                  <Grid item xs={2}>
-                    <Deck />
-                  </Grid>
                   { gameStatus === 'NEW' ? 
-                    <>
-                    <Grid item xs={8}>
+                    <Grid item xs={12}>
+                      {!opponents.length &&
+                      <Typography variant="h6" sx={{ marginBottom: '1rem' }}>
+                        Click the Start button now to play against the computer.
+                      </Typography>
+                      }
                       <StartMenu />
                     </Grid>
-                    <Grid item xs={2} />
-                    </>
                   :
                     <>
-                    <Grid item xs={2} />
-                    <Grid item xs={8}>
-                      <Scoreboard />
-                    </Grid>
+                      <Grid item xs={2}>
+                        <Deck />
+                      </Grid>
+                      <Grid item xs={2} />
+                      <Grid item xs={8}>
+                        <Scoreboard />
+                      </Grid>
                     </>
                   }
                   
