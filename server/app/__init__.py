@@ -11,9 +11,10 @@ from flask import Flask
 from flask_socketio import SocketIO, Namespace, emit, join_room
 from threading import Lock
 
-from . import controller
-from . import bot
-from . import utils
+from app.models import Game
+from app import controller
+from app import bot
+from app import utils
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -35,17 +36,6 @@ def all_games():
 
 
 class CribbageNamespace(Namespace):
-
-    def on_player_join(self, msg):
-        room = msg["room"]
-        player = msg["name"]
-        logger.info(f"adding {player} to room {room}")
-
-        join_room(room)
-        controller.get_or_create_game(room)
-        game = controller.add_player(room, msg["name"])
-        # emit('players', {'players': list(game['players'].keys())}, room=room)
-        self.announce("{} joined".format(msg["name"]), room=room)
 
     def announce(self, message, room, type=None):
         emit(
@@ -224,10 +214,27 @@ class CribbageNamespace(Namespace):
         if game["current_action"] in ["play", "pass"]:
             emit("pegging_total", {"pegging_total": game["pegging"]["total"]})
 
+    def on_player_join(self, msg):
+        room = msg["id"]
+        player = msg["name"]
+
+        join_room(room)
+
+        game_id = room
+        game = Game(id=game_id)
+        game.add_player(player)
+
+        emit('players', {'players': list(game.players.keys())}, room=room)
+        self.announce("{} joined".format(msg["name"]), room=room)
+
     def on_player_leave(self, msg):
-        game = controller.remove_player(msg["game"], msg["name"])
-        emit("players", {"players": list(game["players"].keys())}, room=msg["game"])
-        self.announce("{} left".format(msg["name"]), room=msg["game"])
+        game = Game(id=msg["id"])
+        player = msg["name"]
+
+        game.remove_player(player)
+
+        emit("players", {"players": list(game.players.keys())}, room=game.id)
+        self.announce("{} left".format(player), room=game.id)
 
     def on_chat_message(self, msg):
         room = None if msg.get("private") else msg["room"]

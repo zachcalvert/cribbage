@@ -20,22 +20,23 @@ const PET_NAMES = ["Buddy", "Max", "Charlie", "Bella", "Lucy", "Molly", "Daisy",
 export function Lobby({setRoomCreated}) {
 
   const [name, setName] = useState('');
-  const [room, setRoom] = useState(generateNewName());
+  const [room, setRoom] = useState(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]);
 
   const handleGameNameRefresh = useCallback(
-    (event) => setRoom(generateNewName()),
+    (event) => setRoom(generate({ exactly: 1, wordsPerString: 2, separator: "-" })[0]),
     []
   );
 
-  function chooseRandomItem(array) {
-    return array[Math.floor(Math.random() * array.length)];
-  }
 
-  function generateNewName() {
-    const randomStreetName = chooseRandomItem(STREET_NAMES);
-    const randomPetName = chooseRandomItem(PET_NAMES);
-    return randomPetName + "-" + randomStreetName;
-  }
+  // function chooseRandomItem(array) {
+  //   return array[Math.floor(Math.random() * array.length)];
+  // }
+
+  // function generateNewName() {
+  //   const randomStreetName = chooseRandomItem(STREET_NAMES);
+  //   const randomPetName = chooseRandomItem(PET_NAMES);
+  //   return randomPetName + "-" + randomStreetName;
+  // }
   
 
   const handleJoin = e => {
@@ -45,7 +46,7 @@ export function Lobby({setRoomCreated}) {
     }
     sessionStorage.setItem('name', name);
     sessionStorage.setItem('room', room);
-    socket.emit("player_join", {name: name, room: room});
+    socket.emit("player_join", { id: room, name: name });
     setRoomCreated(true);
   };
 

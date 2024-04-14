@@ -30,12 +30,12 @@ export function Header({ darkMode, handleDarkMode, roomCreated, setRoomCreated }
     e.preventDefault();
     socket.emit(
       "player_leave", {
-        name: sessionStorage.getItem('name'),
-        game: sessionStorage.getItem('room')
+        id: sessionStorage.getItem('room'),
+        name: sessionStorage.getItem('name')
       }
     );
+    sessionStorage.removeItem('id');
     sessionStorage.removeItem('name');
-    sessionStorage.removeItem('room');
     setShowLeaveGameModal(false);
     setRoomCreated(false);
   };
