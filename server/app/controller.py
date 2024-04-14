@@ -8,6 +8,7 @@ import redis
 from app import bot
 from app.hand import Hand
 from app import utils
+from app import constants
 from app.decks.jokers import deck as jokers_deck
 from app.decks.standard import deck as standard_deck
 
@@ -15,24 +16,6 @@ redis_host = os.environ.get("REDISHOST", "redis")
 cache = redis.StrictRedis(host=redis_host, port=6379)
 
 logger = logging.getLogger(__name__)
-
-CRIB_SIZE_MAP = {4: "standard", 5: "spicy", 6: "chaotic"}
-
-TEXT_TO_RANK_MAP = {
-    "ace": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    "ten": 10,
-    "jack": 11,
-    "queen": 12,
-    "king": 13,
-}
 
 
 def all_games():
@@ -107,23 +90,25 @@ def game_interaction(func):
     return wrapper
 
 
-@game_interaction
-def start_game(game_data, **kwargs):
-    crib_size = kwargs.get("crib_size", 4)
-    jokers = kwargs.get("jokers", False)
-    winning_score = kwargs.get("winning_score", 121)
+def start_game(game_name, winning_score, crib_size, jokers):
+    game_data = json.loads(cache.get(game_name))
+    players = list(game_data["players"].keys())
     deck = jokers_deck if jokers else standard_deck
 
-    players = list(game_data["players"].keys())
-
     if len(players) == 1:
-        bot = random.choice(["Bryan", "Sally", "Bev"])
+        bot = "Bev"
         players.append(bot)
         game_data["players"][bot] = 0
     else:
-        bot = False
+        bot = None
 
-    print(f"New game! Players are {players}.")
+    logger.info(
+        "New game! Players are %s. Winning score is %s, crib size is %s, jokers are %s",
+        players,
+        winning_score,
+        crib_size,
+        jokers
+    )
 
     game_data.update(
         {
@@ -152,12 +137,13 @@ def start_game(game_data, **kwargs):
         }
     )
 
-    game_data["opening_message"] = "First to {} wins! {} cribs.".format(
-        game_data["winning_score"], CRIB_SIZE_MAP[game_data["crib_size"]]
+    game_data["opening_message"] = "First to {} wins! {} cribs. ".format(
+        winning_score, constants.CRIB_SIZE_MAP[crib_size]
     )
     if game_data["jokers"]:
-        game_data["opening_message"] += " We're playing with jokers!"
-    game_data["opening_message"] += " Draw to see who gets first crib."
+        game_data["opening_message"] += "We're playing with jokers! "
+
+    game_data["opening_message"] += "Draw to see who gets first crib."
 
     return game_data
 
@@ -677,7 +663,7 @@ def refresh_game_dict(game_data):
 
     game_data["opening_message"] = (
         "First to {} wins! Cribs are {}. Lowest drawn card gets first crib.".format(
-            game_data["winning_score"], CRIB_SIZE_MAP[game_data["crib_size"]]
+            game_data["winning_score"], constants.CRIB_SIZE_MAP[game_data["crib_size"]]
         )
     )
 

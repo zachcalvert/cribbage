@@ -239,20 +239,27 @@ class CribbageNamespace(Namespace):
         )
 
     def on_start_game(self, msg):
-        game = controller.start_game(msg)
+        game_data = controller.start_game(
+            game_name=msg['game'],
+            winning_score=msg["winning_score"],
+            crib_size=msg["crib_size"],
+            jokers=msg["jokers"]
+        )
+
         emit("game_begun", room=msg["game"])
         emit(
             "draw_board",
-            {"players": game["players"], "winning_score": game["winning_score"]},
+            {"players": game_data["players"], "winning_score": game_data["winning_score"]},
             room=msg["game"],
         )
         emit(
             "send_turn",
-            {"players": game["current_turn"], "action": game["current_action"]},
+            {"players": game_data["current_turn"], "action": game_data["current_action"]},
             room=msg["game"],
         )
-        emit("players", {"players": list(game["players"].keys())}, room=msg["game"])
-        self.announce(game["opening_message"], room=msg["game"], type="big")
+        emit("players", {"players": list(game_data["players"].keys())}, room=msg["game"])
+
+        self.announce(game_data["opening_message"], room=msg["game"], type="big")
 
     def on_draw(self, msg):
         game = controller.draw(msg)
