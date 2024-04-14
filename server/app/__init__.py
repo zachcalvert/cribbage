@@ -407,6 +407,11 @@ class CribbageNamespace(Namespace):
 
         if game["current_action"] == "deal":
             self.announce(
+                "-------------------------------",
+                room=game["name"],
+                type="big",
+            )
+            self.announce(
                 "New round! It is now {}'s crib.".format(game["dealer"]),
                 room=game["name"],
                 type="big",

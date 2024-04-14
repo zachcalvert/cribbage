@@ -79,7 +79,7 @@ export function Chat() {
     return chats.length ? (
       <Box id='chat-log' className='chat-log'>
         {chats.map(({ name, message }, index) => (
-          <Box key={index} sx={{ mb: 1 }}>
+          <Box key={index} sx={{ mb: 1.5 }}>
             {name === 'game-updater' && (
               <Typography variant="body2">
                 {message}
