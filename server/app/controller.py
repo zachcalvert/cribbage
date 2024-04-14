@@ -538,7 +538,7 @@ def score_hand(game_name, player):
 
 
 def score_crib(game_name):
-    game_data = json.loads(cache.get(game_data))
+    game_data = json.loads(cache.get(game_name))
     deck = jokers_deck if game_data["jokers"] else standard_deck
     player = game_data["crib"]
 
