@@ -50,16 +50,16 @@ def get_card_value(game, card_id, value):
     return card[value]
 
 
-def get_or_create_game(name):
+def get_or_create_game(game_name):
     try:
-        g = json.loads(cache.get(name))
+        g = json.loads(cache.get(game_name))
     except TypeError:
         g = {
-            "name": name,
+            "name": game_name,
             "players": {},
             "state": "INIT",
         }
-        cache.set(name, json.dumps(g))
+        cache.set(game_name, json.dumps(g))
     return g
 
 
@@ -78,16 +78,6 @@ def remove_player(game, player):
     else:
         cache.set(game, json.dumps(g))
     return g
-
-
-def game_interaction(func):
-    def wrapper(msg):
-        game_data = json.loads(cache.get(msg["game"]))
-        new_data = func(game_data, **msg)
-        cache.set(msg["game"], json.dumps(new_data))
-        return new_data
-
-    return wrapper
 
 
 def start_game(game_name, winning_score, crib_size, jokers):
@@ -145,16 +135,16 @@ def start_game(game_name, winning_score, crib_size, jokers):
 
     game_data["opening_message"] += "Draw to see who gets first crib."
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def draw(game_data, **kwargs):
-    game_data["opening_message"] = ""
-    player = kwargs["player"]
+def draw(game_name, player):
+    game_data = json.loads(cache.get(game_name))
     players = list(game_data["players"].keys())
 
     random.shuffle(game_data["deck"])
+
     game_data["hands"][player] = [game_data["deck"].pop()]
 
     while game_data["hands"][player][0] in ["joker1", "joker2"]:
@@ -191,11 +181,12 @@ def draw(game_data, **kwargs):
         game_data["current_action"] = "deal"
         game_data["current_turn"] = game_data["dealer"]
 
-        message = "{} is the lowest card, {} gets first crib".format(
+        message = "{} is the lowest cut card, {} gets first crib".format(
             utils.card_text_from_id(game_data["hands"][game_data["dealer"]][0]), dealer
         )
         game_data["opening_message"] = message
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
@@ -211,8 +202,9 @@ def _sort_cards(g, cards):
     return ascending_card_ids
 
 
-@game_interaction
-def deal_hands(game_data, **kwargs):
+def deal_hands(game_name):
+    game_data = json.loads(cache.get(game_name))
+
     random.shuffle(game_data["deck"])
 
     hands = {}
@@ -227,11 +219,12 @@ def deal_hands(game_data, **kwargs):
     game_data["current_action"] = "discard"
     game_data["current_turn"] = list(game_data["players"].keys())
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-def is_valid_joker_selection(game, player, rank, suit):
-    game_data = json.loads(cache.get(game))
+def is_valid_joker_selection(game_name, player, rank, suit):
+    game_data = json.loads(cache.get(game_name))
     new_card = utils.card_object_from_text(rank, suit)
     card_id = list(new_card.keys())[0]
 
@@ -241,9 +234,8 @@ def is_valid_joker_selection(game, player, rank, suit):
     return True
 
 
-@game_interaction
-def handle_joker_selection(game_data, **kwargs):
-    player = kwargs["player"]
+def handle_joker_selection(game_name, player, rank, suit):
+    game_data = json.loads(cache.get(game_name))
     hand = game_data["hands"][player]
 
     if "joker1" in hand:
@@ -251,23 +243,21 @@ def handle_joker_selection(game_data, **kwargs):
     else:
         hand.remove("joker2")
 
-    new_card = utils.card_object_from_text(kwargs["rank"], kwargs["suit"])
+    new_card = utils.card_object_from_text(rank, suit)
     card_id = list(new_card.keys())[0]
     hand.append(card_id)
     game_data["hands"][player] = _sort_cards(game_data, hand)
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def discard(game_data, **kwargs):
-    player = kwargs["player"]
-    card = kwargs["card"]
+def discard(game_name, player, card, second_card=None):
+    game_data = json.loads(cache.get(game_name))
     game_data["hands"][player].remove(card)
     game_data["crib"].append(card)
 
-    if "second_card" in kwargs and kwargs["second_card"]:
-        second_card = kwargs["second_card"]
+    if second_card:
         game_data["hands"][player].remove(second_card)
         game_data["crib"].append(second_card)
 
@@ -276,9 +266,9 @@ def discard(game_data, **kwargs):
         game_data["current_turn"].remove(player)
 
         if game_data["bot"]:
-            hand = bot.discard(game_data["hands"][game_data["bot"]])
-            game_data["hands"][game_data["bot"]] = hand
-            game_data["current_turn"].remove(game_data["bot"])
+            hand = bot.discard(hand=game_data["hands"]["Bev"])
+            game_data["hands"]["Bev"] = hand
+            game_data["current_turn"].remove("Bev")
 
     all_done = all(
         len(game_data["hands"][player]) == 4 for player in game_data["players"].keys()
@@ -293,11 +283,12 @@ def discard(game_data, **kwargs):
         game_data["current_action"] = "cut"
         game_data["current_turn"] = game_data["cutter"]
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def cut_deck(game_data, **kwargs):
+def cut_deck(game_name):
+    game_data = json.loads(cache.get(game_name))
     game_data["cut_card"] = game_data["deck"].pop()
 
     while game_data["cut_card"] in ["joker1", "joker2"]:
@@ -320,15 +311,31 @@ def cut_deck(game_data, **kwargs):
 
     game_data["current_action"] = "play"
     game_data["current_turn"] = game_data["first_to_score"]
+
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def play_card(game_data, **kwargs):
+def is_valid_play(game, player, card):
+    game_data = json.loads(cache.get(game))
+    deck = jokers_deck if game_data["jokers"] else standard_deck
+    card_object = deck[card]
+
+    if card_object["value"] > (31 - game_data["pegging"]["total"]):
+        return False, "Whoops! You gotta play a card with a lower value."
+
+    if player not in game_data["current_turn"]:
+        return False, "Whoops! It is currently {}'s turn to play.".format(
+            game_data["current_turn"]
+        )
+
+    return True, ""
+
+
+def play_card(game_name, player, card_id):
+    game_data = json.loads(cache.get(game_name))
     deck = jokers_deck if game_data["jokers"] else standard_deck
 
-    player = kwargs["player"]
-    card_id = kwargs["card"]
     card = deck.get(card_id)
     game_data["previous_turn"] = {
         "action": utils.card_text_from_id(card_id),
@@ -436,30 +443,15 @@ def play_card(game_data, **kwargs):
         r = game_data["previous_turn"]["reason"]
         game_data["previous_turn"]["reason"] = r.replace("go", "last card")
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-def is_valid_play(game, player, card):
-    game_data = json.loads(cache.get(game))
-    deck = jokers_deck if game_data["jokers"] else standard_deck
-    card_object = deck[card]
-
-    if card_object["value"] > (31 - game_data["pegging"]["total"]):
-        return False, "Whoops! You gotta play a card with a lower value."
-
-    if player not in game_data["current_turn"]:
-        return False, "Whoops! It is currently {}'s turn to play.".format(
-            game_data["current_turn"]
-        )
-
-    return True, ""
-
-
-@game_interaction
-def record_pass(game_data, **kwargs):
+def record_pass(game_name, player):
+    game_data = json.loads(cache.get(game_name))
     deck = jokers_deck if game_data["jokers"] else standard_deck
 
-    game_data["pegging"]["passed"].append(kwargs["player"])
+    game_data["pegging"]["passed"].append(player)
 
     player_order = list(game_data["players"].keys())
     starting_point = player_order.index(game_data["current_turn"])
@@ -478,7 +470,7 @@ def record_pass(game_data, **kwargs):
         }
     else:
         if game_data["pegging"]["total"] != 31:
-            game_data["players"][kwargs["player"]] += 1
+            game_data["players"][player] += 1
 
         game_data["previous_turn"] = {
             "action": "go",
@@ -505,14 +497,15 @@ def record_pass(game_data, **kwargs):
         game_data["current_action"] = "score"
         game_data["current_turn"] = game_data["first_to_score"]
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def score_hand(game_data, **kwargs):
+def score_hand(game_name, player):
+    game_data = json.loads(cache.get(game_name))
+
     deck = jokers_deck if game_data["jokers"] else standard_deck
 
-    player = kwargs["player"]
     player_cards = _sort_cards(game_data, game_data["played_cards"][player])
 
     cards = [deck.get(c) for c in player_cards]
@@ -539,17 +532,19 @@ def score_hand(game_data, **kwargs):
         )
 
     game_data["hands"][player] = player_cards
+
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def score_crib(game_data, **kwargs):
+def score_crib(game_name):
+    game_data = json.loads(cache.get(game_data))
     deck = jokers_deck if game_data["jokers"] else standard_deck
+    player = game_data["crib"]
 
-    player = kwargs["player"]
-    crib = [deck.get(c) for c in game_data["crib"]]
+    crib_cards = [deck.get(c) for c in game_data["crib"]]
     cut_card = deck.get(game_data["cut_card"])
-    crib = Hand(crib, cut_card, is_crib=True)
+    crib = Hand(crib_cards, cut_card, is_crib=True)
     crib_points = crib.calculate_points()
 
     game_data["crib"] = _sort_cards(game_data, game_data["crib"])
@@ -566,13 +561,14 @@ def score_crib(game_data, **kwargs):
 
     game_data["current_action"] = "next"
     game_data["current_turn"] = list(game_data["players"].keys())
+
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def next_round(game_data, **kwargs):
+def next_round(game_name, player):
+    game_data = json.loads(cache.get(game_name))
     deck = jokers_deck if game_data["jokers"] else standard_deck
-    player = kwargs["player"]
     players = list(game_data["players"].keys())
 
     game_data["ok_with_next_round"].append(player)
@@ -609,34 +605,22 @@ def next_round(game_data, **kwargs):
     else:
         game_data["current_turn"].remove(player)
 
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def grant_victory(game_data, **kwargs):
+def grant_victory(game_name, player):
+    game_data = json.loads(cache.get(game_name))
+
     game_data["current_action"] = "rematch"
     game_data["current_turn"] = list(game_data["players"].keys())
-    game_data["winner"] = kwargs["player"]
+    game_data["winner"] = player
+
+    cache.set(game_name, json.dumps(game_data))
     return game_data
 
 
-@game_interaction
-def rematch(game_data, **kwargs):
-    player = kwargs["player"]
-    game_data["play_again"].append(player)
-
-    if game_data["bot"]:
-        game_data["play_again"].append(game_data["bot"])
-
-    if set(game_data["play_again"]) == set(game_data["players"].keys()):
-        game_data = refresh_game_dict(game_data)
-    else:
-        game_data["current_turn"].remove(player)
-
-    return game_data
-
-
-def refresh_game_dict(game_data):
+def _refresh_game_dict(game_data):
     players = list(game_data["players"].keys())
     deck = jokers_deck if game_data["jokers"] else standard_deck
 
@@ -667,4 +651,19 @@ def refresh_game_dict(game_data):
         )
     )
 
+    return game_data
+
+def rematch(game_name, player):
+    game_data = json.loads(cache.get(game_name))
+    game_data["play_again"].append(player)
+
+    if game_data["bot"]:
+        game_data["play_again"].append(game_data["bot"])
+
+    if set(game_data["play_again"]) == set(game_data["players"].keys()):
+        game_data = _refresh_game_dict(game_data)
+    else:
+        game_data["current_turn"].remove(player)
+
+    cache.set(game_name, json.dumps(game_data))
     return game_data

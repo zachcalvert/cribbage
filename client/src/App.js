@@ -51,7 +51,7 @@ const themeDark = createTheme({
 });
 
 export default function App() {
-  const [darkMode, setDarkMode] = React.useState(false);
+  const [darkMode, setDarkMode] = React.useState(true);
 
   const handleDarkMode = () => {
     setDarkMode((prev) => !prev)
