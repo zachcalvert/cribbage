@@ -74,8 +74,6 @@ export const Player = ({name}) => {
   
   useEffect(() => {
     function onCards(msg) {
-      console.log({msg})
-      console.log(msg.cards[name])
       setPlayableCards(msg.cards[name]);
       setPlayedCards([]);
       if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
@@ -157,7 +155,7 @@ export const Player = ({name}) => {
       setPlayableCards([])
     }
 
-    socket.emit(action, { id: game, player: name, card: activeCards[0], second_card: activeCards[1]});
+    socket.emit(action, { id: game, player: name, card: activeCards[0]?.id, second_card: activeCards[1]?.id});
   };
 
   const handleCardClick = (e) => {
@@ -182,9 +180,9 @@ export const Player = ({name}) => {
       <>
         {playedCards.map((card, index) => (
           <ReactSVG
+            key={index}
             id={card}
             className='played-card'
-            key={index}
             wrapper='span'
             src={`/cards/${card}.svg`}
           />

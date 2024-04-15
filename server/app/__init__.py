@@ -8,7 +8,7 @@ import time
 import uuid
 
 from flask import Flask
-from flask_socketio import SocketIO, Namespace, emit, join_room
+from flask_socketio import SocketIO, Namespace, emit, join_room, leave_room
 from threading import Lock
 
 from app.models import Game
@@ -33,6 +33,14 @@ thread_lock = Lock()
 def all_games():
     games = controller.all_games()
     return {"games": games}
+
+
+def for_game(func):
+    def wrapper(self, msg):
+        game_id = msg.get("id")
+        game = Game(id=game_id)
+        return func(self, game, msg)
+    return wrapper
 
 
 class CribbageNamespace(Namespace):
@@ -212,23 +220,21 @@ class CribbageNamespace(Namespace):
         if game["current_action"] in ["play", "pass"]:
             emit("pegging_total", {"pegging_total": game["pegging"]["total"]})
 
-    def on_player_join(self, msg):
-        room = msg["id"]
+    @for_game
+    def on_player_join(self, game, msg):
         player = msg["name"]
 
-        join_room(room)
-
-        game_id = room
-        game = Game(id=game_id)
+        join_room(game.id)
         game.add_player(player)
 
-        emit("players", {"players": list(game.players.keys())}, room=room)
-        self.announce("{} joined".format(msg["name"]), room=room)
+        emit("players", {"players": list(game.players.keys())}, room=game.id)
+        self.announce("{} joined".format(player), room=game.id)
 
-    def on_player_leave(self, msg):
-        game = Game(id=msg["id"])
+    @for_game
+    def on_player_leave(self, game, msg):
         player = msg["name"]
 
+        leave_room(game.id)
         game.remove_player(player)
 
         emit("players", {"players": list(game.players.keys())}, room=game.id)
@@ -249,15 +255,16 @@ class CribbageNamespace(Namespace):
             room=msg["game"],
         )
 
-    def on_setup(self, msg):
-        emit("setup_started", {"players": [msg["player"]]}, room=msg["game"])
+    @for_game
+    def on_setup(self, game, msg):
+        player = msg["player"]
+        emit("setup_started", {"players": [player]}, room=game.id)
         self.announce(
-            "{} is setting up the game..".format(msg["player"]), room=msg["game"]
+            "{} is setting up the game..".format(player), room=game.id
         )
 
-    def on_start_game(self, msg):
-        game = Game(id=msg["id"])
-
+    @for_game
+    def on_start_game(self, game, msg):
         game.start(
             winning_score=msg["winning_score"],
             crib_size=msg["crib_size"],
@@ -279,8 +286,8 @@ class CribbageNamespace(Namespace):
 
         self.announce(game.opening_message, room=game.id, type="big")
 
-    def on_draw(self, msg):
-        game = Game(id=msg["id"])
+    @for_game
+    def on_draw(self, game, msg):
         game.draw(player=msg["player"])
 
         emit(
@@ -298,7 +305,7 @@ class CribbageNamespace(Namespace):
         )
         self.announce(game.opening_message, room=game.id)
 
-        if game.current_turn == game.bot:
+        if game.current_turn == [game.bot]:
             game_data = self.bot_move(game_data)
         emit(
             "send_turn",
@@ -348,28 +355,23 @@ class CribbageNamespace(Namespace):
         )
         self.announce(message, room=msg["game"], type="big")
 
-    def on_discard(self, msg):
-        game_data = controller.discard(
-            game_name=msg["game"],
+    @for_game
+    def on_discard(self, game: Game, msg: dict):
+        game.discard(
             player=msg["player"],
             card=msg["card"],
-            second_card=msg.get("second_card"),
+            second_card=msg.get("second_card")
         )
-        emit("cards", {"cards": game_data["hands"]}, room=msg["game"])
 
-        logger.info("345")
-        while game_data["current_turn"] == game_data["bot"]:
-            game_data = self.bot_move(game_data)
-
-        logger.info("349")
+        emit("cards", {"cards": game.hands}, room=game.id)
         emit(
             "send_turn",
             {
-                "players": game_data["current_turn"],
-                "action": game_data["current_action"],
-                "crib": game_data["dealer"],
+                "players": game.current_turn,
+                "action": game.current_action,
+                "crib": game.dealer,
             },
-            room=msg["game"],
+            room=game.id,
         )
 
     def on_cut(self, msg):

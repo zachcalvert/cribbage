@@ -16,10 +16,10 @@ export const Opponent = ({ opponentName }) => {
 
   useEffect(() => {
     function onCards(msg) {
-      if (opponentName in msg.cards) {
-        setPlayableCards(msg.cards[opponentName]);
-        setPlayedCards([]);
-      }
+      console.log(msg.cards[opponentName])
+      setPlayableCards(msg.cards[opponentName]);
+      setPlayedCards([]);
+
       msg.show_to_all === true ? ( setShowCards(true)) : ( setShowCards(false))
     }
 
@@ -80,10 +80,10 @@ export const Opponent = ({ opponentName }) => {
             key={index}
             wrapper="span"
             className={
-              `${scoringCards.includes(playableCards[index]) ? "active-opponent-card opponent-card" : "opponent-card"} 
+              `${scoringCards.includes(playableCards[index].id) ? "active-opponent-card opponent-card" : "opponent-card"} 
               ${showCards ? "spaced-opponent-card" : ""}`
             }
-            src={showCards ? `/cards/${playableCards[index]}.svg` : `/cards/dark_blue.svg`}
+            src={showCards ? `/cards/${playableCards[index].id}.svg` : `/cards/dark_blue.svg`}
           />
         ))}
       </span>

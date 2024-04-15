@@ -128,25 +128,27 @@ class Game:
         deck = list(standard_deck.keys())
         random.shuffle(deck)
 
-        self.hands[player] = [deck.pop()]
+        self.hands[player] = [self.deck.get(deck.pop())]
         self.current_turn.remove(player)
 
         if self.bot:
-            self.hands[self.bot] = [deck.pop()]
+            self.hands[self.bot] = [self.deck.get(deck.pop())]
             self.current_turn.remove(self.bot)
 
         # If everyone has drawn a card, determine roles for this round
         if all(len(self.hands[player]) == 1 for player in self.players.keys()):
-            low_cut = 15
+            low_cut = {"rank": 15}
             dealer = None
 
-            for _ in self.hands:
-                if standard_deck.get(self.hands[player][0])["rank"] < low_cut:
-                    low_cut = standard_deck.get(self.hands[player][0])["rank"]
+            for player, cards in self.hands.items():
+                drawn_card = cards[0]
+                logger.info(drawn_card)
+                if drawn_card["rank"] < low_cut["rank"]:
+                    low_cut = drawn_card
                     dealer = player
 
             self.current_action = "deal"
-            self.current_turn = dealer
+            self.current_turn = [dealer]
             self.dealer = dealer
 
             player_names = list(self.players.keys())
@@ -154,8 +156,8 @@ class Game:
             self.first_to_score = utils.rotate_turn(self.dealer, player_names)
 
             self.opening_message = (
-                "{} is the lowest cut card, {} gets first crib".format(
-                    utils.card_text_from_id(self.hands[dealer][0]), dealer
+                "{} of {} is the lowest cut card, {} gets first crib".format(
+                    low_cut["name"], low_cut["suit"], dealer
                 )
             )
             self.save()
@@ -176,6 +178,56 @@ class Game:
 
         self.current_action = "discard"
         self.current_turn = list(self.players.keys())
+        self.save()
+
+    def is_valid_joker_selection(self, player, rank, suit):
+        new_card = utils.card_object_from_text(rank, suit)
+        card_id = list(new_card.keys())[0]
+
+        if card_id in self.hands[player]:
+            return False
+
+        return True
+    
+    def handle_joker_selection(self, player, rank, suit):
+        hand = self.hands[player]
+
+        if "joker1" in hand:
+            hand.remove("joker1")
+        else:
+            hand.remove("joker2")
+
+        new_card = utils.card_object_from_text(rank, suit)
+        hand.append(new_card)
+
+        self.hands[player] = self._sort_cards(hand)
+        self.save()
+
+    def discard(self, player, card, second_card=None):
+        self.hands[player].remove(card)
+        self.crib.append(card)
+
+        if second_card:
+            self.hands[player].remove(second_card)
+            self.crib.append(second_card)
+
+        if len(self.hands[player]) == 4:
+            self.current_turn.remove(player)
+
+            if self.bot:
+                hand = self.bot.discard(hand=self.hands[self.bot])
+                self.hands[self.bot] = hand
+                self.current_turn.remove(self.bot)
+
+        if all(
+            len(self.hands[player]) == 4 for player in self.players.keys()
+        ):
+            while len(self.crib) < self.crib_size:
+                self.crib.append(self.deck.pop())
+
+            self.current_action = "cut"
+            self.current_turn = self.cutter
+        
         self.save()
 
     def save(self):
