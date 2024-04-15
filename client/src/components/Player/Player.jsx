@@ -50,7 +50,7 @@ export const Player = ({name}) => {
       setScoring(false);
       setScoringCards([]);
       setActiveCards([]);
-      if (name in msg.players) {
+      if (msg.players.includes(name)) {
         setTurn(true);
         setAction(msg.action);
       } else {
@@ -171,7 +171,7 @@ export const Player = ({name}) => {
     if (action === 'next') {
       setPlayableCards([])
     }
-    socket.emit(action, { game: game, player: name, card: activeCards[0], second_card: activeCards[1]});
+    socket.emit(action, { id: game, player: name, card: activeCards[0], second_card: activeCards[1]});
     document.activeElement.blur();
   };
 

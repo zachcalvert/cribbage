@@ -91,7 +91,7 @@ class Game:
             crib_size,
             jokers,
         )
-        self.current_turn = self.players
+        self.current_turn = list(self.players.keys())
         deck = jokers_deck if jokers else standard_deck
         self.deck = list(deck.keys())
         self.played_cards = {player: [] for player in self.players}
@@ -140,11 +140,12 @@ class Game:
                     low_cut = standard_deck.get(self.hands[player][0])["rank"]
                     dealer = player
 
+            player_names = list(self.players.keys())
             self.dealer = dealer
-            self.cutter = utils.rotate_reverse(dealer, players)
-            self.first_to_score = utils.rotate_turn(dealer, players)
             self.current_action = "deal"
             self.current_turn = dealer
+            self.cutter = utils.rotate_reverse(dealer, player_names)
+            self.first_to_score = utils.rotate_turn(dealer, player_names)
 
             self.opening_message = (
                 "{} is the lowest cut card, {} gets first crib".format(

@@ -303,9 +303,9 @@ class CribbageNamespace(Namespace):
         emit(
             "send_turn",
             {
-                "players": game_data["current_turn"],
-                "action": game_data["current_action"],
-                "crib": game_data["dealer"],
+                "players": game.current_turn,
+                "action": game.current_action,
+                "crib": game.dealer,
             },
             room=game.id,
         )

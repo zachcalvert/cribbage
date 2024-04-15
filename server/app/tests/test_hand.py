@@ -1,5 +1,5 @@
 from app.decks.standard import deck
-from app.hand import Hand
+from server.app.models.hand import Hand
 
 
 class TestHand:
