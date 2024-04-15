@@ -31,23 +31,6 @@ export const Opponent = ({ opponentName }) => {
   }, [playableCards, playedCards, showCards, opponentName]);
 
   useEffect(() => {
-    function onSendCards(msg) {
-      if (opponentName in msg.cards) {
-        setPlayableCards(msg.cards[opponentName]);
-      }
-      if (opponentName in msg.played_cards) {
-        setPlayedCards(msg.played_cards[opponentName]);
-      }
-    }
-
-    socket.on("send_cards", onSendCards);
-
-    return () => {
-      socket.off("send_cards", onSendCards);
-    };
-  }, [opponentName, playableCards, playedCards]);
-
-  useEffect(() => {
     function onPlayCard(msg) {
       if (opponentName === msg.player) {
         setPlayableCards(playableCards.filter(card => card !== msg.card));

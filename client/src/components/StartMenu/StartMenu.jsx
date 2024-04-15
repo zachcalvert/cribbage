@@ -63,7 +63,6 @@ export const StartMenu = () => {
           maxWidth="sm"
           fullWidth={true}
           open={showStartGameModal}
-          onExited={() => setShowStartGameModal(false)}
           onClose={() => setShowStartGameModal(false)}
         >
           <DialogTitle>

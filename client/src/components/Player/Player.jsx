@@ -74,12 +74,12 @@ export const Player = ({name}) => {
   
   useEffect(() => {
     function onCards(msg) {
-      if (name in msg.cards) {
-        setPlayableCards(msg.cards[name]);
-        setPlayedCards([]);
-        if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
-          setShowJokerModal(true);
-        }
+      console.log({msg})
+      console.log(msg.cards[name])
+      setPlayableCards(msg.cards[name]);
+      setPlayedCards([]);
+      if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
+        setShowJokerModal(true);
       }
     }
   
@@ -88,7 +88,9 @@ export const Player = ({name}) => {
     return () => {
       socket.off("cards", onCards);
     };
-  }, [name]);
+  }, [name, playableCards, playedCards]);
+
+  console.log(playableCards)
   
   useEffect(() => {
     function onPeggingTotal(msg) {
@@ -123,27 +125,6 @@ export const Player = ({name}) => {
   }, [peggingTotal, setPeggingTotal]);
 
   useEffect(() => {
-    function onSendCards(msg) {
-      console.log({msg})
-      if (name in msg.cards) {
-        setPlayableCards(msg.cards[name]);
-        if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
-          showJokerModal();
-        }
-      }
-      if (name in msg.played_cards) {
-        setPlayedCards(msg.played_cards[name]);
-      }
-    }
-  
-    socket.on("send_cards", onSendCards);
-  
-    return () => {
-      socket.off("send_cards", onSendCards);
-    };
-  }, [name]);
-
-  useEffect(() => {
     function onDisplayScore(msg) {
       if (msg.player === name) {
         setScoreDisplay(msg.text);
@@ -159,20 +140,24 @@ export const Player = ({name}) => {
   }, [name, scoreDisplay, scoringCards]);
 
   const handleAction = (e) => {
+    document.activeElement.blur();
+
     if (action === 'discard' && (playableCards.length - activeCards.length < 4)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Whoops! Too many cards selected for discard`, game: game, private: true});
       setActiveCards([]);
       return;
     }
+
     if ((action === 'play' || action ==='discard') && (!activeCards.length)) {
       socket.emit('chat_message', {name: 'game-updater', message: `Psst! Select a card to ${action} by clicking on it`, game: game, private: true});
       return;
     }
+
     if (action === 'next') {
       setPlayableCards([])
     }
+
     socket.emit(action, { id: game, player: name, card: activeCards[0], second_card: activeCards[1]});
-    document.activeElement.blur();
   };
 
   const handleCardClick = (e) => {
@@ -215,21 +200,21 @@ export const Player = ({name}) => {
       <>
         {trail.map(({ x, height, ...rest }, index) => (
           <animated.div
-            key={playableCards[index]}
+            key={playableCards[index].id}
             className="trails-text"
             style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
             <animated.div style={{ height }}>
               <ReactSVG
-                id={playableCards[index]}
+                id={playableCards[index].id}
                 className={
                   `
-                    ${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }
-                    ${scoringCards.includes(playableCards[index]) ? "scoring-card available-card" : "available-card" }
+                    ${activeCards.includes(playableCards[index].id) ? 'active-card available-card': 'available-card' }
+                    ${scoringCards.includes(playableCards[index].id) ? "scoring-card available-card" : "available-card" }
                   `}
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
-                src={`/cards/${playableCards[index]}.svg`}
+                src={`/cards/${playableCards[index].id}.svg`}
               />
             </animated.div>
           </animated.div>

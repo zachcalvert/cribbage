@@ -311,16 +311,18 @@ class CribbageNamespace(Namespace):
         )
 
     def on_deal(self, msg):
-        game_data = controller.deal_hands(game_name=msg["game"])
-        emit("cards", {"cards": game_data["hands"]}, room=msg["game"])
+        game = Game(id=msg["id"])
+        game.deal_hands()
+
+        emit("cards", {"cards": game.hands}, room=game.id)
         emit(
             "send_turn",
             {
-                "players": game_data["current_turn"],
-                "action": game_data["current_action"],
-                "crib": game_data["dealer"],
+                "players": game.current_turn,
+                "action": game.current_action,
+                "crib": game.dealer,
             },
-            room=msg["game"],
+            room=game.id,
         )
 
     def on_joker_selected(self, msg):

@@ -1,5 +1,6 @@
 import json
 import datetime
+import functools
 import logging
 import os
 import random
@@ -14,6 +15,17 @@ logger = logging.getLogger(__name__)
 
 redis_host = os.environ.get("REDISHOST", "redis")
 cache = redis.StrictRedis(host=redis_host, port=6379)
+
+
+def debug_log(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        logger.info(f"-------{func.__name__.upper()}-------")
+        result = func(*args, **kwargs)
+        logger.info(f"-------DONE {func.__name__.upper()}-------")
+        return result
+
+    return wrapper
 
 
 class Game:
@@ -91,14 +103,15 @@ class Game:
             crib_size,
             jokers,
         )
+
+        self.current_action = "draw"
         self.current_turn = list(self.players.keys())
-        deck = jokers_deck if jokers else standard_deck
-        self.deck = list(deck.keys())
-        self.played_cards = {player: [] for player in self.players}
-        self.winning_score = winning_score
         self.crib_size = crib_size
+        self.deck = jokers_deck if jokers else standard_deck
         self.jokers = jokers
+        self.played_cards = {player: [] for player in self.players}
         self.started_at = str(datetime.datetime.now(datetime.timezone.utc).astimezone())
+        self.winning_score = winning_score
 
         opening_message = "First to {} wins! {} cribs. ".format(
             winning_score, constants.CRIB_SIZE_MAP[crib_size]
@@ -110,42 +123,35 @@ class Game:
         self.opening_message = opening_message
         self.save()
 
+    @debug_log
     def draw(self, player):
-        logger.info(self.deck)
-        random.shuffle(self.deck)
+        deck = list(standard_deck.keys())
+        random.shuffle(deck)
 
-        self.hands[player] = [self.deck.pop()]
-
-        while self.hands[player][0] in ["joker1", "joker2"]:
-            self.hands[player][0] = self.deck.pop()
-
+        self.hands[player] = [deck.pop()]
         self.current_turn.remove(player)
 
         if self.bot:
-            self.hands[self.bot] = [self.deck.pop()]
-            while self.hands[self.bot][0] in ["joker1", "joker2"]:
-                self.hands[self.bot][0] = self.deck.pop()
+            self.hands[self.bot] = [deck.pop()]
             self.current_turn.remove(self.bot)
 
+        # If everyone has drawn a card, determine roles for this round
         if all(len(self.hands[player]) == 1 for player in self.players.keys()):
             low_cut = 15
             dealer = None
-            for player_hand in self.hands:
-                if standard_deck.get(self.hands[player][0])["rank"] == low_cut:
-                    self.hands[player][0] = random.choice(
-                        ["75e734d054", "60575e1068", "ae2caea4bb", "36493dcc05"]
-                    )
 
+            for _ in self.hands:
                 if standard_deck.get(self.hands[player][0])["rank"] < low_cut:
                     low_cut = standard_deck.get(self.hands[player][0])["rank"]
                     dealer = player
 
-            player_names = list(self.players.keys())
-            self.dealer = dealer
             self.current_action = "deal"
             self.current_turn = dealer
-            self.cutter = utils.rotate_reverse(dealer, player_names)
-            self.first_to_score = utils.rotate_turn(dealer, player_names)
+            self.dealer = dealer
+
+            player_names = list(self.players.keys())
+            self.cutter = utils.rotate_reverse(self.dealer, player_names)
+            self.first_to_score = utils.rotate_turn(self.dealer, player_names)
 
             self.opening_message = (
                 "{} is the lowest cut card, {} gets first crib".format(
@@ -153,6 +159,24 @@ class Game:
                 )
             )
             self.save()
+
+    def _sort_cards(self, cards):
+        return sorted(cards, key=lambda card: self.deck[card["id"]]["rank"])
+
+    @debug_log
+    def deal_hands(self):
+        cards = list(self.deck.values())
+        random.shuffle(cards)
+
+        hands = {}
+        for player in self.players.keys():
+            hands[player] = []
+            dealt_cards = [cards.pop() for _ in range(self.hand_size)]
+            self.hands[player] = self._sort_cards(dealt_cards)
+
+        self.current_action = "discard"
+        self.current_turn = list(self.players.keys())
+        self.save()
 
     def save(self):
         logger.info(f"Saving game {self.id}")

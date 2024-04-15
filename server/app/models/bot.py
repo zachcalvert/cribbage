@@ -14,7 +14,13 @@ class Bot:
         """
         from app.controller import Hand
 
-        cut_card = {"value": 16, "suit": "none", "rank": 0, "name": "none", "id": "uhgfhc"}
+        cut_card = {
+            "value": 16,
+            "suit": "none",
+            "rank": 0,
+            "name": "none",
+            "id": "uhgfhc",
+        }
         max_points = -1
         card_ids = []
         for set_of_four in permutations(hand, 4):
@@ -31,7 +37,6 @@ class Bot:
                 card_ids = set_of_four
 
         return card_ids
-
 
     def choose_card_to_play(self, hand, pegging_data):
         """

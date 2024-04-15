@@ -10,4 +10,4 @@ ENV FLASK_ENV development
 
 EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:5000", "--access-logfile", "-", "--worker-class", "eventlet", "-w", "1", "app:app"]
+ENTRYPOINT ["gunicorn", "-b", "0.0.0.0:5000", "--access-logfile", "-", "--worker-class", "eventlet", "-w", "1", "app:app", "--reload"]
