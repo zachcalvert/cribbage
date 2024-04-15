@@ -2,17 +2,21 @@ import random
 
 from itertools import permutations
 
+from app.models.hand import Hand
+
 
 class Bot:
 
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, name="Bev"):
+        self.name = name
+
+    def to_dict(self):
+        return {"name": self.name} if self else None
 
     def discard(self, hand):
         """
         Given six cards, return the four to keep
         """
-        from app.controller import Hand
 
         cut_card = {
             "value": 16,
@@ -24,7 +28,7 @@ class Bot:
         max_points = -1
         card_ids = []
         for set_of_four in permutations(hand, 4):
-            cards = [self.game.deck.get(c) for c in set_of_four]
+            cards = list(set_of_four)
             hand = Hand(cards, cut_card)
             try:
                 hand_points = hand.calculate_points()

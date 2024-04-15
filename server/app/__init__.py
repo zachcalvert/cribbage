@@ -143,11 +143,7 @@ class CribbageNamespace(Namespace):
         )
         time.sleep(2)
 
-        if action == "deal":
-            game.deal_hands()
-            emit("cards", {"cards": game.hands}, room=game.id)
-
-        elif action == "cut":
+        if action == "cut":
             game.cut_deck()
             emit("cut_card", {"card": game.cut_card}, room=game.id)
             self.dispatch_points(game)
@@ -305,8 +301,11 @@ class CribbageNamespace(Namespace):
         )
         self.announce(game.opening_message, room=game.id)
 
-        if game.current_turn == [game.bot]:
-            game_data = self.bot_move(game_data)
+        if game.bot.name in game.current_turn:
+            time.sleep(2)
+            game.deal_hands()
+            emit("cards", {"cards": game.hands}, room=game.id)
+
         emit(
             "send_turn",
             {
@@ -317,8 +316,8 @@ class CribbageNamespace(Namespace):
             room=game.id,
         )
 
-    def on_deal(self, msg):
-        game = Game(id=msg["id"])
+    @for_game
+    def on_deal(self, game, msg):
         game.deal_hands()
 
         emit("cards", {"cards": game.hands}, room=game.id)
@@ -332,7 +331,8 @@ class CribbageNamespace(Namespace):
             room=game.id,
         )
 
-    def on_joker_selected(self, msg):
+    @for_game
+    def on_joker_selected(self, game, msg):
         if not controller.is_valid_joker_selection(
             game_name=msg["game"],
             player=msg["player"],
@@ -342,25 +342,24 @@ class CribbageNamespace(Namespace):
             emit("invalid_joker")
             return
 
-        game_data = controller.handle_joker_selection(
-            game_name=msg["game"],
+        game.handle_joker_selection(
             player=msg["player"],
             rank=msg["rank"],
             suit=msg["suit"],
         )
-        emit("cards", {"cards": game_data["hands"]}, room=msg["game"])
+        emit("cards", {"cards": game.hands}, room=game.id)
 
         message = "{} got a joker! They have made it the {} of {}".format(
             msg["player"], msg["rank"], msg["suit"]
         )
-        self.announce(message, room=msg["game"], type="big")
+        self.announce(message, type="big", room=game.id)
 
     @for_game
     def on_discard(self, game: Game, msg: dict):
         game.discard(
             player=msg["player"],
-            card=msg["card"],
-            second_card=msg.get("second_card")
+            card_id=msg["card"],
+            second_card_id=msg.get("second_card")
         )
 
         emit("cards", {"cards": game.hands}, room=game.id)
@@ -373,6 +372,9 @@ class CribbageNamespace(Namespace):
             },
             room=game.id,
         )
+
+        if game.bot.name in game.current_turn:
+            emit("cards", {"cards": game.hands}, room=game.id)
 
     def on_cut(self, msg):
         game_data = controller.cut_deck(game_name=msg["game"])

@@ -155,7 +155,7 @@ export const Player = ({name}) => {
       setPlayableCards([])
     }
 
-    socket.emit(action, { id: game, player: name, card: activeCards[0]?.id, second_card: activeCards[1]?.id});
+    socket.emit(action, { id: game, player: name, card: activeCards[0], second_card: activeCards[1]});
   };
 
   const handleCardClick = (e) => {

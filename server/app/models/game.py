@@ -9,6 +9,7 @@ import redis
 from app import constants
 from app.decks.jokers import deck as jokers_deck
 from app.decks.standard import deck as standard_deck
+from app.models import Bot
 from app import utils
 
 logger = logging.getLogger(__name__)
@@ -74,7 +75,10 @@ class Game:
 
         self.id = id
         for key, value in game_data.items():
-            setattr(self, key, value)
+            if key == "bot" and value:
+                self.bot = Bot(name=value)
+            else:
+                setattr(self, key, value)
 
     def add_player(self, player):
         logger.info("Adding %s to game %s", player, self.id)
@@ -91,8 +95,8 @@ class Game:
 
     def start(self, winning_score=121, crib_size=4, jokers=False):
         if len(self.players) == 1:
-            self.bot = "Bev"
-            self.players["Bev"] = 0
+            self.bot = Bot()
+            self.players[self.bot.name] = 0
         else:
             self.bot = None
 
@@ -132,8 +136,8 @@ class Game:
         self.current_turn.remove(player)
 
         if self.bot:
-            self.hands[self.bot] = [self.deck.get(deck.pop())]
-            self.current_turn.remove(self.bot)
+            self.hands[self.bot.name] = [self.deck.get(deck.pop())]
+            self.current_turn.remove(self.bot.name)
 
         # If everyone has drawn a card, determine roles for this round
         if all(len(self.hands[player]) == 1 for player in self.players.keys()):
@@ -189,6 +193,7 @@ class Game:
 
         return True
     
+    @debug_log
     def handle_joker_selection(self, player, rank, suit):
         hand = self.hands[player]
 
@@ -203,27 +208,31 @@ class Game:
         self.hands[player] = self._sort_cards(hand)
         self.save()
 
-    def discard(self, player, card, second_card=None):
-        self.hands[player].remove(card)
-        self.crib.append(card)
+    @debug_log
+    def discard(self, player, card_id, second_card_id=None):
+        discarded_index = next(i for i, card in enumerate(self.hands[player]) if card["id"] == card_id)
+        discarded = self.hands[player].pop(discarded_index)
+        self.crib.append(discarded)
 
-        if second_card:
-            self.hands[player].remove(second_card)
-            self.crib.append(second_card)
+        if second_card_id:
+            discarded_index = next(i for i, card in enumerate(self.hands[player]) if card["id"] == second_card_id)
+            discarded = self.hands[player].pop(discarded_index)
+            self.crib.append(discarded)
 
         if len(self.hands[player]) == 4:
             self.current_turn.remove(player)
 
             if self.bot:
-                hand = self.bot.discard(hand=self.hands[self.bot])
-                self.hands[self.bot] = hand
-                self.current_turn.remove(self.bot)
+                hand = self.bot.discard(hand=self.hands[self.bot.name])
+                self.hands[self.bot.name] = hand
+                self.current_turn.remove(self.bot.name)
 
         if all(
             len(self.hands[player]) == 4 for player in self.players.keys()
         ):
             while len(self.crib) < self.crib_size:
-                self.crib.append(self.deck.pop())
+                logger.info(self.deck)
+                self.crib.append(self.deck.popitem()[1])
 
             self.current_action = "cut"
             self.current_turn = self.cutter
@@ -233,7 +242,7 @@ class Game:
     def save(self):
         logger.info(f"Saving game {self.id}")
         game_data = {
-            attr: getattr(self, attr)
+            attr: self.bot.name if isinstance(getattr(self, attr), Bot) else getattr(self, attr)
             for attr in dir(self)
             if not attr.startswith("__") and not callable(getattr(self, attr))
         }
