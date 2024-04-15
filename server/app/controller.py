@@ -5,8 +5,6 @@ import os
 import random
 import redis
 
-from app import bot
-from app.hand import Hand
 from app import utils
 from app import constants
 from app.decks.jokers import deck as jokers_deck
@@ -39,110 +37,10 @@ def all_games():
     return games
 
 
-def get_value(game, value):
-    g = json.loads(cache.get(game))
-    return g[value]
-
-
-def get_card_value(game, card_id, value):
-    g = json.loads(cache.get(game))
-    card = g["cards"][card_id]
-    return card[value]
-
-
-def get_or_create_game(game_name):
-    try:
-        g = json.loads(cache.get(game_name))
-    except TypeError:
-        g = {
-            "name": game_name,
-            "players": {},
-            "state": "INIT",
-        }
-        cache.set(game_name, json.dumps(g))
-    return g
-
-
-def add_player(game, player):
-    g = json.loads(cache.get(game))
-    g["players"][player] = 0
-    cache.set(game, json.dumps(g))
-    return g
-
-
-def remove_player(game, player):
-    g = json.loads(cache.get(game))
-    g["players"].pop(player)
-    if not g["players"]:
-        cache.delete(game)
-    else:
-        cache.set(game, json.dumps(g))
-    return g
-
-
-def start_game(game_name, winning_score, crib_size, jokers):
-    game_data = json.loads(cache.get(game_name))
-    players = list(game_data["players"].keys())
-    deck = jokers_deck if jokers else standard_deck
-
-    if len(players) == 1:
-        bot = "Bev"
-        players.append(bot)
-        game_data["players"][bot] = 0
-    else:
-        bot = None
-
-    logger.info(
-        "New game! Players are %s. Winning score is %s, crib size is %s, jokers are %s",
-        players,
-        winning_score,
-        crib_size,
-        jokers
-    )
-
-    game_data.update(
-        {
-            "bot": bot,
-            "crib": [],
-            "crib_size": crib_size,
-            "current_action": "draw",
-            "current_turn": players,
-            "cut_card": "",
-            "cutter": "",
-            "dealer": "",
-            "deck": list(deck.keys()),
-            "first_to_score": "",
-            "hand_size": 6 if len(players) <= 2 else 5,
-            "hands": {player: [] for player in players},
-            "jokers": jokers,
-            "ok_with_next_round": [],
-            "pegging": {"cards": [], "passed": [], "run": [], "total": 0},
-            "play_again": [],
-            "played_cards": {player: [] for player in players},
-            "previous_turn": {"action": "", "player": "", "points": 0, "reason": None},
-            "scored_hands": [],
-            "scoring_summary": [],
-            "started": str(datetime.datetime.now(datetime.timezone.utc).astimezone()),
-            "winning_score": int(winning_score),
-        }
-    )
-
-    game_data["opening_message"] = "First to {} wins! {} cribs. ".format(
-        winning_score, constants.CRIB_SIZE_MAP[crib_size]
-    )
-    if game_data["jokers"]:
-        game_data["opening_message"] += "We're playing with jokers! "
-
-    game_data["opening_message"] += "Draw to see who gets first crib."
-
-    cache.set(game_name, json.dumps(game_data))
-    return game_data
-
-
 def draw(game_name, player):
     game_data = json.loads(cache.get(game_name))
     players = list(game_data["players"].keys())
-
+    logger.info(game_data["deck"])
     random.shuffle(game_data["deck"])
 
     game_data["hands"][player] = [game_data["deck"].pop()]
@@ -652,6 +550,7 @@ def _refresh_game_dict(game_data):
     )
 
     return game_data
+
 
 def rematch(game_name, player):
     game_data = json.loads(cache.get(game_name))

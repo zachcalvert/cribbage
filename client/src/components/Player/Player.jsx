@@ -50,7 +50,7 @@ export const Player = ({name}) => {
       setScoring(false);
       setScoringCards([]);
       setActiveCards([]);
-      if (msg.players.includes(name)) {
+      if (name in msg.players) {
         setTurn(true);
         setAction(msg.action);
       } else {

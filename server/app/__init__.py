@@ -13,7 +13,7 @@ from threading import Lock
 
 from app.models import Game
 from app import controller
-from app import bot
+from app.models import Game
 from app import utils
 
 logging.basicConfig(
@@ -121,64 +121,62 @@ class CribbageNamespace(Namespace):
 
         self.dispatch_points(game)
 
-    def bot_move(self, game_data):
-        action = game_data["current_action"]
-        player = game_data["bot"]
+    def bot_move(self, game):
+        action = game.current_action
+        player = game.bot
+
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
-            room=game_data["name"],
+            {
+                "players": game.current_turn,
+                "action": action,
+            },
+            room=game.id,
         )
         time.sleep(2)
 
         if action == "deal":
-            game_data = controller.deal_hands(game_name=game_data["name"])
-            emit("cards", {"cards": game_data["hands"]}, room=game_data["name"])
+            game.deal_hands()
+            emit("cards", {"cards": game.hands}, room=game.id)
 
         elif action == "cut":
-            game_data = controller.cut_deck(game_name=game_data["name"])
-            emit("cut_card", {"card": game_data["cut_card"]}, room=game_data["name"])
-            self.dispatch_points(game_data)
+            game.cut_deck()
+            emit("cut_card", {"card": game.cut_card}, room=game.id)
+            self.dispatch_points(game)
 
         elif action == "play":
             card = bot.choose_card_to_play(
-                hand=game_data["hands"][player],
-                pegging_data=game_data["pegging"]
+                hand=game.hands[player], pegging_data=game.pegging_data
             )
-            game_data = controller.play_card(
-                game_name=game_data["name"],
-                player=player,
-                card_id=card
-            )
+            game.play_card(player=player, card_id=card)
             self.play_card(
-                player=game_data["bot"],
+                player=player,
                 card=card,
-                game=game_data["name"],
-                total=game_data["pegging"]["total"]
+                game=game,
+                total=game.pegging_data["total"],
             )
             self.announce(
-                "{} played {}".format(game_data["bot"], game_data["previous_turn"]["action"]),
-                room=game_data["name"],
+                "{} played {}".format(player, game.previous_turn["action"]),
+                room=game.id,
             )
-            self.dispatch_points(game_data)
+            self.dispatch_points(game)
 
         elif action == "pass":
-            game_data = controller.record_pass(game_name=game_data["name"], player=player)
+            game_data = controller.record_pass(
+                game_name=game_data["name"], player=player
+            )
             self.announce("{} passed".format(game_data["bot"]), room=game_data["name"])
             self.dispatch_points(game_data)
 
         elif action == "score":
             game_data = controller.score_hand(
-                game_name=game_data["name"],
-                player=player
+                game_name=game_data["name"], player=player
             )
             self.score_hand(game_data)
 
         elif action == "crib":
             time.sleep(1)
-            game_data = controller.score_crib(
-                game_name=game_data["name"]
-            )
+            game_data = controller.score_crib(game_name=game_data["name"])
             self.score_hand(game_data)
 
         return game_data
@@ -224,7 +222,7 @@ class CribbageNamespace(Namespace):
         game = Game(id=game_id)
         game.add_player(player)
 
-        emit('players', {'players': list(game.players.keys())}, room=room)
+        emit("players", {"players": list(game.players.keys())}, room=room)
         self.announce("{} joined".format(msg["name"]), room=room)
 
     def on_player_leave(self, msg):
@@ -258,40 +256,49 @@ class CribbageNamespace(Namespace):
         )
 
     def on_start_game(self, msg):
-        game_data = controller.start_game(
-            game_name=msg['game'],
+        game = Game(id=msg["id"])
+
+        game.start(
             winning_score=msg["winning_score"],
             crib_size=msg["crib_size"],
-            jokers=msg["jokers"]
+            jokers=msg["jokers"],
         )
 
-        emit("game_begun", room=msg["game"])
+        emit("game_begun", room=game.id)
         emit(
             "draw_board",
-            {"players": game_data["players"], "winning_score": game_data["winning_score"]},
-            room=msg["game"],
+            {"players": game.players, "winning_score": game.winning_score},
+            room=game.id,
         )
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
-            room=msg["game"],
+            {"players": game.current_turn, "action": game.current_action},
+            room=game.id,
         )
-        emit("players", {"players": list(game_data["players"].keys())}, room=msg["game"])
+        emit("players", {"players": list(game.players.keys())}, room=game.id)
 
-        self.announce(game_data["opening_message"], room=msg["game"], type="big")
+        self.announce(game.opening_message, room=game.id, type="big")
 
     def on_draw(self, msg):
-        game_data = controller.draw(game_name=msg["game"], player=msg["player"])
+        game = Game(id=msg["id"])
+        game.draw(player=msg["player"])
 
-        emit("cards", {"cards": game_data["hands"], "show_to_all": True}, room=msg["game"])
+        emit(
+            "cards",
+            {"cards": game.hands, "show_to_all": True},
+            room=game.id,
+        )
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
-            room=msg["game"],
+            {
+                "players": game.current_turn,
+                "action": game.current_action,
+            },
+            room=game.id,
         )
-        self.announce(game_data["opening_message"], room=msg["game"])
+        self.announce(game.opening_message, room=game.id)
 
-        if game_data["current_turn"] == game_data["bot"]:
+        if game.current_turn == game.bot:
             game_data = self.bot_move(game_data)
         emit(
             "send_turn",
@@ -300,7 +307,7 @@ class CribbageNamespace(Namespace):
                 "action": game_data["current_action"],
                 "crib": game_data["dealer"],
             },
-            room=msg["game"],
+            room=game.id,
         )
 
     def on_deal(self, msg):
@@ -318,10 +325,10 @@ class CribbageNamespace(Namespace):
 
     def on_joker_selected(self, msg):
         if not controller.is_valid_joker_selection(
-            game_name=msg["game"], 
+            game_name=msg["game"],
             player=msg["player"],
             rank=msg["rank"],
-            suit=msg["suit"]
+            suit=msg["suit"],
         ):
             emit("invalid_joker")
             return
@@ -330,7 +337,7 @@ class CribbageNamespace(Namespace):
             game_name=msg["game"],
             player=msg["player"],
             rank=msg["rank"],
-            suit=msg["suit"]
+            suit=msg["suit"],
         )
         emit("cards", {"cards": game_data["hands"]}, room=msg["game"])
 
@@ -344,15 +351,15 @@ class CribbageNamespace(Namespace):
             game_name=msg["game"],
             player=msg["player"],
             card=msg["card"],
-            second_card=msg.get("second_card")
+            second_card=msg.get("second_card"),
         )
         emit("cards", {"cards": game_data["hands"]}, room=msg["game"])
 
-        logger.info('345')
+        logger.info("345")
         while game_data["current_turn"] == game_data["bot"]:
             game_data = self.bot_move(game_data)
 
-        logger.info('349')
+        logger.info("349")
         emit(
             "send_turn",
             {
@@ -373,7 +380,10 @@ class CribbageNamespace(Namespace):
 
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -390,15 +400,13 @@ class CribbageNamespace(Namespace):
             return
 
         game_data = controller.play_card(
-            game_name=msg["game"],
-            player=msg["player"],
-            card_id=msg["card"]
+            game_name=msg["game"], player=msg["player"], card_id=msg["card"]
         )
         self.play_card(
             player=msg["player"],
             card=msg["card"],
             game=msg["game"],
-            total=game_data["pegging"]["total"]
+            total=game_data["pegging"]["total"],
         )
         self.announce(
             "{} played {}".format(msg["player"], game_data["previous_turn"]["action"]),
@@ -411,7 +419,10 @@ class CribbageNamespace(Namespace):
 
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -426,7 +437,10 @@ class CribbageNamespace(Namespace):
         emit("pegging_total", {"pegging_total": game_data["pegging"]["total"]})
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -439,7 +453,10 @@ class CribbageNamespace(Namespace):
 
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -448,7 +465,10 @@ class CribbageNamespace(Namespace):
         self.score_hand(game_data)
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -486,7 +506,10 @@ class CribbageNamespace(Namespace):
         self.announce("{} wins!".format(msg["player"]), room=msg["game"], type="big")
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 
@@ -494,18 +517,26 @@ class CribbageNamespace(Namespace):
         game_data = controller.rematch(game_name=msg["game"])
         if set(game_data["players"].keys()) == set(game_data["play_again"]):
             emit(
-                "cards", {"cards": game_data["hands"], "show_to_all": True}, room=msg["game"]
+                "cards",
+                {"cards": game_data["hands"], "show_to_all": True},
+                room=msg["game"],
             )
             emit(
                 "draw_board",
-                {"players": game_data["players"], "winning_score": game_data["winning_score"]},
+                {
+                    "players": game_data["players"],
+                    "winning_score": game_data["winning_score"],
+                },
                 room=msg["game"],
             )
             self.announce(game_data["opening_message"], room=msg["game"], type="big")
 
         emit(
             "send_turn",
-            {"players": game_data["current_turn"], "action": game_data["current_action"]},
+            {
+                "players": game_data["current_turn"],
+                "action": game_data["current_action"],
+            },
             room=msg["game"],
         )
 

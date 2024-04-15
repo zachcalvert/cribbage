@@ -39,8 +39,7 @@ export const StartMenu = () => {
     e.preventDefault();
     if (Number.isInteger(parseInt(winningScore))) {
       socket.emit('start_game', {
-        game: game,
-        type: "cribbage",
+        id: game,
         winning_score: winningScore,
         crib_size: cribSize,
         jokers: jokers

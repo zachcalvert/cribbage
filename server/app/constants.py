@@ -1,8 +1,4 @@
-CRIB_SIZE_MAP = {
-    4: "standard",
-    5: "spicy",
-    6: "chaotic"
-}
+CRIB_SIZE_MAP = {4: "standard", 5: "spicy", 6: "chaotic"}
 
 TEXT_TO_RANK_MAP = {
     "ace": 1,
@@ -19,4 +15,3 @@ TEXT_TO_RANK_MAP = {
     "queen": 12,
     "king": 13,
 }
-

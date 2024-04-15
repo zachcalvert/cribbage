@@ -2,35 +2,38 @@ import random
 
 from itertools import permutations
 
-from app.decks.standard import deck
+
+class Bot:
+
+    def __init__(self, game):
+        self.game = game
+
+    def discard(self, hand):
+        """
+        Given six cards, return the four to keep
+        """
+        from app.controller import Hand
+
+        cut_card = {"value": 16, "suit": "none", "rank": 0, "name": "none", "id": "uhgfhc"}
+        max_points = -1
+        card_ids = []
+        for set_of_four in permutations(hand, 4):
+            cards = [self.game.deck.get(c) for c in set_of_four]
+            hand = Hand(cards, cut_card)
+            try:
+                hand_points = hand.calculate_points()
+            except Exception as e:
+                # TODO: why does this happen??
+                print("Exception calculating bot points: {}".format(e))
+                continue
+            if hand_points > max_points:
+                max_points = hand_points
+                card_ids = set_of_four
+
+        return card_ids
 
 
-def discard(hand):
-    """
-    Given six cards, return the four to keep
-    """
-    from app.controller import Hand
-
-    cut_card = {"value": 16, "suit": "none", "rank": 0, "name": "none", "id": "uhgfhc"}
-    max_points = -1
-    card_ids = []
-    for set_of_four in permutations(hand, 4):
-        cards = [deck.get(c) for c in set_of_four]
-        hand = Hand(cards, cut_card)
-        try:
-            hand_points = hand.calculate_points()
-        except Exception as e:
-            # TODO: why does this happen??
-            print("Exception calculating bot points: {}".format(e))
-            continue
-        if hand_points > max_points:
-            max_points = hand_points
-            card_ids = set_of_four
-
-    return card_ids
-
-
-def choose_card_to_play(hand, pegging_data):
+def choose_card_to_play(self, hand, pegging_data):
     """
     return card_id
 
@@ -41,12 +44,12 @@ def choose_card_to_play(hand, pegging_data):
         'total': 0
     },
     """
-    cards_in_hand = [{card: deck.get(card)} for card in hand]
+    cards_in_hand = [{card: self.game.deck.get(card)} for card in hand]
     cards_in_hand.reverse()
-    cards_on_table = [deck.get(c) for c in pegging_data["cards"]]
+    cards_on_table = [self.game.deck.get(c) for c in pegging_data["cards"]]
 
     try:
-        most_recent = deck.get(pegging_data["cards"][0])
+        most_recent = self.deck.get(pegging_data["cards"][0])
     except IndexError:  # first card, anything but a 5 if possible
         for card in cards_in_hand:
             card_id = list(card.keys())[0]
