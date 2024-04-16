@@ -59,7 +59,7 @@ export const Deck = () => {
 
   useEffect(() => {
     function onCutCard(msg) {
-      setCards([...cards, '/cards/' + msg.card + '.svg']);
+      setCards([...cards, '/cards/' + msg.cut_card + '.svg']);
       setCutCard(msg.card);
     }
 

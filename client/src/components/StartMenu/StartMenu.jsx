@@ -31,7 +31,7 @@ export const StartMenu = () => {
 
   const handleGameSetup = (e) => {
     setShowStartGameModal(true);
-    socket.emit('setup', { id: game, player: name });
+    socket.emit('setup', { game: game, player: name });
     document.activeElement.blur();
   };
 

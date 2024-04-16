@@ -43,6 +43,22 @@ def for_game(func):
     return wrapper
 
 
+def can_score_points(game):
+    def decorator(func):
+        def wrapper(self, *args, **kwargs):
+            # Execute the original function
+            result = func(self, *args, **kwargs)
+            
+            # Check if points were scored and emit a message to the client if necessary
+            if game.last_score["amount"] > 0:  # Assuming you have a method points_were_scored in your Game class
+                # Emit a message to the client
+                self.socketio.emit('points_scored', {'points': game.points_scored}, room=self.room)
+            
+            return result
+        return wrapper
+    return decorator
+
+
 class CribbageNamespace(Namespace):
 
     def announce(self, message, room, type=None):
@@ -65,16 +81,13 @@ class CribbageNamespace(Namespace):
 
     def dispatch_points(self, game):
         """give precedence to reason key"""
-        if game["previous_turn"]["points"] > 0:
+        if game["last_play"]["points"] > 0:
             t = game["previous_turn"]
             p = game["previous_turn"]["player"]
-            self.award_points(
-                t["player"],
-                t["reason"] or t["action"],
-                t["points"],
-                game["players"][p],
-                game["name"],
-            )
+            message = "+{} for {} ({})".format(amount, player, reason)
+            self.announce(message, type="points", room=game, )
+            time.sleep(1)
+            emit("points", {"player": player, "amount": total}, room=game)
 
     def announce_hand_score(self, game, player, card_ids, text):
         msg = "  ".join(
@@ -143,12 +156,7 @@ class CribbageNamespace(Namespace):
         )
         time.sleep(2)
 
-        if action == "cut":
-            game.cut_deck()
-            emit("cut_card", {"card": game.cut_card}, room=game.id)
-            self.dispatch_points(game)
-
-        elif action == "play":
+        if action == "play":
             card = bot.choose_card_to_play(
                 hand=game.hands[player], pegging_data=game.pegging_data
             )
@@ -217,7 +225,7 @@ class CribbageNamespace(Namespace):
             emit("pegging_total", {"pegging_total": game["pegging"]["total"]})
 
     @for_game
-    def on_player_join(self, game, msg):
+    def on_player_join(self, game: Game, msg):
         player = msg["name"]
 
         join_room(game.id)
@@ -251,16 +259,16 @@ class CribbageNamespace(Namespace):
             room=msg["game"],
         )
 
-    @for_game
-    def on_setup(self, game, msg):
+    def on_setup(self, msg):
+        logger.info(msg)
         player = msg["player"]
-        emit("setup_started", {"players": [player]}, room=game.id)
+        emit("setup_started", {"players": [player]}, room=msg["game"])
         self.announce(
-            "{} is setting up the game..".format(player), room=game.id
+            "{} is setting up the game..".format(player), room=msg["game"]
         )
 
     @for_game
-    def on_start_game(self, game, msg):
+    def on_start_game(self, game: Game, msg):
         game.start(
             winning_score=msg["winning_score"],
             crib_size=msg["crib_size"],
@@ -373,24 +381,54 @@ class CribbageNamespace(Namespace):
             room=game.id,
         )
 
+        logger.info(game.bot.name)
+        logger.info(game.current_turn)
         if game.bot.name in game.current_turn:
-            emit("cards", {"cards": game.hands}, room=game.id)
+            logger.info('cutting deck')
+            game.cut_deck()
+            emit("cut_card", {"cut_card": game.cut_card.id}, room=game.id)
 
-    def on_cut(self, msg):
-        game_data = controller.cut_deck(game_name=msg["game"])
-        emit("cut_card", {"card": game_data["cut_card"]}, room=msg["game"])
-        self.dispatch_points(game_data)
+            emit(
+                "send_turn",
+                {
+                    "players": game.current_turn,
+                    "action": game.current_action,
+                },
+                room=game.id,
+            )
 
-        if game_data["current_turn"] == game_data["bot"]:
-            game_data = self.bot_move(game_data)
+    @for_game
+    def on_cut(self, game: Game, msg):
+        game.cut_deck()
+
+        emit("cut_card", {"cut_card": game.cut_card.id}, room=game.id)
+
+        if game.cut_card.name == "Jack":
+            amount = 2
+            message = f"+2 for {game.dealer} (cutting a jack)"
+            self.announce(message, type="points", room=game.id)
+
+            time.sleep(1)
+            emit("points", {"player": game.dealer, "amount": amount}, room=game.id)
+
+        if game.bot.name in game.current_turn:
+            card = game.bot.choose_card_to_play(
+                hand=game.hands[game.bot.name], pegging_data=game.pegging_data
+            )
+            game.play_card(player=game.bot.name, card_id=card)
+            emit(
+                "card_played",
+                {"player": game.bot.name, "card": card, "pegging_total": game.pegging_data["total"]},
+                room=game.id,
+            )
 
         emit(
             "send_turn",
             {
-                "players": game_data["current_turn"],
-                "action": game_data["current_action"],
+                "players": game.current_turn,
+                "action": game.current_action,
             },
-            room=msg["game"],
+            room=game.id,
         )
 
     def on_play(self, msg):

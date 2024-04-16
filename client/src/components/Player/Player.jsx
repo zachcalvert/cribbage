@@ -74,15 +74,17 @@ export const Player = ({name}) => {
   
   useEffect(() => {
     function onCards(msg) {
-      setPlayableCards(msg.cards[name]);
-      setPlayedCards([]);
-      if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
-        setShowJokerModal(true);
+      if (name in msg.cards) {
+        setPlayableCards(msg.cards[name]);
+        setPlayedCards([]);
+        if (msg.cards[name].includes('joker1') || msg.cards[name].includes('joker2')) {
+          setShowJokerModal(true);
+        }
       }
     }
   
     socket.on("cards", onCards);
-  
+
     return () => {
       socket.off("cards", onCards);
     };

@@ -16,6 +16,7 @@ export const Opponent = ({ opponentName }) => {
 
   useEffect(() => {
     function onCards(msg) {
+      if (opponentName in msg.cards)
       console.log(msg.cards[opponentName])
       setPlayableCards(msg.cards[opponentName]);
       setPlayedCards([]);

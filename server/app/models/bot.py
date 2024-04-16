@@ -27,6 +27,7 @@ class Bot:
         }
         max_points = -1
         card_ids = []
+
         for set_of_four in permutations(hand, 4):
             cards = list(set_of_four)
             hand = Hand(cards, cut_card)

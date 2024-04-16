@@ -1,4 +1,3 @@
-import datetime
 import json
 import logging
 import os
@@ -21,18 +20,8 @@ def all_games():
 
     game_names = [k.decode() for k in cache.keys()]
     for game_name in game_names:
-        g = json.loads(cache.get(game_name))
-        games.append(
-            {
-                "name": game_name,
-                "players": g["players"],
-                "jokers": g.get("jokers"),
-                "crib_size": g.get("crib_size"),
-                "started": g.get("started"),
-                "winning_score": g.get("winning_score"),
-                "winner": g.get("winner"),
-            }
-        )
+        game_data = json.loads(cache.get(game_name))
+        games.append(game_data)
 
     return games
 

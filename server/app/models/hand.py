@@ -13,7 +13,6 @@ class Hand:
         self.flush_points = 0
         self.nobs = False
         self.points = 0
-
         self.breakdown = {
             "fifteens": {},
             "pairs": {},
