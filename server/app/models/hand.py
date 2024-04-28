@@ -1,8 +1,11 @@
 from itertools import chain, combinations
+from typing import List
+
+from app.models.card import Card
 
 
 class Hand:
-    def __init__(self, cards, cut_card, is_crib=False):
+    def __init__(self, cards: List[Card], cut_card: Card, is_crib=False):
         self.cards = cards
         self.cut_card = cut_card
         self.is_crib = is_crib
@@ -26,8 +29,8 @@ class Hand:
     def __str__(self):
         s = ""
         for card in self.cards:
-            s += card["name"] + " of " + card["suit"] + ", "
-        s += "{} of {}".format(self.cut_card["name"], self.cut_card["suit"])
+            s += card.name + " of " + card.suit + ", "
+        s += "{} of {}".format(self.cut_card.name, self.cut_card.suit)
         return s
 
     def _power_hand(self, values):
@@ -63,17 +66,17 @@ class Hand:
         cards = self.cards + [self.cut_card]
         all_combos = self._power_hand(cards)
         for combo in all_combos:
-            if sum([card["value"] for card in combo]) == 15:
-                self.fifteens[counter] = [card["id"] for card in combo]
+            if sum([card.value for card in combo]) == 15:
+                self.fifteens[counter] = [card.id for card in combo]
                 counter += 2
 
         return self.fifteens != {}
 
     def _has_pairs(self):
         cards = self.cards + [self.cut_card]
-        counts = {card["name"]: [] for card in cards}
+        counts = {card.name: [] for card in cards}
         for card in cards:
-            counts[card["name"]].append(card["id"])
+            counts[card.name].append(card.id)
 
         self.pairs = [{name: ids} for name, ids in counts.items() if len(ids) == 2]
         self.threes = [{name: ids} for name, ids in counts.items() if len(ids) == 3]
@@ -83,10 +86,10 @@ class Hand:
     def _has_runs(self):
         for vector_len in [5, 4, 3]:
             for vec in combinations(self.cards + [self.cut_card], vector_len):
-                vals = [card["rank"] for card in vec]
-                run = [n + min(vals) for n in range(vector_len)]
-                if sorted(vals) == run:
-                    run = [card["id"] for card in vec]
+                ranks = [card.rank for card in vec]
+                run = [n + min(ranks) for n in range(vector_len)]
+                if sorted(ranks) == run:
+                    run = [card.id for card in vec]
                     add = True
                     for r in self.runs:
                         if all(card in r for card in run):
@@ -100,9 +103,9 @@ class Hand:
     def _has_flush(self):
 
         def _cut_card_matches_hand():
-            return self.cut_card["suit"] == next(iter(self.cards))["suit"]
+            return self.cut_card.suit == next(iter(self.cards)).suit
 
-        if all(card["suit"] == next(iter(self.cards))["suit"] for card in self.cards):
+        if all(card.suit == next(iter(self.cards)).suit for card in self.cards):
             if self.is_crib:
                 if _cut_card_matches_hand():
                     self.flush_points = 5
@@ -117,10 +120,10 @@ class Hand:
         return False
 
     def _has_nobs(self):
-        jacks = [card for card in self.cards if card["name"] == "jack"]
+        jacks = [card for card in self.cards if card.name == "jack"]
         for jack in jacks:
-            if self.cut_card["suit"] == jack["suit"]:
-                self.nobs = [jack["id"], self.cut_card["id"]]
+            if self.cut_card.suit == jack.suit:
+                self.nobs = [jack.id, self.cut_card.id]
                 return True
         return False
 
@@ -156,10 +159,10 @@ class Hand:
 
         if self._has_flush():
             points += self.flush_points
-            suit = self.cards[0]["suit"]
-            ids = [card["id"] for card in self.cards]
+            suit = self.cards[0].suit
+            ids = [card.id for card in self.cards]
             if self.flush_points == 5:
-                ids += [self.cut_card["id"]]
+                ids += [self.cut_card.id]
             self.breakdown["flush"][f"{self.flush_points} {suit} for {points}"] = ids
 
         if self._has_nobs():

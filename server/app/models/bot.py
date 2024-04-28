@@ -2,6 +2,7 @@ import random
 
 from itertools import permutations
 
+from app.models.card import Card
 from app.models.hand import Hand
 
 
@@ -17,31 +18,20 @@ class Bot:
         """
         Given six cards, return the four to keep
         """
-
-        cut_card = {
-            "value": 16,
-            "suit": "none",
-            "rank": 0,
-            "name": "none",
-            "id": "uhgfhc",
-        }
+        cut_card = Card(id="uhgfhc")
         max_points = -1
         card_ids = []
 
         for set_of_four in permutations(hand, 4):
-            cards = list(set_of_four)
+            cards = [Card(id=card_id) for card_id in set_of_four]
             hand = Hand(cards, cut_card)
-            try:
-                hand_points = hand.calculate_points()
-            except Exception as e:
-                # TODO: why does this happen??
-                print("Exception calculating bot points: {}".format(e))
-                continue
+            hand_points = hand.calculate_points()
+
             if hand_points > max_points:
                 max_points = hand_points
                 card_ids = set_of_four
 
-        return card_ids
+        return list(card_ids)
 
     def choose_card_to_play(self, hand, pegging_data):
         """
@@ -54,40 +44,33 @@ class Bot:
             'total': 0
         },
         """
-        cards_in_hand = [{card: self.game.deck.get(card)} for card in hand]
+        from app.models import Card
+
+        cards_in_hand = [Card(id=card_id) for card_id in hand]
         cards_in_hand.reverse()
 
         try:
-            most_recent = self.deck.get(pegging_data["cards"][0])
+            most_recent = Card(id=pegging_data["cards"][0])
         except IndexError:  # first card, anything but a 5 if possible
             for card in cards_in_hand:
-                card_id = list(card.keys())[0]
-                card_data = list(card.values())[0]
-
-                if card_data["value"] != 5:
-                    return card_id
+                if card.value != 5:
+                    return card.id
             return random.choice(hand)
 
         for card in cards_in_hand:
-            card_id = list(card.keys())[0]
-            card_data = list(card.values())[0]
-
             if (
-                card_data["value"] + pegging_data["total"] == 15
-                or card_data["value"] + pegging_data["total"] == 31
+                card.value + pegging_data["total"] == 15
+                or card.value + pegging_data["total"] == 31
             ):
-                return card_id
+                return card.id
 
-            if card_data["rank"] == most_recent["rank"] and (
-                pegging_data["total"] + card_data["value"] <= 31
+            if card.rank == most_recent.rank and (
+                pegging_data["total"] + card.value <= 31
             ):
-                return card_id
+                return card.id
 
         for card in cards_in_hand:
-            card_id = list(card.keys())[0]
-            card_data = list(card.values())[0]
-
-            if pegging_data["total"] + card_data["value"] <= 31:
-                return card_id
+            if pegging_data["total"] + card.value <= 31:
+                return card.id
 
         return None

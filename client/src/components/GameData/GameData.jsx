@@ -18,7 +18,7 @@ export const GameData = () => {
   const [gameData, setGameData] = React.useState({});
   
   useKeypress('?', () => {
-    socket.emit('get_game_data', {'game': sessionStorage.getItem('room')});
+    socket.emit('get_game_data', {'id': sessionStorage.getItem('room')});
     setOpen(true);
   });
 
@@ -39,7 +39,7 @@ export const GameData = () => {
   };
 
   const handleResendCards = () => {
-    socket.emit('send_cards', {'game': sessionStorage.getItem('room')});
+    socket.emit('send_cards', {'id': sessionStorage.getItem('room')});
   };
 
   const PrettyPrintJson = ({data}) => {
@@ -49,7 +49,7 @@ export const GameData = () => {
   return (
     <div>
       <Dialog open={open} onClose={handleClose} TransitionComponent={Transition}>
-          <Button onClick={handleResendCards}>Resend cards</Button>
+        <Button onClick={handleResendCards}>Resend cards</Button>
         <PrettyPrintJson data={ gameData } />
       </Dialog>
     </div>

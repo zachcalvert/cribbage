@@ -74,6 +74,7 @@ export const Player = ({name}) => {
   
   useEffect(() => {
     function onCards(msg) {
+      console.log({msg})
       if (name in msg.cards) {
         setPlayableCards(msg.cards[name]);
         setPlayedCards([]);
@@ -90,22 +91,6 @@ export const Player = ({name}) => {
     };
   }, [name, playableCards, playedCards]);
 
-  console.log(playableCards)
-  
-  useEffect(() => {
-    function onPeggingTotal(msg) {
-      console.log('setting pegging total')
-      console.log({msg})
-      setPeggingTotal(msg.pegging_total)
-    }
-  
-    socket.on("pegging_total", onPeggingTotal);
-  
-    return () => {
-      socket.off("pegging_total", onPeggingTotal);
-    };
-  }, [peggingTotal]);
-
   useEffect(() => {
     function onCardPlayed(msg) {
       console.log({msg})
@@ -115,8 +100,7 @@ export const Player = ({name}) => {
       }
       setPeggingTotal(msg.pegging_total);
     }
-    
-  
+
     socket.on("card_played", onCardPlayed);
   
     return () => {
@@ -200,21 +184,21 @@ export const Player = ({name}) => {
       <>
         {trail.map(({ x, height, ...rest }, index) => (
           <animated.div
-            key={playableCards[index].id}
+            key={playableCards[index]}
             className="trails-text"
             style={{ ...rest, transform: x.interpolate(x => `translate3d(0,${x}px,0)`) }}>
             <animated.div style={{ height }}>
               <ReactSVG
-                id={playableCards[index].id}
+                id={playableCards[index]}
                 className={
                   `
-                    ${activeCards.includes(playableCards[index].id) ? 'active-card available-card': 'available-card' }
-                    ${scoringCards.includes(playableCards[index].id) ? "scoring-card available-card" : "available-card" }
+                    ${activeCards.includes(playableCards[index]) ? 'active-card available-card': 'available-card' }
+                    ${scoringCards.includes(playableCards[index]) ? "scoring-card available-card" : "available-card" }
                   `}
                 key={index}
                 onClick={handleCardClick}
                 wrapper='span'
-                src={`/cards/${playableCards[index].id}.svg`}
+                src={`/cards/${playableCards[index]}.svg`}
               />
             </animated.div>
           </animated.div>

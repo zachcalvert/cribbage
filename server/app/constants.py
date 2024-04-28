@@ -1,4 +1,15 @@
-CRIB_SIZE_MAP = {4: "standard", 5: "spicy", 6: "chaotic"}
+CRIB_SIZE_MAP = {
+    4: "standard",
+    5: "spicy",
+    6: "chaotic"
+}
+
+SUIT_MAP = {
+    "clubs": "♣️",
+    "diamonds": "♦️",
+    "hearts": "♥️",
+    "spades": "♠️",
+}
 
 TEXT_TO_RANK_MAP = {
     "ace": 1,

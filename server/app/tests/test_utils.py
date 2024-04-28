@@ -4,7 +4,6 @@ from app.utils import (
     rotate_reverse,
     play_or_pass,
     card_object_from_text,
-    card_text_from_id,
 )
 
 
@@ -71,22 +70,3 @@ class TestGetCardObjectFromText:
             "bd4b01946d": {"name": "ace", "rank": 1, "value": 1, "suit": "hearts"}
         }
         assert card_object_from_text("ace of hearts") == expected
-
-
-class TestGetCardTextFromId:
-    def test_three_of_spades(self):
-        expected = "the three of spades"
-        assert card_text_from_id("04f17d1351") == expected
-
-    def test_jack_of_diamonds(self):
-        expected = "the jack of diamonds"
-        assert card_text_from_id("1d5eb77128") == expected
-
-    def test_ace_of_hearts(self):
-        expected = "the ace of hearts"
-        assert card_text_from_id("bd4b01946d") == expected
-
-    def test_jokers(self):
-        expected = "a joker"
-        for joker in ["joker1", "joker2"]:
-            assert card_text_from_id(joker) == expected

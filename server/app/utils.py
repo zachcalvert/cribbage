@@ -64,35 +64,6 @@ def play_or_pass(card_values, pegging_total):
     return action
 
 
-SUIT_MAP = {
-    "clubs": "♣️",
-    "diamonds": "♦️",
-    "hearts": "♥️",
-    "spades": "♠️",
-}
-
-
-def card_text_from_id(card_id):
-    """
-    Return text representation of card
-    :param card_id:
-    :return:
-    """
-    card = deck[card_id]
-    return "the {} of {}".format(card["name"], card["suit"])
-
-
-def card_short_text_from_id(card_id):
-    text = ""
-    card = deck[card_id]
-    if card["rank"] in [1, 11, 12, 13]:
-        text += card["name"][0].upper()
-    else:
-        text += str(card["rank"])
-    text += SUIT_MAP[card["suit"]]
-    return text
-
-
 def card_object_from_text(rank, suit):
     """
     Expects text in the form: 'Ace of diamonds', 'Ten of clubs', 'Queen of spades'
